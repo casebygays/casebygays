@@ -1,13 +1,19 @@
 #pragma once
+#include "Canvas.h"
 #include "Computer.h"
+#include <string>
+#include <sstream>
+#include <vector>
+using namespace std;
 
 class Command {
 	Canvas* canvas;
 
 	Computer* computer;
 	int comMax;
-	Computer* connectCom;
-	Folder* currentFolder;
+	Computer* connectCom; // 접속한 컴퓨터
+	File* currentFile; // 현재 파일
+	File* prevFile; // 이전 파일
 
 	bool shutdown; // 게임 종료
 public:
@@ -17,7 +23,8 @@ public:
 		computer = com;
 		comMax = cM;
 		connectCom = nullptr;
-		currentFolder = nullptr;
+		currentFile = nullptr;
+		prevFile = nullptr;
 		shutdown = false;
 	}
 	void checkCommand(const string& s)
@@ -35,8 +42,9 @@ public:
 		else if (tokens[0] == "/scan") cmd_scan();
 		else if (tokens[0] == "/clear") cmd_clear();
 		else if (tokens[0] == "/in") cmd_in(tokens[1]);
+		else if (tokens[0] == "/out") cmd_out();
 	}
-	Folder* getCurrentFolder() { return currentFolder; }
+	File* getCurrentFile() { return currentFile; }
 	bool getShutdown() { return shutdown; }
 
 	void cmd_help()
@@ -64,6 +72,7 @@ public:
 	}
 	void cmd_scan()
 	{
+		canvas->input(computer[0].getIP()); // 임시
 		for (int i = 0; i < 3; i++) {
 			int com = rand() % comMax;
 			canvas->input(computer[com].getIP());
@@ -75,25 +84,54 @@ public:
 			if (computer[i].getIP() == ip) {
 				canvas->input(ip + " connected");
 				connectCom = &computer[i];
+				canvas->connectCom = &computer[i];
 				break;
 			}
 		}
 	}
 	void cmd_in(string name) {
-		if (currentFolder != nullptr) {
-
-		}
-		else {
+		if (currentFile == nullptr) { // 컴퓨터에서 in
 			for (int i = 0; i < connectCom->getFileCount(); i++) {
-				if (name == connectCom->getFile(i)->getName()) {
-					currentFolder = connectCom->getFile(i);
-					break;
+				File* f = connectCom->getFile(i);
+				if (name == f->getName()) {
+					currentFile = f;
+					canvas->currentFile = f;
+					if (dynamic_cast<Folder*>(f)) canvas->currentFileType = "Folder";
+					else if (dynamic_cast<txt*>(f)) canvas->currentFileType = "txt";
+					else if (dynamic_cast<exe*>(f)) canvas->currentFileType = "exe";
 				}
 			}
 		}
+		else { // 폴더에서 in
+			for (int i = 0; i < currentFile->getFileCount(); i++) {
+				File* f = currentFile->getFile(i);
+				if (name == f->getName()) {
+					canvas->input(name + " " + f->getName());
+					currentFile = f;
+					canvas->currentFile = f;
+					if (dynamic_cast<Folder*>(f)) canvas->currentFileType = "Folder";
+					else if (dynamic_cast<txt*>(f)) canvas->currentFileType = "txt";
+					else if (dynamic_cast<exe*>(f)) canvas->currentFileType = "exe";
+				}
+			}
+		} 
+		
 	}
-	void cmd_clear()
-	{
+	void cmd_out() {
+		if (currentFile->getParent() != nullptr) {
+			currentFile = currentFile->getParent();
+			canvas->currentFile = currentFile;
+			if (dynamic_cast<Folder*>(currentFile)) canvas->currentFileType = "Folder";
+			else if (dynamic_cast<txt*>(currentFile)) canvas->currentFileType = "txt";
+			else if (dynamic_cast<exe*>(currentFile)) canvas->currentFileType = "exe";
+		}
+		else {
+			currentFile = nullptr;
+			canvas->currentFile = nullptr;
+			canvas->currentFileType = "";
+		}
+	}
+	void cmd_clear() {
 		canvas->cmdClear();
 	}
 };

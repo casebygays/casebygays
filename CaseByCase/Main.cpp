@@ -1,7 +1,8 @@
+#pragma once
 #include "Canvas.h"
-#include "Command.h"
 #include "Computer.h"
 #include "File.h"
+#include "Command.h"
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -15,11 +16,11 @@ int main() {
 	Computer* com = new Computer[COMMAX];
 	Command command(&canvas, com, COMMAX);
 
-	com[0].add(new Folder("public", "폴더 1"));
-	com[0].add(0, new txt("public", "텍스트파일 1", "hello world!"));
+	com[0].add(new Folder('■', "public", "folder"));
+	com[0].add(0, new txt('＃', "public", "textfile.txt", "textfile", "hello world!"));
 
 	while (!command.getShutdown()) {
-		canvas.draw(&command);
+		canvas.draw();
 		command.checkCommand(canvas.input());
 	}
 	

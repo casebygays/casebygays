@@ -5,12 +5,11 @@ using namespace std;
 
 class Port {
 	bool enabled;
-	int level;
 public:
-	Port(bool on = false, int lvl = 0) : enabled(on), level(lvl) {}
+	Port(bool on = false, int lvl = 0) : enabled(on) {}
 };
 class Computer {
-	string IP = "000.000.0.0";
+	string IP;
 	Port ssh, ftp, smt, http;
 	vector<File*> childFile;
 public:
@@ -18,7 +17,8 @@ public:
 		IP = addRandomIP();
 	}
 	~Computer() {
-		//delete[] file;
+		for (File* f : childFile)
+			delete f;
 	}
 	string addRandomIP(int lvl = rand() % 3) {
 		int min[4];
@@ -41,21 +41,26 @@ public:
 			octet[i] = min[i] + rand() % max[i];
 		return to_string(octet[0]) + "." + to_string(octet[1]) + "." + to_string(octet[2]) + "." + to_string(octet[3]);
 	}
-	
+
 	void add(File* child) {
 		childFile.push_back(child);
 	}
 	void add(int index, File* child) {
-		if (index < 0 || index >= childFile.size()) return; // index 유효성 검사
+		if (index < 0 || index >= childFile.size()) return;
 
-		childFile[index]->add(child);
+		Folder* folder = dynamic_cast<Folder*>(childFile[index]);
+		if (folder) {
+			folder->add(child, childFile[index]);
+		}
 	}
 	void remove(int index) {
 		childFile.erase(childFile.begin() + index);
 	}
 	
 	string getIP() { return IP; }
+
 	int getFileCount() { return childFile.size(); }
+
 	File* getFile(int num) { return childFile[num]; }
 };
 
