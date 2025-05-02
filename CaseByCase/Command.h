@@ -44,17 +44,18 @@ public:
 		else if (tokens[0] == "/load") cmd_loadgame();
 		else if (tokens[0] == "/help") cmd_help();
 		else if (tokens[0] == "/clear") cmd_clear();
-		else if (tokens[0] == "/scan") cmd_scan();
 
-		else if (tokens[0] == "/target") cmd_target(tokens[1]);
-		else if (tokens[0] == "/crack") cmd_crack(tokens[1]);
+		else if (tokens[0] == "/scan") cmd_scan();
+		else if (tokens[0] == "/portscan") cmd_portscan();
+		else if (tokens[0] == "/target" and tokens.size() > 1) cmd_target(tokens[1]);
+		else if (tokens[0] == "/crack" and tokens.size() > 1) cmd_crack(tokens[1]);
 		else if (tokens[0] == "/nuke" and tokens.size() > 1) cmd_nuke(tokens[1]); // IP 적었을때
 		else if (tokens[0] == "/nuke") cmd_nuke(); // IP 안적었을때
 
 		else if (tokens[0] == "/connect" and tokens.size() > 1) cmd_connect(tokens[1]); // IP 적었을때
 		else if (tokens[0] == "/connect") cmd_connect(); // IP 안적었을때
 		else if (tokens[0] == "/disconnect") cmd_disconnect();
-		else if (tokens[0] == "/in") cmd_in(tokens[1]);
+		else if (tokens[0] == "/in" and tokens.size() > 1) cmd_in(tokens[1]);
 		else if (tokens[0] == "/out") cmd_out();
 	}
 	File* getCurrentFile() { return currentFile; }
@@ -91,25 +92,27 @@ public:
 	}
 	void cmd_help()
 	{
-		canvas->input("/help : 명령어 리스트 출력");
-		canvas->input("/shutdown : 게임 종료");
-		canvas->input("/in");
-		canvas->input("/out : 이전으로 돌아감 (사이트 나가기, 상위폴더로 나가기 등)");
-		canvas->input("/scan : 주변 IP 스캔");
-		canvas->input("/clear : drrrr tak clear");
+		canvas->input("/help		명령어 리스트 출력");
+		canvas->input("/shutdown		게임 종료");
+		canvas->input("/in File		파일 열기");
+		canvas->input("/out			이전으로 돌아감 (사이트 나가기, 상위폴더로 나가기 등)");
+		canvas->input("/scan		주변 IP 스캔");
+		canvas->input("/clear		드르륵 탁 clear");
 
-		canvas->input("/decoding 파일이름: 대상 파일 복호화");
-		canvas->input("/portscan IP : 포트 정보 확인");
-		canvas->input("/sshcrack : 22번 포트 열기");
-		canvas->input("/ftpcrack : 21번 포트 열기");
-		canvas->input("/smtpcrack : 25번 포트 열기");
-		canvas->input("/httpworm : 80번 포트 열기");
-		canvas->input("/connect IP : 해당 컴퓨터 접속");
-		canvas->input("/disconnect : 접속 종료");
-		canvas->input("/nuke IP : 완전 해킹");
-		canvas->input("removelog : 로그 삭제");
+		canvas->input("/decoding File	대상 파일 복호화");
+		canvas->input("/portscan IP		포트 정보 확인");
+		canvas->input("/crack ssh		22번 포트 열기");
+		canvas->input("/crack ftp		21번 포트 열기");
+		canvas->input("/crack smtp		25번 포트 열기");
+		canvas->input("/crack http		80번 포트 열기");
+		canvas->input("/nuke IP		PC 해킹");
+		canvas->input("/connect IP		해당 컴퓨터 접속");
+		canvas->input("/disconnect		접속 종료");
+		canvas->input("removelog		로그 삭제");
 	}
 	void cmd_clear() { canvas->cmdClear(); }
+
+	// 해킹
 	void cmd_scan()
 	{
 		canvas->input(computer[1].getIP()); // 임시
@@ -118,7 +121,24 @@ public:
 			canvas->input(computer[com].getIP());
 		}
 	}
-	// 해킹
+	void cmd_portscan() {
+		if (targetCom) {
+			string s = "포트 정보|";
+			if (targetCom->getPort("ssh")) s = s + "ssh : O|";
+			else s = s + "ssh : X|";
+			if (targetCom->getPort("ftp")) s = s + "ftp : O|";
+			else s = s + "ftp : X|";
+			if (targetCom->getPort("smt")) s = s + "smt : O|";
+			else s = s + "smt : X|";
+			if (targetCom->getPort("http")) s = s + "http : O|";
+			else s = s + "http : X|";
+			
+			canvas->input(s);
+		}
+		else {
+
+		}
+	}
 	void cmd_target(string ip) {
 		for (int i = 0; i < comMax; i++) {
 			if (computer[i].getIP() == ip) {
@@ -163,10 +183,10 @@ public:
 	void cmd_connect(string ip = "")
 	{
 		for (int i = 0; i < comMax; i++) {
-			if (ip == "" or ip == "target" and computer[i].getIP() == targetCom->getIP()) { // IP를 안적었을때, target을 바로 적었을때
+			if ((ip == "" or ip == "target") and computer[i].getIP() == targetCom->getIP()) { // IP를 안적었을때, target을 바로 적었을때
 				if (!computer[i].getIsNuke()) canvas->input(targetCom->getIP() + " : 접속 실패");
 				else {
-					canvas->input(ip + " : 접속 성공");
+					canvas->input(targetCom->getIP() + " : 접속 성공");
 					connectCom = &computer[i];
 					canvas->connectCom = &computer[i];
 					break;

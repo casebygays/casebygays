@@ -9,17 +9,15 @@ class Computer {
 	bool is_nuke; // 해킹됨
 	vector<File*> childFile;
 public:
-	Computer(bool player = false) {
+	Computer() {
 		IP = addRandomIP();
-		ssh = true;
-		ftp = false;
-		smt = false;
-		http = false;
+		ssh = rand() % 2;
+		ftp = rand() % 2;
+		smt = rand() % 2;
+		http = rand() % 2;
 		is_nuke = false;
 	}
 	~Computer() {
-		for (File* f : childFile)
-			delete f;
 	}
 	// 세팅
 	ComputerS save() {}
@@ -53,16 +51,22 @@ public:
 	void add(File* child) {
 		childFile.push_back(child);
 	}
-	void add(int index, File* child) {
-		if (index < 0 || index >= childFile.size()) return;
+	void add(File* parent, File* child) {
 
-		Folder* folder = dynamic_cast<Folder*>(childFile[index]);
+		Folder* folder = dynamic_cast<Folder*>(parent);
 		if (folder) {
-			folder->add(child, childFile[index]);
+			folder->add(parent, child);
 		}
 	}
-	void remove(int index) {
-		childFile.erase(childFile.begin() + index);
+	void remove(vector<File*> files, int id) {
+		for (File* f : files) {
+			if (f->getId() == id) {
+				for (int i = 0; i < childFile.size(); i++) {
+					if (childFile[i]->getId() == id) { childFile.erase(childFile.begin() + i); }
+				}
+				f->getParent()->erase(id);
+			}
+		}
 	}
 
 	// 진행
@@ -78,6 +82,13 @@ public:
 	string getIP() { return IP; }
 	File* getFile(int num) { return childFile[num]; }
 	int getFileCount() { return childFile.size(); }
+	bool getPort(string p) {
+		if (p == "ssh") return ssh;
+		else if (p == "ftp") return ftp;
+		else if (p == "smt") return smt;
+		else if (p == "http") return http;
+		else return false;
+	}
 	bool getIsNuke() { return is_nuke; }
 	bool getCanNuke() { return !ssh and !ftp and !smt and !http or is_nuke; }
 };

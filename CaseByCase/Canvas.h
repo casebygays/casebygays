@@ -43,10 +43,10 @@ public:
 		else if (connectCom != nullptr) drawComputer(connectCom);
 		else {
 			system("cls");
-			cout << ">立加 IP : 127.0.0.1\n";
-			cout << "==================================================================================\n";
+			cout << "> 立加 IP : 127.0.0.1\n";
+			cout << "================================================================================\n";
 			printEmpty(SCREENSIZE);
-			cout << "==================================================================================\n";
+			cout << "================================================================================\n";
 			printCMD();
 		}
 			
@@ -54,40 +54,45 @@ public:
 	void drawComputer(Computer* com)
 	{
 		system("cls");
-		cout << ">立加 IP : " << connectCom->getIP() << "\n";
-		cout << "==================================================================================\n";
-		cout << "\n";
+		cout << "> 立加 IP : " << connectCom->getIP() << "\n\n";
+		cout << "官帕拳搁\n";
+		cout << "================================================================================\n";
 		for (int i = 0; i < com->getFileCount(); i++) {
 			cout << com->getFile(i)->getName() + "\n";
 		}
 		printEmpty(SCREENSIZE - com->getFileCount()-1);
-		cout << "==================================================================================\n";
+		cout << "================================================================================\n";
 		printCMD();
 	}
 	void drawFolder(Folder* folder)
 	{
 
 		system("cls");
-		cout << ">立加 IP : " << connectCom->getIP() << "\n";
-		cout << "==================================================================================\n";
-		cout << "\n";
+		cout << "> 立加 IP : " << connectCom->getIP() << "\n\n";
+		cout << folder->getName() << "\n";
+		cout << "================================================================================\n";
 		if (folder->getFileCount() == 0) cout << "厚绢乐澜\n";
 		for (int i = 0; i < folder->getFileCount(); i++) {
 			cout << folder->getFile(i)->getName() + "\n";
 		}
 		printEmpty(SCREENSIZE - folder->getFileCount()-1);
-		cout << "==================================================================================\n";
+		cout << "================================================================================\n";
 		printCMD();
 	}
 	void drawtxt(txt* text)
 	{
 		system("cls");
-		cout << ">立加 IP : " << connectCom->getIP() << "\n";
-		cout << "==================================================================================\n";
-		cout << text->getDescName() + "\n";
-		for (int i = 0 ; i < 10; i++) cout << text->getDesc(i) + "\n";
-		printEmpty(4);
-		cout << "==================================================================================\n";
+		cout << "> 立加 IP : " << connectCom->getIP() << "\n\n";
+		cout << text->getDescName() << "\n";
+		cout << "================================================================================\n";
+		string s = text->getDesc();
+		int count = 1;
+		for (size_t i = 0; i < s.length(); i += 80) {
+			cout << s.substr(i, 80) << std::endl;
+			count++;
+		}
+		printEmpty(SCREENSIZE - count);
+		cout << "================================================================================\n";
 		printCMD();
 	}
 	void drawexe()
