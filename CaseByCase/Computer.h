@@ -1,24 +1,33 @@
 #pragma once
 #include "File.h"
-
+#include "StructPack.h"
 using namespace std;
 
-class Port {
-	bool enabled;
-public:
-	Port(bool on = false, int lvl = 0) : enabled(on) {}
-};
 class Computer {
 	string IP;
-	Port ssh, ftp, smt, http;
+	bool ssh, ftp, smt, http; // 포트
+	bool is_nuke; // 해킹됨
 	vector<File*> childFile;
 public:
-	Computer() {
+	Computer(bool player = false) {
 		IP = addRandomIP();
+		ssh = true;
+		ftp = false;
+		smt = false;
+		http = false;
+		is_nuke = false;
 	}
 	~Computer() {
 		for (File* f : childFile)
 			delete f;
+	}
+	// 세팅
+	ComputerS save() {}
+	void load() {}
+
+	void setPlayer() {
+		IP = "127.0.0.1";
+		is_nuke = true;
 	}
 	string addRandomIP(int lvl = rand() % 3) {
 		int min[4];
@@ -41,7 +50,6 @@ public:
 			octet[i] = min[i] + rand() % max[i];
 		return to_string(octet[0]) + "." + to_string(octet[1]) + "." + to_string(octet[2]) + "." + to_string(octet[3]);
 	}
-
 	void add(File* child) {
 		childFile.push_back(child);
 	}
@@ -56,12 +64,22 @@ public:
 	void remove(int index) {
 		childFile.erase(childFile.begin() + index);
 	}
-	
+
+	// 진행
+	bool portCrack(string p, bool b) {
+		if (p == "ssh" and ssh != b) ssh = b;
+		else if (p == "ftp" and ftp != b) ftp = b;
+		else if (p == "smt" and smt != b) smt = b;
+		else if (p == "http" and http != b) http = b;
+		else return false;
+		return true;
+	}
+	void nuke() { is_nuke = true; }
 	string getIP() { return IP; }
-
-	int getFileCount() { return childFile.size(); }
-
 	File* getFile(int num) { return childFile[num]; }
+	int getFileCount() { return childFile.size(); }
+	bool getIsNuke() { return is_nuke; }
+	bool getCanNuke() { return !ssh and !ftp and !smt and !http or is_nuke; }
 };
 
 /*

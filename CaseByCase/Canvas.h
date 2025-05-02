@@ -1,13 +1,14 @@
 #pragma once
 #include "File.h"
 #include "Computer.h"
+#include "StructPack.h"
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <vector>
-
 using namespace std;
 
-#define CMDSIZE 30 // cmd 최대 출력 줄 수
+#define CMDSIZE 31 // cmd 최대 출력 줄 수
 #define SCREENSIZE 15
 
 class Canvas {
@@ -17,7 +18,8 @@ public:
 	Computer* connectCom; // 접속한 컴퓨터
 	File* currentFile; // 현재 폴더
 	string currentFileType; // 현재 폴더 타입
-	//Canvas() : {}
+	CanvasS save() {}
+	void load() {}
 	string input() //cmd창에 입력, 입력된 텍스트를 반환함
 	{
 		getline(cin, lastText);
@@ -41,8 +43,7 @@ public:
 		else if (connectCom != nullptr) drawComputer(connectCom);
 		else {
 			system("cls");
-			cout << ">나의 IP : 00x. xx.xx\n";
-			cout << ">접속 IP : 00X. xx.xx\n";
+			cout << ">접속 IP : 127.0.0.1\n";
 			cout << "==================================================================================\n";
 			printEmpty(SCREENSIZE);
 			cout << "==================================================================================\n";
@@ -53,13 +54,13 @@ public:
 	void drawComputer(Computer* com)
 	{
 		system("cls");
-		cout << ">나의 IP : 00x. xx.xx\n";
-		cout << ">접속 IP : 00X. xx.xx\n";
+		cout << ">접속 IP : " << connectCom->getIP() << "\n";
 		cout << "==================================================================================\n";
+		cout << "\n";
 		for (int i = 0; i < com->getFileCount(); i++) {
 			cout << com->getFile(i)->getName() + "\n";
 		}
-		printEmpty(SCREENSIZE - com->getFileCount());
+		printEmpty(SCREENSIZE - com->getFileCount()-1);
 		cout << "==================================================================================\n";
 		printCMD();
 	}
@@ -67,23 +68,23 @@ public:
 	{
 
 		system("cls");
-		cout << ">나의 IP : 00x. xx.xx\n";
-		cout << ">접속 IP : 00X. xx.xx\n";
+		cout << ">접속 IP : " << connectCom->getIP() << "\n";
 		cout << "==================================================================================\n";
+		cout << "\n";
+		if (folder->getFileCount() == 0) cout << "비어있음\n";
 		for (int i = 0; i < folder->getFileCount(); i++) {
 			cout << folder->getFile(i)->getName() + "\n";
 		}
-		printEmpty(SCREENSIZE - folder->getFileCount());
+		printEmpty(SCREENSIZE - folder->getFileCount()-1);
 		cout << "==================================================================================\n";
 		printCMD();
 	}
 	void drawtxt(txt* text)
 	{
 		system("cls");
-		cout << ">나의 IP : 00x. xx.xx\n";
-		cout << ">접속 IP : 00X. xx.xx\n";
+		cout << ">접속 IP : " << connectCom->getIP() << "\n";
 		cout << "==================================================================================\n";
-		cout << text->getName() + "\n";
+		cout << text->getDescName() + "\n";
 		for (int i = 0 ; i < 10; i++) cout << text->getDesc(i) + "\n";
 		printEmpty(4);
 		cout << "==================================================================================\n";
@@ -95,9 +96,12 @@ public:
 	}
 
 	void printCMD() {
+		cout << "----------------------------------------------------------------------------------\n";
 		for (int i = 0; i < cmd.size(); i++) {
-			cout << cmd[i] << "\n";
+			cout << setw(2) << setfill('0') << i << " " << cmd[i] << "\n";
 		}
+		printEmpty(CMDSIZE - cmd.size());
+		cout <<"> ";
 	}
 	void printEmpty(int n) {
 		while (n-- > 0) { cout << "\n"; }
