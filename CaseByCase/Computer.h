@@ -62,13 +62,13 @@ public:
 			folder->add(parent, child);
 		}
 	}
-	void remove(vector<File*> files, int id) {
-		for (File* f : files) {
+	void remove(int id) {
+		for (File* f : File::files) {
 			if (f->getId() == id) {
 				for (int i = 0; i < childFile.size(); i++) {
 					if (childFile[i]->getId() == id) { childFile.erase(childFile.begin() + i); }
 				}
-				f->getParent()->erase(id);
+				if(f->getParent() != nullptr) f->getParent()->erase(id);
 			}
 		}
 	}

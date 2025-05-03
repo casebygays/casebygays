@@ -45,6 +45,10 @@ public:
 		else if (tokens[0] == "/load") cmd_loadgame();
 		else if (tokens[0] == "/help") cmd_help();
 		else if (tokens[0] == "/clear") cmd_clear();
+		else if (tokens[0] == "/addtxt" and tokens.size() > 2) cmd_addtxt(tokens[1], tokens[2]);
+		else if (tokens[0] == "/addexe") cmd_addexe(tokens[1]);
+		else if (tokens[0] == "/addfolder") cmd_addfolder(tokens[1]);
+		else if (tokens[0] == "/remove") cmd_remove(tokens[1]);
 
 		else if (tokens[0] == "/scan") cmd_scan();
 		else if (tokens[0] == "/portscan") cmd_portscan();
@@ -113,10 +117,57 @@ public:
 		canvas->input("removelog				로그 삭제");
 	}
 	void cmd_clear() { canvas->cmdClear(); }
-	void cmd_addtxt() {}
-	void cmd_addexe() {}
-	void cmd_addfolder() {}
-
+	void cmd_addtxt(string name, string desc) {
+		File* f = new txt(File::fileId, "public", name, desc);
+		if (currentFile != nullptr) { connectCom->add(currentFile, f); }
+		else if (connectCom != nullptr) { connectCom->add(f); }
+		File::files.push_back(f);
+		File::fileId++;
+	}
+	void cmd_addexe(string name) {
+		File* f = new exe(File::fileId, "public", name);
+		if (currentFile != nullptr) { connectCom->add(currentFile, f); }
+		else if (connectCom != nullptr) { connectCom->add(f); }
+		File::files.push_back(f);
+		File::fileId++;
+	}
+	void cmd_addfolder(string name) {
+		File* f = new Folder(File::fileId, "public", name);
+		if (currentFile != nullptr) { connectCom->add(currentFile, f); }
+		else if (connectCom != nullptr) { connectCom->add(f); }
+		File::files.push_back(f);
+		File::fileId++;
+	}
+	void cmd_remove(string name) {
+		if (currentFile != nullptr) { 
+			for (int i = 0; i < currentFile->getFileCount(); i++) { // 현재폴더 내에 모든 파일 검사
+				if (currentFile->getFile(i)->getName() == name) { // 현재폴더의 파일중 입력받은 이름과 같은 파일이 있으면,
+					int id = currentFile->getFile(i)->getId();
+					connectCom->remove(id); // 접속중인 컴퓨터의 remove함수를 호출
+					for (int j = 0; j < File::files.size(); j++) {						// files의 모든 파일을 검사
+						if (File::files[j]->getId() == id) { // 파일의 id와 같으면
+							delete File::files[j];											// 제거
+							File::files.erase(File::files.begin() + j);						// files안에서도 제거
+						}
+					}
+				}
+			}
+		}
+		else if (connectCom != nullptr) {
+			for (int i = 0; i < connectCom->getFileCount(); i++) {
+				if (connectCom->getFile(i)->getName() == name) {
+					int id = connectCom->getFile(i)->getId();
+					connectCom->remove(id);
+					for (int j = 0; j < File::files.size(); j++) {
+						if (File::files[j]->getId() == id) {
+							delete File::files[j];
+							File::files.erase(File::files.begin() + j);
+						}
+					}
+				}
+			}
+		}
+	}
 	// 해킹
 	void cmd_scan()
 	{

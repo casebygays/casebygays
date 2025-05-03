@@ -6,7 +6,6 @@
 using namespace std;
 
 class File {
-	static File* files;
 	File* parentFile = nullptr;
 	int id;
 	string icon;
@@ -14,6 +13,9 @@ class File {
 	string securityType;
 	string pass;
 public:
+	static vector<File*> files;
+	static int fileId;
+
 	File(int id, string icon, string s, string n) : id(id), icon(icon), securityType(s), name(n), pass("") {}
 	virtual void add(File* child) {}
 	virtual void erase(int id) {}
