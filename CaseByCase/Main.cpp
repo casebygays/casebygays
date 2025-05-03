@@ -10,8 +10,9 @@
 using namespace std;
 
 #define COMMAX 80
-void addtxt(int cNum, File* parent, string security, string name, string descName, string desc);
-void addexe();
+void setPass(string p);
+void addtxt(int cNum, File* parent, string security, string name, string desc);
+void addexe(int cNum, File* parent, string security, string name);
 void addFol(int cNum, File* parent, string security, string name);
 void remove(int cNum, int id);
 
@@ -26,17 +27,21 @@ int main() {
 	canvas.input("/help 입력시 명령어 리스트를 호출합니다.");
 
 	com[0].setPlayer();
+	// 플레이어 컴퓨터 파일
 	addFol(0, nullptr, "public", "도움말");
-	addtxt(0, com[0].getFile(0), "public", "텍스트.txt", "내용제목", "도움말~");
-	addtxt(0, nullptr, "public", "/help.txt", "/help", "123456789123456789123456789123456789");
-
+	addFol(0, nullptr, "public", "일기");
+	addtxt(0, com[0].getFile(0), "public", "일기_0", "일기내용 0");
+	addtxt(0, com[0].getFile(0), "public", "일기_1", "일기내용 1");
+	addtxt(0, com[0].getFile(0), "public", "일기_2", "일기내용 2");
+	addexe(0, nullptr, "private", "help"); setPass("1234");
+	// 그외 컴퓨터 파일
 	addFol(1, nullptr, "public", "1번_컴퓨터");
-	addtxt(1, nullptr, "public", "textfile.txt", "내용제목", "내용 내용");
-	addtxt(1, com[1].getFile(0), "public", "textfile.txt", "내용제목", "내용 내용");
+	addtxt(1, nullptr, "public", "textfile", "내용 내용");
+	addtxt(1, com[1].getFile(0), "public", "textfile", "내용 내용");
 
 	command.cmd_connect("127.0.0.1");
 
-	remove(0, 1);
+	//remove(0, 1);
 
 	while (!command.getShutdown()) {
 		canvas.draw();
@@ -46,9 +51,16 @@ int main() {
 	delete[] com;
 	return 0;
 }
-
-void addtxt(int cNum, File* parent, string security, string name, string descName, string desc) {
-	File* f = new txt(fileId, security, name, descName, desc);
+void setPass(string p) { files[files.size()-1]->setPass(p); }
+void addtxt(int cNum, File* parent, string security, string name, string desc) {
+	File* f = new txt(fileId, security, name, desc);
+	if (parent) { com[cNum].add(parent, f); }
+	else { com[cNum].add(f); }
+	files.push_back(f);
+	fileId++;
+}
+void addexe(int cNum, File* parent, string security, string name) {
+	File* f = new exe(fileId, security, name);
 	if (parent) { com[cNum].add(parent, f); }
 	else { com[cNum].add(f); }
 	files.push_back(f);

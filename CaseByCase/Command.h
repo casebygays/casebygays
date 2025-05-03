@@ -24,6 +24,7 @@ public:
 		canvas = c;
 		computer = com;
 		comMax = cM;
+		targetCom = nullptr;
 		connectCom = nullptr;
 		currentFile = nullptr;
 		shutdown = false;
@@ -51,6 +52,7 @@ public:
 		else if (tokens[0] == "/crack" and tokens.size() > 1) cmd_crack(tokens[1]);
 		else if (tokens[0] == "/nuke" and tokens.size() > 1) cmd_nuke(tokens[1]); // IP 적었을때
 		else if (tokens[0] == "/nuke") cmd_nuke(); // IP 안적었을때
+		else if (tokens[0] == "/unlock" and tokens.size() > 2) cmd_unlock(tokens[1], tokens[2]);
 
 		else if (tokens[0] == "/connect" and tokens.size() > 1) cmd_connect(tokens[1]); // IP 적었을때
 		else if (tokens[0] == "/connect") cmd_connect(); // IP 안적었을때
@@ -92,25 +94,28 @@ public:
 	}
 	void cmd_help()
 	{
-		canvas->input("/help		명령어 리스트 출력");
-		canvas->input("/shutdown		게임 종료");
-		canvas->input("/in File		파일 열기");
-		canvas->input("/out			이전으로 돌아감 (사이트 나가기, 상위폴더로 나가기 등)");
-		canvas->input("/scan		주변 IP 스캔");
-		canvas->input("/clear		드르륵 탁 clear");
+		canvas->input("/shutdown				게임 종료");
+		canvas->input("/in [파일]				파일 열기");
+		canvas->input("/out				이전으로 돌아감 (사이트 나가기, 상위폴더로 나가기 등)");
+		canvas->input("/scan				주변 IP 스캔");
+		canvas->input("/clear				드르륵 탁 clear");
 
-		canvas->input("/decoding File	대상 파일 복호화");
-		canvas->input("/portscan IP		포트 정보 확인");
-		canvas->input("/crack ssh		22번 포트 열기");
-		canvas->input("/crack ftp		21번 포트 열기");
-		canvas->input("/crack smtp		25번 포트 열기");
-		canvas->input("/crack http		80번 포트 열기");
-		canvas->input("/nuke IP		PC 해킹");
-		canvas->input("/connect IP		해당 컴퓨터 접속");
-		canvas->input("/disconnect		접속 종료");
-		canvas->input("removelog		로그 삭제");
+		canvas->input("/unlock [파일] [비밀번호]		비밀번호 해제");
+		canvas->input("/decoding [파일]			대상 파일 복호화");
+		canvas->input("/portscan [IP]			포트 정보 확인");
+		canvas->input("/crack ssh				22번 포트 열기");
+		canvas->input("/crack ftp				21번 포트 열기");
+		canvas->input("/crack smtp			25번 포트 열기");
+		canvas->input("/crack http			80번 포트 열기");
+		canvas->input("/nuke [IP]				PC 해킹");
+		canvas->input("/connect [IP]			해당 컴퓨터 접속");
+		canvas->input("/disconnect			접속 종료");
+		canvas->input("removelog				로그 삭제");
 	}
 	void cmd_clear() { canvas->cmdClear(); }
+	void cmd_addtxt() {}
+	void cmd_addexe() {}
+	void cmd_addfolder() {}
 
 	// 해킹
 	void cmd_scan()
@@ -178,6 +183,26 @@ public:
 			}
 		}
 	}
+	void cmd_unlock(string name, string pass = "") {
+		if (currentFile == nullptr) { // 컴퓨터에서 in
+			for (int i = 0; i < connectCom->getFileCount(); i++) {
+				File* f = connectCom->getFile(i);
+				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
+					f->setSecurity("public");
+					canvas->input("잠금해제 완료");
+				}
+			}
+		}
+		else { // 폴더에서 in
+			for (int i = 0; i < currentFile->getFileCount(); i++) {
+				File* f = currentFile->getFile(i);
+				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
+					f->setSecurity("public");
+					canvas->input("잠금해제 완료");
+				}
+			}
+		}
+	}
 
 	// 접속
 	void cmd_connect(string ip = "")
@@ -214,25 +239,31 @@ public:
 		if (currentFile == nullptr) { // 컴퓨터에서 in
 			for (int i = 0; i < connectCom->getFileCount(); i++) {
 				File* f = connectCom->getFile(i);
-				if (name == f->getName()) {
+				if (f->getName() == name and f->getSecurity() == "public") {
 					currentFile = f;
 					canvas->currentFile = f;
 					if (dynamic_cast<Folder*>(f)) canvas->currentFileType = "Folder";
 					else if (dynamic_cast<txt*>(f)) canvas->currentFileType = "txt";
 					else if (dynamic_cast<exe*>(f)) canvas->currentFileType = "exe";
 				}
+				else if (f->getName() == name and f->getSecurity() == "private") {
+					canvas->input("파일이 잠겨있음");
+				}
 			}
 		}
 		else { // 폴더에서 in
 			for (int i = 0; i < currentFile->getFileCount(); i++) {
 				File* f = currentFile->getFile(i);
-				if (name == f->getName()) {
+				if (f->getName() == name and f->getSecurity() == "public") {
 					canvas->input(name + " " + f->getName());
 					currentFile = f;
 					canvas->currentFile = f;
 					if (dynamic_cast<Folder*>(f)) canvas->currentFileType = "Folder";
 					else if (dynamic_cast<txt*>(f)) canvas->currentFileType = "txt";
 					else if (dynamic_cast<exe*>(f)) canvas->currentFileType = "exe";
+				}
+				else if (f->getName() == name and f->getSecurity() == "private") {
+					canvas->input("파일이 잠겨있음");
 				}
 			}
 		} 

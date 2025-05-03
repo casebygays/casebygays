@@ -9,12 +9,15 @@
 using namespace std;
 
 #define CMDSIZE 31 // cmd 최대 출력 줄 수
-#define SCREENSIZE 15
+#define SCREENWIDTH 80 // 스크린 가로길이
+#define SCREENHEIGH 15 // 스크린 세로길이
 
 class Canvas {
 	vector<string> cmd;
 	string lastText;
+	int index;
 public:
+	Canvas() { index = 0; }
 	Computer* connectCom; // 접속한 컴퓨터
 	File* currentFile; // 현재 폴더
 	string currentFileType; // 현재 폴더 타입
@@ -36,79 +39,98 @@ public:
 	{
 		cmd.clear();
 	}
-	void draw() // 그래픽 출력
-	{
+	void draw() {
 		if (currentFile != nullptr and currentFileType == "Folder") drawFolder(dynamic_cast<Folder*>(currentFile));
 		else if (currentFile != nullptr and currentFileType == "txt") drawtxt(dynamic_cast<txt*>(currentFile));
 		else if (connectCom != nullptr) drawComputer(connectCom);
-		else {
-			system("cls");
-			cout << "> 접속 IP : 127.0.0.1\n";
-			cout << "================================================================================\n";
-			printEmpty(SCREENSIZE);
-			cout << "================================================================================\n";
-			printCMD();
-		}
-			
+		else drawMain();
+	}
+	void drawMain() //  메인화면(디버그화면)
+	{
+		system("cls");
+		print("> 접속 IP : ???.?.?.?");
+		print("[????]");
+		print("================================================================================");
+		print("이 화면은 의도적으로 띄운거아니면 뭔가 잘못된거다.");
+		for (int i = 0; i < SCREENHEIGH - 1; i++) 
+			print("");
+		print("================================================================================");
+		for (int i = index; i < CMDSIZE; i++) 
+			print("");
+		index = 0;
 	}
 	void drawComputer(Computer* com)
 	{
 		system("cls");
-		cout << "> 접속 IP : " << connectCom->getIP() << "\n\n";
-		cout << "바탕화면\n";
-		cout << "================================================================================\n";
-		for (int i = 0; i < com->getFileCount(); i++) {
-			cout << com->getFile(i)->getName() + "\n";
-		}
-		printEmpty(SCREENSIZE - com->getFileCount()-1);
-		cout << "================================================================================\n";
-		printCMD();
+		print("> 접속 IP : " + connectCom->getIP());
+		print("<바탕화면>");
+		print("================================================================================");
+		for (int i = 0; i < com->getFileCount(); i++) 
+			print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
+		for (int i = 0; i < SCREENHEIGH - com->getFileCount() - 1; i++) 
+			print("");
+		print("================================================================================");
+		for (int i = index; i < CMDSIZE; i++) print("");
+		printInput();
+		index = 0;
 	}
 	void drawFolder(Folder* folder)
 	{
-
 		system("cls");
-		cout << "> 접속 IP : " << connectCom->getIP() << "\n\n";
-		cout << folder->getName() << "\n";
-		cout << "================================================================================\n";
-		if (folder->getFileCount() == 0) cout << "비어있음\n";
+		print("> 접속 IP : " + connectCom->getIP());
+		print("<" + currentFile->getName() + ">");
+		print("================================================================================");
+		if (folder->getFileCount() == 0) print("비어있음");
 		for (int i = 0; i < folder->getFileCount(); i++) {
-			cout << folder->getFile(i)->getName() + "\n";
+			print(folder->getFile(i)->getIcon()+ " " + folder->getFile(i)->getName());
 		}
-		printEmpty(SCREENSIZE - folder->getFileCount()-1);
-		cout << "================================================================================\n";
-		printCMD();
+		for (int i = 0; i < SCREENHEIGH - folder->getFileCount() - 1; i++)
+			print("");
+		print("================================================================================");
+		for (int i = index; i < CMDSIZE; i++) print("");
+		printInput();
+		index = 0;
 	}
 	void drawtxt(txt* text)
 	{
+		
 		system("cls");
-		cout << "> 접속 IP : " << connectCom->getIP() << "\n\n";
-		cout << text->getDescName() << "\n";
-		cout << "================================================================================\n";
+		print("> 접속 IP : " + connectCom->getIP());
+		print("<" + text->getName() + ">");
+		print("================================================================================");
 		string s = text->getDesc();
 		int count = 1;
 		for (size_t i = 0; i < s.length(); i += 80) {
-			cout << s.substr(i, 80) << std::endl;
+			print(s.substr(i, SCREENWIDTH));
 			count++;
 		}
-		printEmpty(SCREENSIZE - count);
-		cout << "================================================================================\n";
-		printCMD();
+		for (int i = 0; i < SCREENHEIGH - count; i++)
+			print("");
+		print("================================================================================");
+		for (int i = index; i < CMDSIZE; i++) print("");
+		printInput();
+		index = 0;
+		
 	}
 	void drawexe()
 	{
 
 	}
-
-	void printCMD() {
-		cout << "----------------------------------------------------------------------------------\n";
-		for (int i = 0; i < cmd.size(); i++) {
-			cout << setw(2) << setfill('0') << i << " " << cmd[i] << "\n";
-		}
-		printEmpty(CMDSIZE - cmd.size());
-		cout <<"> ";
+	void print(string s) {
+		cout << s;
+		if (index < CMDSIZE) printCMD(SCREENWIDTH - s.size(), index);
+		index++;
+		cout << "\n";
 	}
-	void printEmpty(int n) {
-		while (n-- > 0) { cout << "\n"; }
+	void printCMD(int space, int index) {
+		for (int i = 0; i < space; i++) cout << " ";
+		if (index < cmd.size())
+			cout << " |" << setw(2) << setfill('0') << index << " " << cmd[index].substr(0,100);
+		else
+			cout << " |" << setw(2) << setfill('0') << index;
+	}
+	void printInput() {
+		for (int i = 0; i < SCREENWIDTH; i++) cout << " ";
+		cout << " | > ";
 	}
 };

@@ -6,50 +6,52 @@
 using namespace std;
 
 class File {
+	static File* files;
 	File* parentFile = nullptr;
 	int id;
+	string icon;
 	string name;
-	string securityLevel;
+	string securityType;
+	string pass;
 public:
-	File(int i, string s, string n) : id(i), securityLevel(s), name(n) {}
+	File(int id, string icon, string s, string n) : id(id), icon(icon), securityType(s), name(n), pass("") {}
 	virtual void add(File* child) {}
 	virtual void erase(int id) {}
 	virtual void setParent(File* f) { parentFile = f; }
+	void setSecurity(string security) { securityType = security; }
+	void setPass(string p) { pass = p; }
 	virtual File* getParent() { return parentFile; }
 	virtual int getId() { return id; }
 	virtual string getName() { return name; }
 	virtual int getFileCount() { return NULL; }
 	virtual File* getFile(int num) { return nullptr; }
+	string getSecurity() { return securityType; }
+	string getPass() { return pass; }
+	string getIcon() { return icon; }
 };
 
 class txt : public File {
-	string descName;
 	string desc;
 public:
-	txt(int i, string s, string n, string dn, string d) : File(i, s, n), descName(dn), desc(d) {}
+	txt(int i, string s, string n, string d) : File(i, "[T]", s, n), desc(d) {}
 	txtS save();
 	void load() {}
-	string getDescName() { return descName; }
 	string getDesc() {
 		return desc;
 	}
 };
 
 class exe : public File {
-	string url;
 public:
-	exe(int i, string s, string n, string u) : File(i, s, n), url(u) {}
+	exe(int i, string s, string n) : File(i, "[>]", s, n) {}
 	exeS save();
 	void load();
-	string getURL() {
-		return url;
-	}
 };
 
 class Folder : public File {
 	vector<File*> childFile;
 public:
-	Folder(char i, string s, string n) : File(i, s, n) {}
+	Folder(char i, string s, string n) : File(i, "[_]", s, n) {}
 	~Folder() {
 		for (File* f : childFile) {
 			f->setParent(nullptr);

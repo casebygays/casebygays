@@ -4,17 +4,21 @@
 using namespace std;
 
 class Computer {
+	int level;
 	string IP;
-	bool ssh, ftp, smt, http; // 포트
+	bool ssh, ftp, smt, http, proxy, firewall; // 포트
 	bool is_nuke; // 해킹됨
 	vector<File*> childFile;
 public:
 	Computer() {
-		IP = addRandomIP();
+		level = rand() % 3;
+		IP = addRandomIP(level);
 		ssh = rand() % 2;
 		ftp = rand() % 2;
 		smt = rand() % 2;
 		http = rand() % 2;
+		proxy = rand() % 2 -1 + level;
+		firewall = rand() % 2 - 1 + level;
 		is_nuke = false;
 	}
 	~Computer() {
@@ -27,7 +31,7 @@ public:
 		IP = "127.0.0.1";
 		is_nuke = true;
 	}
-	string addRandomIP(int lvl = rand() % 3) {
+	string addRandomIP(int lvl) {
 		int min[4];
 		int max[4];
 		int octet[4];
