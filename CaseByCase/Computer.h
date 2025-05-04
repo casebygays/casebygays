@@ -79,6 +79,8 @@ public:
 		else if (p == "ftp" and ftp != b) ftp = b;
 		else if (p == "smt" and smt != b) smt = b;
 		else if (p == "http" and http != b) http = b;
+		else if (p == "proxy" and proxy != b) proxy = b;
+		else if (p == "firewall" and firewall != b) firewall = b;
 		else return false;
 		return true;
 	}
@@ -91,10 +93,12 @@ public:
 		else if (p == "ftp") return ftp;
 		else if (p == "smt") return smt;
 		else if (p == "http") return http;
+		else if (p == "proxy") return proxy;
+		else if (p == "firewall") return firewall;
 		else return false;
 	}
 	bool getIsNuke() { return is_nuke; }
-	bool getCanNuke() { return !ssh and !ftp and !smt and !http or is_nuke; }
+	bool getCanNuke() { return !ssh and !ftp and !smt and !http and !proxy and !firewall or is_nuke; }
 };
 
 /*

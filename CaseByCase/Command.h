@@ -118,37 +118,61 @@ public:
 	}
 	void cmd_clear() { canvas->cmdClear(); }
 	void cmd_addtxt(string name, string desc) {
-		File* f = new txt(File::fileId, "public", name, desc);
-		if (currentFile != nullptr) { connectCom->add(currentFile, f); }
-		else if (connectCom != nullptr) { connectCom->add(f); }
-		File::files.push_back(f);
-		File::fileId++;
+		if (currentFile == nullptr or dynamic_cast<Folder*>(currentFile)) {
+			File* f = new txt(File::fileId, "public", name, desc, true);
+			if (currentFile != nullptr) { connectCom->add(currentFile, f); }
+			else if (connectCom != nullptr) { connectCom->add(f); }
+			File::files.push_back(f);
+			File::fileId++;
+			canvas->input("txt를 생성함");
+		}
+		else {
+			canvas->input("파일을 생성할 수 없는 경로임");
+		}
 	}
 	void cmd_addexe(string name) {
-		File* f = new exe(File::fileId, "public", name);
-		if (currentFile != nullptr) { connectCom->add(currentFile, f); }
-		else if (connectCom != nullptr) { connectCom->add(f); }
-		File::files.push_back(f);
-		File::fileId++;
+		if (currentFile == nullptr or dynamic_cast<Folder*>(currentFile)) {
+			File* f = new exe(File::fileId, "public", name, true);
+			if (currentFile != nullptr) { connectCom->add(currentFile, f); }
+			else if (connectCom != nullptr) { connectCom->add(f); }
+			File::files.push_back(f);
+			File::fileId++;
+			canvas->input("exe를 생성함");
+		}
+		else {
+			canvas->input("파일을 생성할 수 없는 경로임");
+		}
 	}
 	void cmd_addfolder(string name) {
-		File* f = new Folder(File::fileId, "public", name);
-		if (currentFile != nullptr) { connectCom->add(currentFile, f); }
-		else if (connectCom != nullptr) { connectCom->add(f); }
-		File::files.push_back(f);
-		File::fileId++;
+		if (currentFile == nullptr or dynamic_cast<Folder*>(currentFile)) {
+			File* f = new Folder(File::fileId, "public", name, true);
+			if (currentFile != nullptr) { connectCom->add(currentFile, f); }
+			else if (connectCom != nullptr) { connectCom->add(f); }
+			File::files.push_back(f);
+			File::fileId++;
+			canvas->input("폴더를 생성함");
+		}
+		else {
+			canvas->input("파일을 생성할 수 없는 경로임");
+		}
 	}
 	void cmd_remove(string name) {
 		if (currentFile != nullptr) { 
 			for (int i = 0; i < currentFile->getFileCount(); i++) { // 현재폴더 내에 모든 파일 검사
 				if (currentFile->getFile(i)->getName() == name) { // 현재폴더의 파일중 입력받은 이름과 같은 파일이 있으면,
-					int id = currentFile->getFile(i)->getId();
-					connectCom->remove(id); // 접속중인 컴퓨터의 remove함수를 호출
-					for (int j = 0; j < File::files.size(); j++) {						// files의 모든 파일을 검사
-						if (File::files[j]->getId() == id) { // 파일의 id와 같으면
-							delete File::files[j];											// 제거
-							File::files.erase(File::files.begin() + j);						// files안에서도 제거
+					if (currentFile->getFile(i)->getCanRemove()) {
+						int id = currentFile->getFile(i)->getId();
+						connectCom->remove(id); // 접속중인 컴퓨터의 remove함수를 호출
+						for (int j = 0; j < File::files.size(); j++) {						// files의 모든 파일을 검사
+							if (File::files[j]->getId() == id) { // 파일의 id와 같으면
+								delete File::files[j];											// 제거
+								File::files.erase(File::files.begin() + j);						// files안에서도 제거
+							}
 						}
+						canvas->input("지정한 파일 삭제됨");
+					}
+					else {
+						canvas->input("삭제 불가능한 파일입니다.");
 					}
 				}
 			}
@@ -156,13 +180,18 @@ public:
 		else if (connectCom != nullptr) {
 			for (int i = 0; i < connectCom->getFileCount(); i++) {
 				if (connectCom->getFile(i)->getName() == name) {
-					int id = connectCom->getFile(i)->getId();
-					connectCom->remove(id);
-					for (int j = 0; j < File::files.size(); j++) {
-						if (File::files[j]->getId() == id) {
-							delete File::files[j];
-							File::files.erase(File::files.begin() + j);
+					if (connectCom->getFile(i)->getCanRemove()) {
+						int id = connectCom->getFile(i)->getId();
+						connectCom->remove(id);
+						for (int j = 0; j < File::files.size(); j++) {
+							if (File::files[j]->getId() == id) {
+								delete File::files[j];
+								File::files.erase(File::files.begin() + j);
+							}
 						}
+					}
+					else {
+						canvas->input("삭제 불가능한 파일입니다.");
 					}
 				}
 			}
@@ -173,26 +202,30 @@ public:
 	{
 		canvas->input(computer[1].getIP()); // 임시
 		for (int i = 0; i < 3; i++) {
-			int com = 1 + rand() % comMax - 1;
+			int com = 1 + rand() % (comMax - 1);
 			canvas->input(computer[com].getIP());
 		}
 	}
 	void cmd_portscan() {
 		if (targetCom) {
 			string s = "포트 정보|";
-			if (targetCom->getPort("ssh")) s = s + "ssh : O|";
-			else s = s + "ssh : X|";
-			if (targetCom->getPort("ftp")) s = s + "ftp : O|";
-			else s = s + "ftp : X|";
-			if (targetCom->getPort("smt")) s = s + "smt : O|";
-			else s = s + "smt : X|";
-			if (targetCom->getPort("http")) s = s + "http : O|";
-			else s = s + "http : X|";
+			if (targetCom->getPort("ssh")) s += "ssh : O|";
+			else s += "ssh : X|";
+			if (targetCom->getPort("ftp")) s += "ftp : O|";
+			else s += "ftp : X|";
+			if (targetCom->getPort("smt")) s += "smt : O|";
+			else s += "smt : X|";
+			if (targetCom->getPort("http")) s += "http : O|";
+			else s += "http : X|";
+			if (targetCom->getPort("proxy")) s += "proxy : O|";
+			else s += "proxy : X|";
+			if (targetCom->getPort("firewall")) s += "firewall : O|";
+			else s += "firewall : X|";
 			
 			canvas->input(s);
 		}
 		else {
-
+			canvas->input("대상 IP가 지정되지 않음");
 		}
 	}
 	void cmd_target(string ip) {
@@ -242,6 +275,9 @@ public:
 					f->setSecurity("public");
 					canvas->input("잠금해제 완료");
 				}
+				else {
+					canvas->input("비밀번호 틀림");
+				}
 			}
 		}
 		else { // 폴더에서 in
@@ -250,6 +286,9 @@ public:
 				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
 					f->setSecurity("public");
 					canvas->input("잠금해제 완료");
+				}
+				else {
+					canvas->input("비밀번호 틀림");
 				}
 			}
 		}

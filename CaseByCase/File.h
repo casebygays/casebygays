@@ -12,11 +12,13 @@ class File {
 	string name;
 	string securityType;
 	string pass;
+
+	bool canRemove;
 public:
 	static vector<File*> files;
 	static int fileId;
 
-	File(int id, string icon, string s, string n) : id(id), icon(icon), securityType(s), name(n), pass("") {}
+	File(int id, string icon, string s, string n, bool cR) : id(id), icon(icon), securityType(s), name(n), pass(""), canRemove(cR) {}
 	virtual void add(File* child) {}
 	virtual void erase(int id) {}
 	virtual void setParent(File* f) { parentFile = f; }
@@ -30,12 +32,25 @@ public:
 	string getSecurity() { return securityType; }
 	string getPass() { return pass; }
 	string getIcon() { return icon; }
+	bool getCanRemove() { return canRemove; }
+	static string getRoot(File* file) {
+		int stop = 30;
+		string s = "/" + file->getName();
+		File* pfile = file->getParent();
+
+		while (pfile != nullptr and stop > 0) {
+			s = "/" + pfile->getName() + s;
+			pfile = pfile->getParent();
+			stop--;
+		}
+		return s;
+	}
 };
 
 class txt : public File {
 	string desc;
 public:
-	txt(int i, string s, string n, string d) : File(i, "[T]", s, n), desc(d) {}
+	txt(int i, string s, string n, string d, bool cR) : File(i, "[T]", s, n, cR), desc(d) {}
 	txtS save();
 	void load() {}
 	string getDesc() {
@@ -45,7 +60,7 @@ public:
 
 class exe : public File {
 public:
-	exe(int i, string s, string n) : File(i, "[>]", s, n) {}
+	exe(int i, string s, string n, bool cR) : File(i, "[>]", s, n, cR) {}
 	exeS save();
 	void load();
 };
@@ -53,7 +68,7 @@ public:
 class Folder : public File {
 	vector<File*> childFile;
 public:
-	Folder(char i, string s, string n) : File(i, "[_]", s, n) {}
+	Folder(char i, string s, string n, bool cR) : File(i, "[_]", s, n, cR) {}
 	~Folder() {
 		for (File* f : childFile) {
 			f->setParent(nullptr);

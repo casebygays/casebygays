@@ -42,6 +42,7 @@ public:
 	void draw() {
 		if (currentFile != nullptr and currentFileType == "Folder") drawFolder(dynamic_cast<Folder*>(currentFile));
 		else if (currentFile != nullptr and currentFileType == "txt") drawtxt(dynamic_cast<txt*>(currentFile));
+		else if (currentFile != nullptr and currentFileType == "exe") drawexe(dynamic_cast<exe*>(currentFile));
 		else if (connectCom != nullptr) drawComputer(connectCom);
 		else drawMain();
 	}
@@ -63,7 +64,7 @@ public:
 	{
 		system("cls");
 		print("> 접속 IP : " + connectCom->getIP());
-		print("<바탕화면>");
+		print("/바탕화면");
 		print("================================================================================");
 		for (int i = 0; i < com->getFileCount(); i++) 
 			print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
@@ -78,7 +79,7 @@ public:
 	{
 		system("cls");
 		print("> 접속 IP : " + connectCom->getIP());
-		print("<" + currentFile->getName() + ">");
+		print("/바탕화면" + File::getRoot(currentFile));
 		print("================================================================================");
 		if (folder->getFileCount() == 0) print("비어있음");
 		for (int i = 0; i < folder->getFileCount(); i++) {
@@ -93,10 +94,9 @@ public:
 	}
 	void drawtxt(txt* text)
 	{
-		
 		system("cls");
 		print("> 접속 IP : " + connectCom->getIP());
-		print("<" + text->getName() + ">");
+		print("/바탕화면" + File::getRoot(currentFile));
 		print("================================================================================");
 		string s = text->getDesc();
 		int count = 1;
@@ -110,11 +110,15 @@ public:
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
-		
 	}
-	void drawexe()
+	void drawexe(exe* exe)
 	{
-
+		system("cls");
+		print("> 접속 IP : " + connectCom->getIP());
+		print("/바탕화면" + File::getRoot(currentFile));
+		print("================================================================================");
+		printInput();
+		index = 0;
 	}
 	void print(string s) {
 		cout << s;
