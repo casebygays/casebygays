@@ -99,13 +99,20 @@ public:
 		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
 		print("================================================================================");
 		string s = text->getDesc();
-		int count = 1;
-		for (size_t i = 0; i < s.length(); i += 80) {
-			print(s.substr(i, SCREENWIDTH));
-			count++;
+		istringstream iss(s);
+		string line;
+		int count = 0;
+
+		while (getline(iss, line)) {
+			for (size_t i = 0; i < line.length(); i += SCREENWIDTH) {
+				print(line.substr(i, SCREENWIDTH));
+				count++;
+			}
 		}
-		for (int i = 0; i < SCREENHEIGH - count; i++)
+
+		for (int i = 0; i < SCREENHEIGH - count; i++) {
 			print("");
+		}
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();

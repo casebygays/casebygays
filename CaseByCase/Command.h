@@ -304,6 +304,9 @@ public:
 					canvas->input(targetCom->getIP() + " : 立加 己傍");
 					connectCom = &computer[i];
 					canvas->connectCom = &computer[i];
+					currentFile = nullptr;
+					canvas->currentFile = nullptr;
+					canvas->currentFileType = "";
 					break;
 				}
 			}
@@ -313,6 +316,9 @@ public:
 					canvas->input(ip + " : 立加 己傍");
 					connectCom = &computer[i];
 					canvas->connectCom = &computer[i];
+					currentFile = nullptr;
+					canvas->currentFile = nullptr;
+					canvas->currentFileType = "";
 					break;
 				}
 			}

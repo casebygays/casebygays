@@ -31,7 +31,7 @@ int main() {
 	// 플레이어 컴퓨터 파일
 	addFol(0, nullptr, "public", "도움말", false);
 	addFol(0, nullptr, "public", "일기", false);
-	addtxt(0, com[0].getFile(1), "public", "일기_0", "일기내용 0", false);
+	addtxt(0, com[0].getFile(1), "public", "일기_0", "가나다라마바사가나다라마바사 가나다라마바사가나다라마 바사가나다라마바사가나다라마바\n사가나다라마바사가나다라마바사가나다라마 바사가나다라마바사가나다라마바사가나다라\n마바사가나다라마바사가나다라마바사가나다라마바사가나다라마바사가나다라마바사", false);
 	addtxt(0, com[0].getFile(1), "public", "일기_1", "일기내용 1", false);
 	addtxt(0, com[0].getFile(1), "public", "일기_2", "일기내용 2", false);
 	addexe(0, nullptr, "private", "help", true); setPass("1234");
