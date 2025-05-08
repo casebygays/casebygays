@@ -4,9 +4,9 @@
 using namespace std;
 
 class Computer {
-	int level;
 	string IP;
-	bool ssh, ftp, smt, http, proxy, firewall; // 포트
+	int level;
+	bool ssh, ftp, smtp, http, proxy, firewall; // 포트
 	bool is_nuke; // 해킹됨
 	vector<File*> childFile;
 public:
@@ -15,7 +15,7 @@ public:
 		IP = addRandomIP(level);
 		ssh = rand() % 2;
 		ftp = rand() % 2;
-		smt = rand() % 2;
+		smtp = rand() % 2;
 		http = rand() % 2;
 		proxy = rand() % 2 -1 + level;
 		firewall = rand() % 2 - 1 + level;
@@ -24,7 +24,7 @@ public:
 	~Computer() {
 	}
 	// 세팅
-	ComputerS save() {}
+	void save() {}
 	void load() {}
 
 	void setPlayer() {
@@ -77,7 +77,7 @@ public:
 	bool portCrack(string p, bool b) {
 		if (p == "ssh" and ssh != b) ssh = b;
 		else if (p == "ftp" and ftp != b) ftp = b;
-		else if (p == "smt" and smt != b) smt = b;
+		else if (p == "smtp" and smtp != b) smtp = b;
 		else if (p == "http" and http != b) http = b;
 		else if (p == "proxy" and proxy != b) proxy = b;
 		else if (p == "firewall" and firewall != b) firewall = b;
@@ -85,20 +85,21 @@ public:
 		return true;
 	}
 	void nuke() { is_nuke = true; }
+	int getLevel() { return level; }
 	string getIP() { return IP; }
 	File* getFile(int num) { return childFile[num]; }
 	int getFileCount() { return childFile.size(); }
 	bool getPort(string p) {
 		if (p == "ssh") return ssh;
 		else if (p == "ftp") return ftp;
-		else if (p == "smt") return smt;
+		else if (p == "smtp") return smtp;
 		else if (p == "http") return http;
 		else if (p == "proxy") return proxy;
 		else if (p == "firewall") return firewall;
 		else return false;
 	}
 	bool getIsNuke() { return is_nuke; }
-	bool getCanNuke() { return !ssh and !ftp and !smt and !http and !proxy and !firewall or is_nuke; }
+	bool getCanNuke() { return !ssh and !ftp and !smtp and !http and !proxy and !firewall or is_nuke; }
 };
 
 /*

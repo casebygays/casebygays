@@ -15,13 +15,13 @@ using namespace std;
 class Canvas {
 	vector<string> cmd;
 	string lastText;
-	int index;
+	int index; // 현재 줄 번호
 public:
 	Canvas() { index = 0; }
-	Computer* connectCom; // 접속한 컴퓨터
-	File* currentFile; // 현재 폴더
+	Computer* connectCom = nullptr; // 접속한 컴퓨터
+	File* currentFile = nullptr; // 현재 폴더
 	string currentFileType; // 현재 폴더 타입
-	CanvasS save() {}
+	void save() {}
 	void load() {}
 	string input() //cmd창에 입력, 입력된 텍스트를 반환함
 	{
@@ -144,4 +144,7 @@ public:
 		for (int i = 0; i < SCREENWIDTH; i++) cout << " ";
 		cout << " | > ";
 	}
+	int getCMDSize() { return cmd.size(); }
+	string getCMDText(int num) { return cmd[num]; }
+	string getLastText() { return lastText; }
 };

@@ -3,7 +3,9 @@
 #include "Computer.h"
 #include "File.h"
 #include "Command.h"
+#include "StructPack.h"
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
@@ -24,6 +26,22 @@ vector<File*> File::files;
 int File::fileId = 0;
 
 int main() {
+	ifstream file("Description.txt");
+	string line;
+	while (getline(file, line)) {
+		size_t sep = line.find('=');
+		if (sep == string::npos) continue;
+
+		string key = line.substr(0, sep);
+		string value = line.substr(sep + 1);
+
+		//if (key == "name") name = value;
+		//else if (key == "level") level = stoi(value);
+		//else if (key == "health") health = stod(value);
+	}
+
+	file.close();
+
 	canvas.input("전체화면으로 진행해주세요.");
 	canvas.input("/help 입력시 명령어 리스트를 호출합니다.");
 

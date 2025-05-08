@@ -29,7 +29,7 @@ public:
 		currentFile = nullptr;
 		shutdown = false;
 	}
-	CommandS save() {}
+	void save() {}
 	void load() {}
 	void checkCommand(const string& s)
 	{
@@ -72,9 +72,56 @@ public:
 	void cmd_savegame() {
 		ofstream file("Save.txt");
 		if (file.is_open()) {
-			//file << "name=" << name << '\n';
-			//file << "level=" << level << '\n';
-			//file << "health=" << health << '\n';
+			for (int i = 0; i < File::files.size(); i++) {
+				file << "id=" << File::files[i]->getId() << '\n';
+				file << "icon=" << File::files[i]->getIcon() << '\n';
+				file << "name=" << File::files[i]->getName() << '\n';
+				file << "securityType=" << File::files[i]->getSecurity() << '\n';
+				file << "pass=" << File::files[i]->getPass() << '\n';
+				file << "canRemove=" << File::files[i]->getCanRemove() << '\n';
+				if (dynamic_cast<txt*>(File::files[i])) {
+					file << "desc=" << dynamic_cast<txt*>(File::files[i])->getDesc() << '\n';;
+				}
+				else if (dynamic_cast<exe*>(File::files[i])) {
+				}
+				else if (dynamic_cast<Folder*>(File::files[i])) {
+					Folder* f = dynamic_cast<Folder*>(File::files[i]);
+					int* p = f->getChildId();
+					file << "childFiles=[";
+					for (int j = 0; j < f->getFileCount(); j++) {
+						file << p[j];
+						if (j < f->getFileCount() - 1)
+							file << ",";
+					}
+					file << "]\n";
+					delete p;
+				}
+			}
+			for (int i = 0; i < 80; i++) {
+				file << "IP=" << computer[i].getIP() << '\n';
+				file << "level=" << computer[i].getLevel() << '\n';
+				file << "ssh=" << computer[i].getPort("ssh") << '\n';
+				file << "ftp=" << computer[i].getPort("ftp") << '\n';
+				file << "smtp=" << computer[i].getPort("smtp") << '\n';
+				file << "http=" << computer[i].getPort("http") << '\n';
+				file << "proxy=" << computer[i].getPort("proxy") << '\n';
+				file << "firewall=" << computer[i].getPort("firwall") << '\n';
+				file << "isNuke=" << computer[i].getIsNuke() << '\n';
+				file << "childFiles=[";
+				for (int j = 0; j < computer[i].getFileCount(); j++) {
+					file << computer[i].getFile(j)->getId();
+					if (j < computer[i].getFileCount() - 1)
+						file << ",";
+				}
+				file << "]\n";
+			}
+			for (int i = 0; i < canvas->getCMDSize(); i++) {
+				file << "cmd=" << canvas->getCMDText(i) << '\n';
+			}
+			file << "lastText=" << canvas->getLastText() << '\n';
+			file << "connectComIP=" << connectCom->getIP() << '\n';
+			if (currentFile != nullptr) file << "currentFileID=" << currentFile->getId() << '\n';
+
 			file.close();
 			cout << "저장 완료!" << endl;
 		}
@@ -213,7 +260,7 @@ public:
 			else s += "ssh : X|";
 			if (targetCom->getPort("ftp")) s += "ftp : O|";
 			else s += "ftp : X|";
-			if (targetCom->getPort("smt")) s += "smt : O|";
+			if (targetCom->getPort("smtp")) s += "smt : O|";
 			else s += "smt : X|";
 			if (targetCom->getPort("http")) s += "http : O|";
 			else s += "http : X|";
