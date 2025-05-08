@@ -81,8 +81,8 @@ public:
 		else if (p == "http" and http != b) http = b;
 		else if (p == "proxy" and proxy != b) proxy = b;
 		else if (p == "firewall" and firewall != b) firewall = b;
-		else return false;
-		return true;
+		else return false; // 실패하면 false
+		return true; // 성공적으로 열면 true
 	}
 	void nuke() { is_nuke = true; }
 	int getLevel() { return level; }

@@ -25,6 +25,10 @@ Command command(&canvas, com, COMMAX);
 vector<File*> File::files;
 int File::fileId = 0;
 
+Computer* Canvas::targetCom = nullptr; //타겟팅 컴퓨터
+Computer* Canvas::connectCom = nullptr; // 접속한 컴퓨터
+File* Canvas::currentFile = nullptr; // 현재 파일
+
 int main() {
 	ifstream file("Description.txt");
 	string line;

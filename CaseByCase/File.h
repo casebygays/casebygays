@@ -19,20 +19,22 @@ public:
 	static int fileId;
 
 	File(int id, string icon, string s, string n, bool cR) : id(id), icon(icon), securityType(s), name(n), pass(""), canRemove(cR) {}
+	void setSecurity(string security) { securityType = security; }
+	void setPass(string p) { pass = p; }
+	string getSecurity() { return securityType; }
+	string getPass() { return pass; }
+	string getIcon() { return icon; }
+	bool getCanRemove() { return canRemove; }
+
 	virtual void add(File* child) {}
 	virtual void erase(int id) {}
 	virtual void setParent(File* f) { parentFile = f; }
-	void setSecurity(string security) { securityType = security; }
-	void setPass(string p) { pass = p; }
 	virtual File* getParent() { return parentFile; }
 	virtual int getId() { return id; }
 	virtual string getName() { return name; }
 	virtual int getFileCount() { return NULL; }
 	virtual File* getFile(int num) { return nullptr; }
-	string getSecurity() { return securityType; }
-	string getPass() { return pass; }
-	string getIcon() { return icon; }
-	bool getCanRemove() { return canRemove; }
+
 	static string getRoot(File* file) {
 		int stop = 30;
 		string s = "/" + file->getName();
@@ -51,7 +53,15 @@ class txt : public File {
 	string desc;
 public:
 	txt(int i, string s, string n, string d, bool cR) : File(i, "[T]", s, n, cR), desc(d) {}
-	txtS save();
+	void save(S_txt* s) {
+		s->file.id = getId();
+		s->file.icon = getIcon();
+		s->file.name = getName();
+		s->file.securityType = getSecurity();
+		s->file.pass = getPass();
+		s->file.canRemove = getCanRemove();
+		s->desc = getDesc();
+	}
 	void load() {}
 	string getDesc() {
 		return desc;
@@ -61,8 +71,15 @@ public:
 class exe : public File {
 public:
 	exe(int i, string s, string n, bool cR) : File(i, "[>]", s, n, cR) {}
-	exeS save();
-	void load();
+	void save(S_exe* s) {
+		s->file.id = getId();
+		s->file.icon = getIcon();
+		s->file.name = getName();
+		s->file.securityType = getSecurity();
+		s->file.pass = getPass();
+		s->file.canRemove = getCanRemove();
+	}
+	void load() {}
 };
 
 class Folder : public File {
@@ -74,8 +91,14 @@ public:
 			f->setParent(nullptr);
 		}
 	}
-	FolderS save();
-	FolderS load();
+	int* getChildId() {
+		int* r = new int[childFile.size()];
+		for (int i = 0; i < childFile.size(); i++) {
+			r[i] = childFile[i]->getId();
+		}
+		return r;
+	}
+	void load() {}
 	void add(File* parent, File* child) {
 		childFile.push_back(child);
 		child->setParent(parent);

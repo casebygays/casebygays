@@ -13,14 +13,35 @@ using namespace std;
 #define SCREENHEIGH 15 // 스크린 세로길이
 
 class Canvas {
+private:
 	vector<string> cmd;
 	string lastText;
 	int index; // 현재 줄 번호
 public:
-	Canvas() { index = 0; }
-	Computer* connectCom = nullptr; // 접속한 컴퓨터
-	File* currentFile = nullptr; // 현재 폴더
-	string currentFileType; // 현재 폴더 타입
+	bool in_proxy;
+	int proxyAnswer;
+	int proxyChance;
+	vector<int> proxyInput;
+
+	static Computer* targetCom; //타겟팅 컴퓨터
+	static Computer* connectCom; // 접속한 컴퓨터
+	static File* currentFile; // 현재 파일
+	static bool getFileType(File* f, string type) {
+		if (dynamic_cast<exe*>(f) and type == "exe") return true;
+		else if (dynamic_cast<txt*>(f) and type == "txt") return true;
+		else if (dynamic_cast<Folder*>(f) and type == "Folder") return true;
+		return false;
+	}
+
+	Canvas() {
+		index = 0;
+		in_proxy = false;
+		proxyChance = 0;
+
+		targetCom = nullptr;
+		connectCom = nullptr;
+		currentFile = nullptr;
+	}
 	void save() {}
 	void load() {}
 	string input() //cmd창에 입력, 입력된 텍스트를 반환함
@@ -40,9 +61,10 @@ public:
 		cmd.clear();
 	}
 	void draw() {
-		if (currentFile != nullptr and currentFileType == "Folder") drawFolder(dynamic_cast<Folder*>(currentFile));
-		else if (currentFile != nullptr and currentFileType == "txt") drawtxt(dynamic_cast<txt*>(currentFile));
-		else if (currentFile != nullptr and currentFileType == "exe") drawexe(dynamic_cast<exe*>(currentFile));
+		if (in_proxy) drawProxyGame();
+		else if (currentFile != nullptr and getFileType(currentFile, "Folder")) drawFolder(dynamic_cast<Folder*>(currentFile));
+		else if (currentFile != nullptr and getFileType(currentFile, "txt")) drawtxt(dynamic_cast<txt*>(currentFile));
+		else if (currentFile != nullptr and getFileType(currentFile, "exe")) drawexe(dynamic_cast<exe*>(currentFile));
 		else if (connectCom != nullptr) drawComputer(connectCom);
 		else drawMain();
 	}
@@ -124,6 +146,22 @@ public:
 		print("> 접속 IP : " + connectCom->getIP());
 		print("/바탕화면" + File::getRoot(currentFile));
 		print("================================================================================");
+		printInput();
+		index = 0;
+	}
+	void drawProxyGame() {
+		system("cls");
+		print("> 접속 IP : " + connectCom->getIP());
+		print("[프록시 해킹 - 스도쿠]");
+		print("================================================================================");
+		print("   +-----------------------------+");
+		print("   |     PROXY SECURITY TEST     |");
+		print("   +-----------------------------+");
+		print("   | 0~9 숫자 중 정답을 맞추세요 |");
+		print("   |     기회는 총 3번입니다.    |");
+		print("   +-----------------------------+");
+		print("================================================================================");
+		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
 	}
