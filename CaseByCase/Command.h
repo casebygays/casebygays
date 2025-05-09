@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Canvas.h"
 #include "Computer.h"
 #include "StructPack.h"
@@ -12,7 +12,7 @@ class Command {
 	Canvas* canvas;
 	Computer* computer;
 	int comMax;
-	bool shutdown; // °ÔÀÓ Á¾·á
+	bool shutdown; // ê²Œì„ ì¢…ë£Œ
 public:
 	Command(Canvas* c, Computer* com, int cM)
 	{
@@ -32,18 +32,30 @@ public:
 
 		if (tokens.empty()) { return; }
 		else if (canvas->in_proxy) {
-			canvas->proxyChance -= 1;
-			canvas->proxyInput.push_back(stoi(tokens[0]));
+			int guess = stoi(tokens[0]);
+			canvas->proxyInput.push_back(guess);
+
+			if (guess == canvas->proxyAnswer) {
+				canvas->input("ì„±ê³µ! í”„ë¡ì‹œ í¬íŠ¸ í•´ì œ ì™„ë£Œ");
+				Canvas::targetCom->portCrack("proxy", false);
+				canvas->in_proxy = false;
+				canvas->proxyInput.clear();
+				return;
+			}
+
+			canvas->proxyChance--;
 
 			if (canvas->proxyChance == 0) {
 				canvas->in_proxy = false;
+				canvas->input("í”„ë¡ì‹œ í•´í‚¹ ì‹¤íŒ¨ / ì •ë‹µ : " + to_string(canvas->proxyAnswer));
 				canvas->proxyInput.clear();
-				string s = "ÇÁ·Ï½Ã ÇØÅ· ½ÇÆĞ / Á¤´ä : ";
-				s = s + to_string(canvas->proxyAnswer);
-				canvas->input(s);
-				return;
 			}
+			else {
+				canvas->input("í‹€ë ¸ìŠµë‹ˆë‹¤. ë‚¨ì€ ê¸°íšŒ: " + to_string(canvas->proxyChance));
+			}
+			return;
 		}
+		
 		else if (tokens[0] == "/shutdown") cmd_shutdown();
 		else if (tokens[0] == "/save") cmd_savegame();
 		else if (tokens[0] == "/load") cmd_loadgame();
@@ -58,12 +70,12 @@ public:
 		else if (tokens[0] == "/portscan") cmd_portscan();
 		else if (tokens[0] == "/target" and tokens.size() > 1) cmd_target(tokens[1]);
 		else if (tokens[0] == "/crack" and tokens.size() > 1) cmd_crack(tokens[1]);
-		else if (tokens[0] == "/nuke" and tokens.size() > 1) cmd_nuke(tokens[1]); // IP Àû¾úÀ»¶§
-		else if (tokens[0] == "/nuke") cmd_nuke(); // IP ¾ÈÀû¾úÀ»¶§
+		else if (tokens[0] == "/nuke" and tokens.size() > 1) cmd_nuke(tokens[1]); // IP ì ì—ˆì„ë•Œ
+		else if (tokens[0] == "/nuke") cmd_nuke(); // IP ì•ˆì ì—ˆì„ë•Œ
 		else if (tokens[0] == "/unlock" and tokens.size() > 2) cmd_unlock(tokens[1], tokens[2]);
 
-		else if (tokens[0] == "/connect" and tokens.size() > 1) cmd_connect(tokens[1]); // IP Àû¾úÀ»¶§
-		else if (tokens[0] == "/connect") cmd_connect(); // IP ¾ÈÀû¾úÀ»¶§
+		else if (tokens[0] == "/connect" and tokens.size() > 1) cmd_connect(tokens[1]); // IP ì ì—ˆì„ë•Œ
+		else if (tokens[0] == "/connect") cmd_connect(); // IP ì•ˆì ì—ˆì„ë•Œ
 		else if (tokens[0] == "/disconnect") cmd_disconnect();
 		else if (tokens[0] == "/in" and tokens.size() > 1) cmd_in(tokens[1]);
 		else if (tokens[0] == "/out") cmd_out();
@@ -127,7 +139,7 @@ public:
 			if (Canvas::currentFile != nullptr) file << "currentFileID=" << Canvas::currentFile->getId() << '\n';
 
 			file.close();
-			cout << "ÀúÀå ¿Ï·á!" << endl;
+			cout << "ì €ì¥ ì™„ë£Œ!" << endl;
 		}
 	}
 	void cmd_loadgame() {
@@ -149,23 +161,23 @@ public:
 	}
 	void cmd_help()
 	{
-		canvas->input("/shutdown				°ÔÀÓ Á¾·á");
-		canvas->input("/in [ÆÄÀÏ]				ÆÄÀÏ ¿­±â");
-		canvas->input("/out				ÀÌÀüÀ¸·Î µ¹¾Æ°¨ (»çÀÌÆ® ³ª°¡±â, »óÀ§Æú´õ·Î ³ª°¡±â µî)");
-		canvas->input("/scan				ÁÖº¯ IP ½ºÄµ");
-		canvas->input("/clear				µå¸£¸¤ Å¹ clear");
+		canvas->input("/shutdown				ê²Œì„ ì¢…ë£Œ");
+		canvas->input("/in [íŒŒì¼]				íŒŒì¼ ì—´ê¸°");
+		canvas->input("/out				ì´ì „ìœ¼ë¡œ ëŒì•„ê° (ì‚¬ì´íŠ¸ ë‚˜ê°€ê¸°, ìƒìœ„í´ë”ë¡œ ë‚˜ê°€ê¸° ë“±)");
+		canvas->input("/scan				ì£¼ë³€ IP ìŠ¤ìº”");
+		canvas->input("/clear				ë“œë¥´ë¥µ íƒ clear");
 
-		canvas->input("/unlock [ÆÄÀÏ] [ºñ¹Ğ¹øÈ£]		ºñ¹Ğ¹øÈ£ ÇØÁ¦");
-		canvas->input("/decoding [ÆÄÀÏ]			´ë»ó ÆÄÀÏ º¹È£È­");
-		canvas->input("/portscan [IP]			Æ÷Æ® Á¤º¸ È®ÀÎ");
-		canvas->input("/crack ssh				22¹ø Æ÷Æ® ¿­±â");
-		canvas->input("/crack ftp				21¹ø Æ÷Æ® ¿­±â");
-		canvas->input("/crack smtp			25¹ø Æ÷Æ® ¿­±â");
-		canvas->input("/crack http			80¹ø Æ÷Æ® ¿­±â");
-		canvas->input("/nuke [IP]				PC ÇØÅ·");
-		canvas->input("/connect [IP]			ÇØ´ç ÄÄÇ»ÅÍ Á¢¼Ó");
-		canvas->input("/disconnect			Á¢¼Ó Á¾·á");
-		canvas->input("removelog				·Î±× »èÁ¦");
+		canvas->input("/unlock [íŒŒì¼] [ë¹„ë°€ë²ˆí˜¸]		ë¹„ë°€ë²ˆí˜¸ í•´ì œ");
+		canvas->input("/decoding [íŒŒì¼]			ëŒ€ìƒ íŒŒì¼ ë³µí˜¸í™”");
+		canvas->input("/portscan [IP]			í¬íŠ¸ ì •ë³´ í™•ì¸");
+		canvas->input("/crack ssh				22ë²ˆ í¬íŠ¸ ì—´ê¸°");
+		canvas->input("/crack ftp				21ë²ˆ í¬íŠ¸ ì—´ê¸°");
+		canvas->input("/crack smtp			25ë²ˆ í¬íŠ¸ ì—´ê¸°");
+		canvas->input("/crack http			80ë²ˆ í¬íŠ¸ ì—´ê¸°");
+		canvas->input("/nuke [IP]				PC í•´í‚¹");
+		canvas->input("/connect [IP]			í•´ë‹¹ ì»´í“¨í„° ì ‘ì†");
+		canvas->input("/disconnect			ì ‘ì† ì¢…ë£Œ");
+		canvas->input("removelog				ë¡œê·¸ ì‚­ì œ");
 	}
 	void cmd_clear() { canvas->cmdClear(); }
 	void cmd_addtxt(string name, string desc) {
@@ -175,10 +187,10 @@ public:
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
 			File::fileId++;
-			canvas->input("txt¸¦ »ı¼ºÇÔ");
+			canvas->input("txtë¥¼ ìƒì„±í•¨");
 		}
 		else {
-			canvas->input("ÆÄÀÏÀ» »ı¼ºÇÒ ¼ö ¾ø´Â °æ·ÎÀÓ");
+			canvas->input("íŒŒì¼ì„ ìƒì„±í•  ìˆ˜ ì—†ëŠ” ê²½ë¡œì„");
 		}
 	}
 	void cmd_addexe(string name) {
@@ -188,10 +200,10 @@ public:
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
 			File::fileId++;
-			canvas->input("exe¸¦ »ı¼ºÇÔ");
+			canvas->input("exeë¥¼ ìƒì„±í•¨");
 		}
 		else {
-			canvas->input("ÆÄÀÏÀ» »ı¼ºÇÒ ¼ö ¾ø´Â °æ·ÎÀÓ");
+			canvas->input("íŒŒì¼ì„ ìƒì„±í•  ìˆ˜ ì—†ëŠ” ê²½ë¡œì„");
 		}
 	}
 	void cmd_addfolder(string name) {
@@ -201,29 +213,29 @@ public:
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
 			File::fileId++;
-			canvas->input("Æú´õ¸¦ »ı¼ºÇÔ");
+			canvas->input("í´ë”ë¥¼ ìƒì„±í•¨");
 		}
 		else {
-			canvas->input("ÆÄÀÏÀ» »ı¼ºÇÒ ¼ö ¾ø´Â °æ·ÎÀÓ");
+			canvas->input("íŒŒì¼ì„ ìƒì„±í•  ìˆ˜ ì—†ëŠ” ê²½ë¡œì„");
 		}
 	}
 	void cmd_remove(string name) {
 		if (Canvas::currentFile != nullptr) { 
-			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) { // ÇöÀçÆú´õ ³»¿¡ ¸ğµç ÆÄÀÏ °Ë»ç
-				if (Canvas::currentFile->getFile(i)->getName() == name) { // ÇöÀçÆú´õÀÇ ÆÄÀÏÁß ÀÔ·Â¹ŞÀº ÀÌ¸§°ú °°Àº ÆÄÀÏÀÌ ÀÖÀ¸¸é,
+			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) { // í˜„ì¬í´ë” ë‚´ì— ëª¨ë“  íŒŒì¼ ê²€ì‚¬
+				if (Canvas::currentFile->getFile(i)->getName() == name) { // í˜„ì¬í´ë”ì˜ íŒŒì¼ì¤‘ ì…ë ¥ë°›ì€ ì´ë¦„ê³¼ ê°™ì€ íŒŒì¼ì´ ìˆìœ¼ë©´,
 					if (Canvas::currentFile->getFile(i)->getCanRemove()) {
 						int id = Canvas::currentFile->getFile(i)->getId();
-						Canvas::connectCom->remove(id); // Á¢¼ÓÁßÀÎ ÄÄÇ»ÅÍÀÇ removeÇÔ¼ö¸¦ È£Ãâ
-						for (int j = 0; j < File::files.size(); j++) {						// filesÀÇ ¸ğµç ÆÄÀÏÀ» °Ë»ç
-							if (File::files[j]->getId() == id) { // ÆÄÀÏÀÇ id¿Í °°À¸¸é
-								delete File::files[j];											// Á¦°Å
-								File::files.erase(File::files.begin() + j);						// files¾È¿¡¼­µµ Á¦°Å
+						Canvas::connectCom->remove(id); // ì ‘ì†ì¤‘ì¸ ì»´í“¨í„°ì˜ removeí•¨ìˆ˜ë¥¼ í˜¸ì¶œ
+						for (int j = 0; j < File::files.size(); j++) {						// filesì˜ ëª¨ë“  íŒŒì¼ì„ ê²€ì‚¬
+							if (File::files[j]->getId() == id) { // íŒŒì¼ì˜ idì™€ ê°™ìœ¼ë©´
+								delete File::files[j];											// ì œê±°
+								File::files.erase(File::files.begin() + j);						// filesì•ˆì—ì„œë„ ì œê±°
 							}
 						}
-						canvas->input("ÁöÁ¤ÇÑ ÆÄÀÏ »èÁ¦µÊ");
+						canvas->input("ì§€ì •í•œ íŒŒì¼ ì‚­ì œë¨");
 					}
 					else {
-						canvas->input("»èÁ¦ ºÒ°¡´ÉÇÑ ÆÄÀÏÀÔ´Ï´Ù.");
+						canvas->input("ì‚­ì œ ë¶ˆê°€ëŠ¥í•œ íŒŒì¼ì…ë‹ˆë‹¤.");
 					}
 				}
 			}
@@ -242,16 +254,16 @@ public:
 						}
 					}
 					else {
-						canvas->input("»èÁ¦ ºÒ°¡´ÉÇÑ ÆÄÀÏÀÔ´Ï´Ù.");
+						canvas->input("ì‚­ì œ ë¶ˆê°€ëŠ¥í•œ íŒŒì¼ì…ë‹ˆë‹¤.");
 					}
 				}
 			}
 		}
 	}
-	// ÇØÅ·
+	// í•´í‚¹
 	void cmd_scan()
 	{
-		canvas->input(computer[1].getIP()); // ÀÓ½Ã
+		canvas->input(computer[1].getIP()); // ì„ì‹œ
 		for (int i = 0; i < 3; i++) {
 			int com = 1 + rand() % (comMax - 1);
 			canvas->input(computer[com].getIP());
@@ -259,7 +271,7 @@ public:
 	}
 	void cmd_portscan() {
 		if (Canvas::targetCom) {
-			string s = "Æ÷Æ® Á¤º¸|";
+			string s = "í¬íŠ¸ ì •ë³´|";
 			if (Canvas::targetCom->getPort("ssh")) s += "ssh : O|";
 			else s += "ssh : X|";
 			if (Canvas::targetCom->getPort("ftp")) s += "ftp : O|";
@@ -276,101 +288,110 @@ public:
 			canvas->input(s);
 		}
 		else {
-			canvas->input("´ë»ó IP°¡ ÁöÁ¤µÇÁö ¾ÊÀ½");
+			canvas->input("ëŒ€ìƒ IPê°€ ì§€ì •ë˜ì§€ ì•ŠìŒ");
 		}
 	}
 	void cmd_target(string ip) {
 		for (int i = 0; i < comMax; i++) {
 			if (computer[i].getIP() == ip) {
-				canvas->input(ip + " : ¸ñÇ¥·Î ÁöÁ¤ÇÔ");
+				canvas->input(ip + " : ëª©í‘œë¡œ ì§€ì •í•¨");
 				Canvas::targetCom = &computer[i];
 				break;
 			}
 		}
 	}
-	void cmd_crack(string target) { 
-		if (Canvas::targetCom == nullptr) { canvas->input("ÇØÅ· ´ë»óÀÌ ¾ø½À´Ï´Ù."); }
-		else {
-			if (target == "proxy") {
-				canvas->in_proxy = true;
-				canvas->proxyAnswer = rand() % 10;
-				canvas->proxyChance = 3;
-			}
-			else if (Canvas::targetCom->portCrack(target, false)) 
-				canvas->input(target + " : ¼º°øÀûÀ¸·Î Æ÷Æ®¸¦ ¿®");
-			else 
-				canvas->input(target + " : Æ÷Æ®°¡ ¿­·ÁÀÖ°Å³ª, ´ë»óÀ» Ã£Áö¸øÇÔ");
+	void cmd_crack(string target) {
+		if (Canvas::targetCom == nullptr) {
+			canvas->input("í•´í‚¹ ëŒ€ìƒì´ ì—†ìŠµë‹ˆë‹¤.");
+			return;
 		}
 
-		
+		if (target == "proxy") {
+			// ì´ë¯¸ ì—´ë¦° ê²½ìš° ì²˜ë¦¬
+			if (!Canvas::targetCom->getPort("proxy")) {
+				canvas->input("proxy : í¬íŠ¸ê°€ ì—´ë ¤ìˆê±°ë‚˜, ëŒ€ìƒì„ ì°¾ì§€ ëª»í•¨");
+				return;
+			}
+
+			canvas->in_proxy = true;
+			canvas->proxyAnswer = rand() % 5 + 1;
+			canvas->proxyChance = 2;
+		}
+		else if (Canvas::targetCom->portCrack(target, false)) {
+			canvas->input(target + " : ì„±ê³µì ìœ¼ë¡œ í¬íŠ¸ë¥¼ ì—¶");
+		}
+		else {
+			canvas->input(target + " : í¬íŠ¸ê°€ ì—´ë ¤ìˆê±°ë‚˜, ëŒ€ìƒì„ ì°¾ì§€ ëª»í•¨");
+		}
+	
 	}
 	void cmd_nuke(string ip = "") {
 		if (ip == "" and Canvas::targetCom != nullptr) {
 			if (Canvas::targetCom->getCanNuke()) {
 				Canvas::targetCom->nuke();
-				canvas->input(Canvas::targetCom->getIP() + " : ÇØÅ· ¼º°ø");
+				canvas->input(Canvas::targetCom->getIP() + " : í•´í‚¹ ì„±ê³µ");
 			}
 			else {
-				canvas->input(Canvas::targetCom->getIP() + " : ÇØÅ· ½ÇÆĞ");
+				canvas->input(Canvas::targetCom->getIP() + " : í•´í‚¹ ì‹¤íŒ¨");
 			}
 		}
 		else {
 			for (int i = 0; i < comMax; i++) {
 				if (computer[i].getIP() == ip) {
 					if (computer[i].getCanNuke()) {
-						canvas->input(ip + " : ÇØÅ· ¼º°ø");
+						canvas->input(ip + " : í•´í‚¹ ì„±ê³µ");
 						computer[i].nuke();
 					}
-					else canvas->input(ip + " : ÇØÅ· ½ÇÆĞ");
+					else canvas->input(ip + " : í•´í‚¹ ì‹¤íŒ¨");
 					break;
 				}
 			}
 		}
 	}
 	void cmd_unlock(string name, string pass = "") {
-		if (Canvas::currentFile == nullptr) { // ÄÄÇ»ÅÍ¿¡¼­ in
+		if (Canvas::currentFile == nullptr) { // ì»´í“¨í„°ì—ì„œ in
 			for (int i = 0; i < Canvas::connectCom->getFileCount(); i++) {
 				File* f = Canvas::connectCom->getFile(i);
 				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
 					f->setSecurity("public");
-					canvas->input("Àá±İÇØÁ¦ ¿Ï·á");
+					canvas->input("ì ê¸ˆí•´ì œ ì™„ë£Œ");
 				}
 				else {
-					canvas->input("ºñ¹Ğ¹øÈ£ Æ²¸²");
+					canvas->input("ë¹„ë°€ë²ˆí˜¸ í‹€ë¦¼");
 				}
 			}
 		}
-		else { // Æú´õ¿¡¼­ in
+		else { // í´ë”ì—ì„œ in
 			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) {
 				File* f = Canvas::currentFile->getFile(i);
 				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
 					f->setSecurity("public");
-					canvas->input("Àá±İÇØÁ¦ ¿Ï·á");
+					canvas->input("ì ê¸ˆí•´ì œ ì™„ë£Œ");
 				}
 				else {
-					canvas->input("ºñ¹Ğ¹øÈ£ Æ²¸²");
+					canvas->input("ë¹„ë°€ë²ˆí˜¸ í‹€ë¦¼");
 				}
 			}
 		}
 	}
 
-	// Á¢¼Ó
+	// ì ‘ì†
 	void cmd_connect(string ip = "")
 	{
 		for (int i = 0; i < comMax; i++) {
-			if ((ip == "" or ip == "target") and computer[i].getIP() == Canvas::targetCom->getIP()) { // IP¸¦ ¾ÈÀû¾úÀ»¶§, targetÀ» ¹Ù·Î Àû¾úÀ»¶§
-				if (!computer[i].getIsNuke()) canvas->input(Canvas::targetCom->getIP() + " : Á¢¼Ó ½ÇÆĞ");
+			if ((ip == "" or ip == "target") and computer[i].getIP() == Canvas::targetCom->getIP()) { // IPë¥¼ ì•ˆì ì—ˆì„ë•Œ, targetì„ ë°”ë¡œ ì ì—ˆì„ë•Œ
+				if (!computer[i].getIsNuke()) canvas->input(Canvas::targetCom->getIP() + " : ì ‘ì† ì‹¤íŒ¨");
 				else {
-					canvas->input(Canvas::targetCom->getIP() + " : Á¢¼Ó ¼º°ø");
+					canvas->input(Canvas::targetCom->getIP() + " : ì ‘ì† ì„±ê³µ");
 					Canvas::connectCom = &computer[i];
 					Canvas::currentFile = nullptr;
 					break;
 				}
 			}
 			else if (computer[i].getIP() == ip) {
-				if (!computer[i].getIsNuke()) canvas->input(ip + " : Á¢¼Ó ½ÇÆĞ");
+				if (!computer[i].getIsNuke()) canvas->input(ip + " : ì ‘ì† ì‹¤íŒ¨");
 				else {
-					canvas->input(ip + " : Á¢¼Ó ¼º°ø");
+					canvas->input(ip + " : ì ‘ì† ì„±ê³µ");
 					Canvas::connectCom = &computer[i];
 					Canvas::currentFile = nullptr;
 					break;
@@ -384,7 +405,7 @@ public:
 		Canvas::currentFile = nullptr;
 	}
 	void cmd_in(string name) {
-		if (Canvas::currentFile == nullptr) { // ÄÄÇ»ÅÍ¿¡¼­ in
+		if (Canvas::currentFile == nullptr) { // ì»´í“¨í„°ì—ì„œ in
 			for (int i = 0; i < Canvas::connectCom->getFileCount(); i++) {
 				File* f = Canvas::connectCom->getFile(i);
 				if (f->getName() == name and f->getSecurity() == "public") {
@@ -394,11 +415,11 @@ public:
 					else if (dynamic_cast<exe*>(f)) Canvas::getFileType(f, "exe");
 				}
 				else if (f->getName() == name and f->getSecurity() == "private") {
-					canvas->input("ÆÄÀÏÀÌ Àá°ÜÀÖÀ½");
+					canvas->input("íŒŒì¼ì´ ì ê²¨ìˆìŒ");
 				}
 			}
 		}
-		else { // Æú´õ¿¡¼­ in
+		else { // í´ë”ì—ì„œ in
 			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) {
 				File* f = Canvas::currentFile->getFile(i);
 				if (f->getName() == name and f->getSecurity() == "public") {
@@ -409,7 +430,7 @@ public:
 					else if (dynamic_cast<exe*>(f)) Canvas::getFileType(f, "exe");
 				}
 				else if (f->getName() == name and f->getSecurity() == "private") {
-					canvas->input("ÆÄÀÏÀÌ Àá°ÜÀÖÀ½");
+					canvas->input("íŒŒì¼ì´ ì ê²¨ìˆìŒ");
 				}
 			}
 		} 
