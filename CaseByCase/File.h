@@ -28,7 +28,9 @@ public:
 
 	virtual void add(File* child) {}
 	virtual void erase(int id) {}
-	virtual void setParent(File* f) { parentFile = f; }
+	virtual void setParent(File* f) { 
+		parentFile = f;
+	}
 	virtual File* getParent() { return parentFile; }
 	virtual int getId() { return id; }
 	virtual string getName() { return name; }
@@ -53,16 +55,9 @@ class txt : public File {
 	string desc;
 public:
 	txt(int i, string s, string n, string d, bool cR) : File(i, "[T]", s, n, cR), desc(d) {}
-	void save(S_txt* s) {
-		s->file.id = getId();
-		s->file.icon = getIcon();
-		s->file.name = getName();
-		s->file.securityType = getSecurity();
-		s->file.pass = getPass();
-		s->file.canRemove = getCanRemove();
-		s->desc = getDesc();
+	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
+
 	}
-	void load() {}
 	string getDesc() {
 		return desc;
 	}
@@ -71,21 +66,25 @@ public:
 class exe : public File {
 public:
 	exe(int i, string s, string n, bool cR) : File(i, "[>]", s, n, cR) {}
-	void save(S_exe* s) {
-		s->file.id = getId();
-		s->file.icon = getIcon();
-		s->file.name = getName();
-		s->file.securityType = getSecurity();
-		s->file.pass = getPass();
-		s->file.canRemove = getCanRemove();
+	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
+
 	}
-	void load() {}
 };
 
 class Folder : public File {
 	vector<File*> childFile;
 public:
-	Folder(char i, string s, string n, bool cR) : File(i, "[_]", s, n, cR) {}
+	Folder(int id, string security, string name, bool cR) : File(id, "[_]", security, name, cR) {}
+	Folder(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
+		if (file.parentID == -1) return;
+		for (int i = 0; i < File::getFileCount(); i++) {
+			if (File::files[i]->getId() == file.parentID) {
+				setParent(File::files[i]);
+				File::files[i]->add(this);
+			}
+		} // 부모 설정
+	}
+
 	~Folder() {
 		for (File* f : childFile) {
 			f->setParent(nullptr);
@@ -98,7 +97,6 @@ public:
 		}
 		return r;
 	}
-	void load() {}
 	void add(File* parent, File* child) {
 		childFile.push_back(child);
 		child->setParent(parent);

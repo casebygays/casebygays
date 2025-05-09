@@ -24,9 +24,6 @@ public:
 	~Computer() {
 	}
 	// 세팅
-	void save() {}
-	void load() {}
-
 	void setPlayer() {
 		IP = "127.0.0.1";
 		is_nuke = true;
@@ -71,6 +68,9 @@ public:
 				if(f->getParent() != nullptr) f->getParent()->erase(id);
 			}
 		}
+	}
+	void childFileClear() {
+		childFile.clear();
 	}
 
 	// 진행

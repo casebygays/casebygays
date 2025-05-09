@@ -5,30 +5,18 @@ using namespace std;
 
 typedef struct {
 	int id;
+	int parentID;
 	string icon;
 	string name;
 	string securityType;
 	string pass;
 	bool canRemove;
+	string desc; // txt
 } S_File;
 
 typedef struct {
-	S_File file;
-	string desc;
-} S_txt;
-
-typedef struct {
-	S_File file;
-} S_exe;
-
-typedef struct {
-	S_File file;
-	vector<int> childID;
-} S_Folder;
-
-typedef struct {
-	int level;
 	string IP;
+	int level;
 	bool ssh, ftp, smtp, http;
 	bool is_nuke;
 	vector<int> childID;

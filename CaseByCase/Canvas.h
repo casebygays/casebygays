@@ -1,4 +1,4 @@
-ï»¿#pragma once
+#pragma once
 #include "File.h"
 #include "Computer.h"
 #include "StructPack.h"
@@ -9,28 +9,25 @@
 #include <windows.h>
 using namespace std;
 
-#define CMDSIZE 31
-#define SCREENWIDTH 80
-#define SCREENHEIGH 15
+#define CMDSIZE 31 // cmd ÃÖ´ë Ãâ·Â ÁÙ ¼ö
+#define SCREENWIDTH 80 // ½ºÅ©¸° °¡·Î±æÀÌ
+#define SCREENHEIGH 15 // ½ºÅ©¸° ¼¼·Î±æÀÌ
 
 class Canvas {
 private:
 	vector<string> cmd;
 	string lastText;
-	int index;
+	int index; // ÇöÀç ÁÙ ¹øÈ£
 public:
 	bool in_proxy;
 	int proxyAnswer;
 	int proxyChance;
-	vector<int> proxyInput;
 
-	int alertLevel = 0; // ë°œê°ë„
-	bool trackingTarget = false; // íƒ€ê²Ÿ ì…ë ¥ ì‹œ ë°œê° ì‹œì‘
+	static int alertLevel; // ¹ß°¢µµ
 
-	static Computer* targetCom;
-	static Computer* connectCom;
-	static File* currentFile;
-
+	static Computer* targetCom; //Å¸°ÙÆÃ ÄÄÇ»ÅÍ
+	static Computer* connectCom; // Á¢¼ÓÇÑ ÄÄÇ»ÅÍ
+	static File* currentFile; // ÇöÀç ÆÄÀÏ
 	static bool getFileType(File* f, string type) {
 		if (dynamic_cast<exe*>(f) and type == "exe") return true;
 		else if (dynamic_cast<txt*>(f) and type == "txt") return true;
@@ -42,30 +39,23 @@ public:
 		index = 0;
 		in_proxy = false;
 		proxyChance = 0;
-		alertLevel = 0;
-		trackingTarget = false;
-		targetCom = nullptr;
-		connectCom = nullptr;
-		currentFile = nullptr;
 	}
-
-	void save() {}
-	void load() {}
-
-	string input() {
+	string input() //cmdÃ¢¿¡ ÀÔ·Â, ÀÔ·ÂµÈ ÅØ½ºÆ®¸¦ ¹İÈ¯ÇÔ
+	{
 		getline(cin, lastText);
 		cmd.push_back(lastText);
-		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin());
+		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd Ãâ·Â Á¦ÇÑÀ¯Áö
 		return lastText;
 	}
-
-	void input(string s) {
+	void input(string s) // °ÔÀÓ ³»¿¡¼­ input È£ÃâÇÒ¶§
+	{
 		cmd.push_back(s);
-		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin());
+		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd Ãâ·Â Á¦ÇÑÀ¯Áö
 	}
-
-	void cmdClear() { cmd.clear(); }
-
+	void cmdClear() 
+	{
+		cmd.clear();
+	}
 	void draw() {
 		if (in_proxy) drawProxyGame();
 		else if (currentFile != nullptr and getFileType(currentFile, "Folder")) drawFolder(dynamic_cast<Folder*>(currentFile));
@@ -74,134 +64,137 @@ public:
 		else if (connectCom != nullptr) drawComputer(connectCom);
 		else drawMain();
 	}
-
-	void drawMain() {
+	void drawMain() //  ¸ŞÀÎÈ­¸é(µğ¹ö±×È­¸é)
+	{
 		system("cls");
-		print("> ì ‘ì† IP : ???.?.?.?");
+		print("> Á¢¼Ó IP : ???.?.?.?");
 		print("[????]");
 		print("================================================================================");
-		print("ì´ í™”ë©´ì€ ì˜ë„ì ìœ¼ë¡œ ë„ìš´ê±°ì•„ë‹ˆë©´ ë­”ê°€ ì˜ëª»ëœê±°ë‹¤.");
-		for (int i = 0; i < SCREENHEIGH - 1; i++) print("");
+		print("ÀÌ È­¸éÀº ÀÇµµÀûÀ¸·Î ¶ç¿î°Å¾Æ´Ï¸é ¹º°¡ Àß¸øµÈ°Å´Ù.");
+		for (int i = 0; i < SCREENHEIGH - 1; i++) 
+			print("");
 		print("================================================================================");
-		for (int i = index; i < CMDSIZE; i++) print("");
+		for (int i = index; i < CMDSIZE; i++) 
+			print("");
 		index = 0;
 	}
-
-	void drawComputer(Computer* com) {
+	void drawComputer(Computer* com)
+	{
 		system("cls");
-		print("> ì ‘ì† IP : " + connectCom->getIP());
+		print("> Á¢¼Ó IP : " + connectCom->getIP());
+		print("¹ß°¢µµ : " + to_string(alertLevel) , "Red");
 
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		string alertText;
-
-		if (alertLevel >= 100)
-			alertText = "ë°œê°!";
-		else
-			alertText = "ë°œê°ë„ : " + to_string(alertLevel);
-
-		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
-		cout << alertText;
-		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-
-		int space = SCREENWIDTH - alertText.size();
-		for (int i = 0; i < space; i++) cout << " ";
-		if (index < cmd.size())
-			cout << " |" << setw(2) << setfill('0') << index << " " << cmd[index].substr(0, 100);
-		else
-			cout << " |" << setw(2) << setfill('0') << index;
-		cout << "\n";
-		index++;
-
-		print("/ë°”íƒ•í™”ë©´");
+		print("/¹ÙÅÁÈ­¸é");
 		print("================================================================================");
-		for (int i = 0; i < com->getFileCount(); i++)
+		for (int i = 0; i < com->getFileCount(); i++) 
 			print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
-		for (int i = 0; i < SCREENHEIGH - com->getFileCount() - 1; i++) print("");
+		for (int i = 0; i < SCREENHEIGH - com->getFileCount() - 1; i++) 
+			print("");
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
 	}
-
-
-	void drawFolder(Folder* folder) {
+	void drawFolder(Folder* folder)
+	{
 		system("cls");
-		print("> ì ‘ì† IP : " + connectCom->getIP());
-		print("/ë°”íƒ•í™”ë©´" + File::getRoot(currentFile));
+		print("> Á¢¼Ó IP : " + connectCom->getIP());
+		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
 		print("================================================================================");
-		if (folder->getFileCount() == 0) print("ë¹„ì–´ìˆìŒ");
-		for (int i = 0; i < folder->getFileCount(); i++)
-			print(folder->getFile(i)->getIcon() + " " + folder->getFile(i)->getName());
-		for (int i = 0; i < SCREENHEIGH - folder->getFileCount() - 1; i++) print("");
+		if (folder->getFileCount() == 0) print("ºñ¾îÀÖÀ½");
+		for (int i = 0; i < folder->getFileCount(); i++) {
+			print(folder->getFile(i)->getIcon()+ " " + folder->getFile(i)->getName());
+		}
+		for (int i = 0; i < SCREENHEIGH - folder->getFileCount() - 1; i++)
+			print("");
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
 	}
-
-	void drawtxt(txt* text) {
+	void drawtxt(txt* text)
+	{
 		system("cls");
-		print("> ì ‘ì† IP : " + connectCom->getIP());
-		print("/ë°”íƒ•í™”ë©´" + File::getRoot(currentFile));
+		print("> Á¢¼Ó IP : " + connectCom->getIP());
+		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
 		print("================================================================================");
 		string s = text->getDesc();
 		istringstream iss(s);
 		string line;
 		int count = 0;
+
 		while (getline(iss, line)) {
 			for (size_t i = 0; i < line.length(); i += SCREENWIDTH) {
 				print(line.substr(i, SCREENWIDTH));
 				count++;
 			}
 		}
-		for (int i = 0; i < SCREENHEIGH - count; i++) print("");
+
+		for (int i = 0; i < SCREENHEIGH - count; i++) {
+			print("");
+		}
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
 	}
-
-	void drawexe(exe* exe) {
+	void drawexe(exe* exe)
+	{
 		system("cls");
-		print("> ì ‘ì† IP : " + connectCom->getIP());
-		print("/ë°”íƒ•í™”ë©´" + File::getRoot(currentFile));
+		print("> Á¢¼Ó IP : " + connectCom->getIP());
+		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
 		print("================================================================================");
 		printInput();
 		index = 0;
 	}
-
 	void drawProxyGame() {
 		system("cls");
-		print("> ì ‘ì† IP : " + connectCom->getIP());
-		print("[í”„ë¡ì‹œ í•´í‚¹ - ìˆ«ì ë§ì¶”ê¸°]");
+		print("> Á¢¼Ó IP : " + connectCom->getIP());
+		print("[ÇÁ·Ï½Ã ÇØÅ· - ½ºµµÄí]");
 		print("================================================================================");
-		print("   +-----------------------------+");
-		print("   |     PROXY SECURITY TEST     |");
-		print("   +-----------------------------+");
-		print("   | 1~5 ìˆ«ì ì¤‘ ì •ë‹µì„ ë§ì¶”ì„¸ìš” |");
-		print("   |     ê¸°íšŒëŠ” ì´ 2ë²ˆì…ë‹ˆë‹¤.    |");
-		print("   +-----------------------------+");
+		print("                       +-----------------------------+");
+		print("                       |     PROXY SECURITY TEST     |");
+		print("                       +-----------------------------+");
+		print("                       | 1~5 ¼ıÀÚ Áß Á¤´äÀ» ¸ÂÃß¼¼¿ä |");
+		print("                       |     ±âÈ¸´Â ÃÑ 2¹øÀÔ´Ï´Ù.    |");
+		print("                       +-----------------------------+");
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
 	}
-
 	void print(string s) {
 		cout << s;
 		if (index < CMDSIZE) printCMD(SCREENWIDTH - s.size(), index);
 		index++;
 		cout << "\n";
 	}
+	void print(string text, string col) {
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+		WORD saved_attributes;
+		GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+		saved_attributes = consoleInfo.wAttributes;
 
+		if (col == "Red") SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		else if (col == "Green") SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		else if (col == "Blue") SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+
+		cout << text; 
+
+		SetConsoleTextAttribute(hConsole, saved_attributes);
+
+		if (index < CMDSIZE) printCMD(SCREENWIDTH - text.size(), index);
+		index++;
+		cout << "\n";
+	}
 	void printCMD(int space, int index) {
 		for (int i = 0; i < space; i++) cout << " ";
 		if (index < cmd.size())
-			cout << " |" << setw(2) << setfill('0') << index << " " << cmd[index].substr(0, 100);
+			cout << " |" << setw(2) << setfill('0') << index << " " << cmd[index].substr(0,100);
 		else
 			cout << " |" << setw(2) << setfill('0') << index;
 	}
-
 	void printInput() {
 		for (int i = 0; i < SCREENWIDTH; i++) cout << " ";
 		cout << " | > ";
