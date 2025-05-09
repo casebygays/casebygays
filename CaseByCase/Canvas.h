@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "File.h"
 #include "Computer.h"
 #include "StructPack.h"
@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <windows.h>
 using namespace std;
 
 #define CMDSIZE 31
@@ -23,6 +24,9 @@ public:
 	int proxyChance;
 	vector<int> proxyInput;
 
+	int alertLevel = 0; // ë°œê°ë„
+	bool trackingTarget = false; // íƒ€ê²Ÿ ì…ë ¥ ì‹œ ë°œê° ì‹œì‘
+
 	static Computer* targetCom;
 	static Computer* connectCom;
 	static File* currentFile;
@@ -38,6 +42,8 @@ public:
 		index = 0;
 		in_proxy = false;
 		proxyChance = 0;
+		alertLevel = 0;
+		trackingTarget = false;
 		targetCom = nullptr;
 		connectCom = nullptr;
 		currentFile = nullptr;
@@ -58,9 +64,7 @@ public:
 		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin());
 	}
 
-	void cmdClear() {
-		cmd.clear();
-	}
+	void cmdClear() { cmd.clear(); }
 
 	void draw() {
 		if (in_proxy) drawProxyGame();
@@ -73,10 +77,10 @@ public:
 
 	void drawMain() {
 		system("cls");
-		print("> Á¢¼Ó IP : ???.?.?.?");
+		print("> ì ‘ì† IP : ???.?.?.?");
 		print("[????]");
 		print("================================================================================");
-		print("ÀÌ È­¸éÀº ÀÇµµÀûÀ¸·Î ¶ç¿î°Å¾Æ´Ï¸é ¹º°¡ Àß¸øµÈ°Å´Ù.");
+		print("ì´ í™”ë©´ì€ ì˜ë„ì ìœ¼ë¡œ ë„ìš´ê±°ì•„ë‹ˆë©´ ë­”ê°€ ì˜ëª»ëœê±°ë‹¤.");
 		for (int i = 0; i < SCREENHEIGH - 1; i++) print("");
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
@@ -85,8 +89,30 @@ public:
 
 	void drawComputer(Computer* com) {
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		print("/¹ÙÅÁÈ­¸é");
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		string alertText;
+
+		if (alertLevel >= 100)
+			alertText = "ë°œê°!";
+		else
+			alertText = "ë°œê°ë„ : " + to_string(alertLevel);
+
+		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		cout << alertText;
+		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+		int space = SCREENWIDTH - alertText.size();
+		for (int i = 0; i < space; i++) cout << " ";
+		if (index < cmd.size())
+			cout << " |" << setw(2) << setfill('0') << index << " " << cmd[index].substr(0, 100);
+		else
+			cout << " |" << setw(2) << setfill('0') << index;
+		cout << "\n";
+		index++;
+
+		print("/ë°”íƒ•í™”ë©´");
 		print("================================================================================");
 		for (int i = 0; i < com->getFileCount(); i++)
 			print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
@@ -97,15 +123,15 @@ public:
 		index = 0;
 	}
 
+
 	void drawFolder(Folder* folder) {
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+		print("/ë°”íƒ•í™”ë©´" + File::getRoot(currentFile));
 		print("================================================================================");
-		if (folder->getFileCount() == 0) print("ºñ¾îÀÖÀ½");
-		for (int i = 0; i < folder->getFileCount(); i++) {
+		if (folder->getFileCount() == 0) print("ë¹„ì–´ìˆìŒ");
+		for (int i = 0; i < folder->getFileCount(); i++)
 			print(folder->getFile(i)->getIcon() + " " + folder->getFile(i)->getName());
-		}
 		for (int i = 0; i < SCREENHEIGH - folder->getFileCount() - 1; i++) print("");
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
@@ -115,14 +141,13 @@ public:
 
 	void drawtxt(txt* text) {
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+		print("/ë°”íƒ•í™”ë©´" + File::getRoot(currentFile));
 		print("================================================================================");
 		string s = text->getDesc();
 		istringstream iss(s);
 		string line;
 		int count = 0;
-
 		while (getline(iss, line)) {
 			for (size_t i = 0; i < line.length(); i += SCREENWIDTH) {
 				print(line.substr(i, SCREENWIDTH));
@@ -138,8 +163,8 @@ public:
 
 	void drawexe(exe* exe) {
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+		print("/ë°”íƒ•í™”ë©´" + File::getRoot(currentFile));
 		print("================================================================================");
 		printInput();
 		index = 0;
@@ -147,14 +172,14 @@ public:
 
 	void drawProxyGame() {
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		print("[ÇÁ·Ï½Ã ÇØÅ· - ¼ıÀÚ ¸ÂÃß±â]");
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+		print("[í”„ë¡ì‹œ í•´í‚¹ - ìˆ«ì ë§ì¶”ê¸°]");
 		print("================================================================================");
 		print("   +-----------------------------+");
 		print("   |     PROXY SECURITY TEST     |");
 		print("   +-----------------------------+");
-		print("   | 1~5 ¼ıÀÚ Áß Á¤´äÀ» ¸ÂÃß¼¼¿ä |");
-		print("   |     ±âÈ¸´Â ÃÑ 2¹øÀÔ´Ï´Ù.    |");
+		print("   | 1~5 ìˆ«ì ì¤‘ ì •ë‹µì„ ë§ì¶”ì„¸ìš” |");
+		print("   |     ê¸°íšŒëŠ” ì´ 2ë²ˆì…ë‹ˆë‹¤.    |");
 		print("   +-----------------------------+");
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");

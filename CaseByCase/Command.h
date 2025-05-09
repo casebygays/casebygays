@@ -23,6 +23,7 @@ public:
 	}
 	void save() {}
 	void load() {}
+
 	void checkCommand(const string& s)
 	{
 		istringstream iss(s);
@@ -43,9 +44,12 @@ public:
 				return;
 			}
 
+			
 			canvas->proxyChance--;
+			
 
 			if (canvas->proxyChance == 0) {
+				canvas->alertLevel += 5;
 				canvas->in_proxy = false;
 				canvas->input("프록시 해킹 실패 / 정답 : " + to_string(canvas->proxyAnswer));
 				canvas->proxyInput.clear();
@@ -55,7 +59,7 @@ public:
 			}
 			return;
 		}
-		
+
 		else if (tokens[0] == "/shutdown") cmd_shutdown();
 		else if (tokens[0] == "/save") cmd_savegame();
 		else if (tokens[0] == "/load") cmd_loadgame();
@@ -70,20 +74,37 @@ public:
 		else if (tokens[0] == "/portscan") cmd_portscan();
 		else if (tokens[0] == "/target" and tokens.size() > 1) cmd_target(tokens[1]);
 		else if (tokens[0] == "/crack" and tokens.size() > 1) cmd_crack(tokens[1]);
-		else if (tokens[0] == "/nuke" and tokens.size() > 1) cmd_nuke(tokens[1]); // IP 적었을때
-		else if (tokens[0] == "/nuke") cmd_nuke(); // IP 안적었을때
+		else if (tokens[0] == "/nuke" and tokens.size() > 1) cmd_nuke(tokens[1]);
+		else if (tokens[0] == "/nuke") cmd_nuke();
 		else if (tokens[0] == "/unlock" and tokens.size() > 2) cmd_unlock(tokens[1], tokens[2]);
 
-		else if (tokens[0] == "/connect" and tokens.size() > 1) cmd_connect(tokens[1]); // IP 적었을때
-		else if (tokens[0] == "/connect") cmd_connect(); // IP 안적었을때
+		else if (tokens[0] == "/connect" and tokens.size() > 1) cmd_connect(tokens[1]);
+		else if (tokens[0] == "/connect") cmd_connect();
 		else if (tokens[0] == "/disconnect") cmd_disconnect();
 		else if (tokens[0] == "/in" and tokens.size() > 1) cmd_in(tokens[1]);
 		else if (tokens[0] == "/out") cmd_out();
+
+		if (canvas->trackingTarget) {
+			canvas->alertLevel += 5;
+
+			if (canvas->alertLevel >= 100) {
+				canvas->input("발각됨! 추적이 초기화됩니다.");
+				canvas->input("다시 시작하려면 [Enter]를 누르시오...");
+				canvas->draw(); // 현재 상태 그대로 보여주기
+				cin.get();    // Enter 대기
+
+				canvas->alertLevel = 0;
+				canvas->trackingTarget = false;	
+				Canvas::targetCom = nullptr;
+			}
+		}
+
 	}
+
 	File* getCurrentFile() { return Canvas::currentFile; }
 	bool getShutdown() { return shutdown; }
-	
-	
+
+
 	void cmd_shutdown() { shutdown = true; }
 	void cmd_savegame() {
 		ofstream file("Save.txt");
@@ -220,7 +241,7 @@ public:
 		}
 	}
 	void cmd_remove(string name) {
-		if (Canvas::currentFile != nullptr) { 
+		if (Canvas::currentFile != nullptr) {
 			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) { // 현재폴더 내에 모든 파일 검사
 				if (Canvas::currentFile->getFile(i)->getName() == name) { // 현재폴더의 파일중 입력받은 이름과 같은 파일이 있으면,
 					if (Canvas::currentFile->getFile(i)->getCanRemove()) {
@@ -284,7 +305,7 @@ public:
 			else s += "proxy : X|";
 			if (Canvas::targetCom->getPort("firewall")) s += "firewall : O|";
 			else s += "firewall : X|";
-			
+
 			canvas->input(s);
 		}
 		else {
@@ -296,10 +317,13 @@ public:
 			if (computer[i].getIP() == ip) {
 				canvas->input(ip + " : 목표로 지정함");
 				Canvas::targetCom = &computer[i];
+				canvas->trackingTarget = true;      // 🔴 발각도 추적 시작
+				canvas->alertLevel = 0;             // 🔴 초기화
 				break;
 			}
 		}
 	}
+
 	void cmd_crack(string target) {
 		if (Canvas::targetCom == nullptr) {
 			canvas->input("해킹 대상이 없습니다.");
@@ -323,7 +347,7 @@ public:
 		else {
 			canvas->input(target + " : 포트가 열려있거나, 대상을 찾지 못함");
 		}
-	
+
 	}
 	void cmd_nuke(string ip = "") {
 		if (ip == "" and Canvas::targetCom != nullptr) {
@@ -433,8 +457,8 @@ public:
 					canvas->input("파일이 잠겨있음");
 				}
 			}
-		} 
-		
+		}
+
 	}
 	void cmd_out() {
 		if (Canvas::currentFile != nullptr and Canvas::currentFile->getParent() != nullptr) {
