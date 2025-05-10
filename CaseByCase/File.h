@@ -19,20 +19,24 @@ public:
 	static int fileId;
 
 	File(int id, string icon, string s, string n, bool cR) : id(id), icon(icon), securityType(s), name(n), pass(""), canRemove(cR) {}
-	virtual void add(File* child) {}
-	virtual void erase(int id) {}
-	virtual void setParent(File* f) { parentFile = f; }
 	void setSecurity(string security) { securityType = security; }
 	void setPass(string p) { pass = p; }
+	string getSecurity() { return securityType; }
+	string getPass() { return pass; }
+	string getIcon() { return icon; }
+	bool getCanRemove() { return canRemove; }
+
+	virtual void add(File* child) {}
+	virtual void erase(int id) {}
+	virtual void setParent(File* f) { 
+		parentFile = f;
+	}
 	virtual File* getParent() { return parentFile; }
 	virtual int getId() { return id; }
 	virtual string getName() { return name; }
 	virtual int getFileCount() { return NULL; }
 	virtual File* getFile(int num) { return nullptr; }
-	string getSecurity() { return securityType; }
-	string getPass() { return pass; }
-	string getIcon() { return icon; }
-	bool getCanRemove() { return canRemove; }
+
 	static string getRoot(File* file) {
 		int stop = 30;
 		string s = "/" + file->getName();
@@ -51,8 +55,9 @@ class txt : public File {
 	string desc;
 public:
 	txt(int i, string s, string n, string d, bool cR) : File(i, "[T]", s, n, cR), desc(d) {}
-	txtS save();
-	void load() {}
+	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
+
+	}
 	string getDesc() {
 		return desc;
 	}
@@ -61,21 +66,37 @@ public:
 class exe : public File {
 public:
 	exe(int i, string s, string n, bool cR) : File(i, "[>]", s, n, cR) {}
-	exeS save();
-	void load();
+	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
+
+	}
 };
 
 class Folder : public File {
 	vector<File*> childFile;
 public:
-	Folder(char i, string s, string n, bool cR) : File(i, "[_]", s, n, cR) {}
+	Folder(int id, string security, string name, bool cR) : File(id, "[_]", security, name, cR) {}
+	Folder(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
+		if (file.parentID == -1) return;
+		for (int i = 0; i < File::getFileCount(); i++) {
+			if (File::files[i]->getId() == file.parentID) {
+				setParent(File::files[i]);
+				File::files[i]->add(this);
+			}
+		} // 부모 설정
+	}
+
 	~Folder() {
 		for (File* f : childFile) {
 			f->setParent(nullptr);
 		}
 	}
-	FolderS save();
-	FolderS load();
+	int* getChildId() {
+		int* r = new int[childFile.size()];
+		for (int i = 0; i < childFile.size(); i++) {
+			r[i] = childFile[i]->getId();
+		}
+		return r;
+	}
 	void add(File* parent, File* child) {
 		childFile.push_back(child);
 		child->setParent(parent);

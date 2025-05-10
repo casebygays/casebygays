@@ -3,7 +3,9 @@
 #include "Computer.h"
 #include "File.h"
 #include "Command.h"
+#include "StructPack.h"
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
@@ -23,15 +25,41 @@ Command command(&canvas, com, COMMAX);
 vector<File*> File::files;
 int File::fileId = 0;
 
+int Canvas::alertLevel = 0;
+Computer* Canvas::targetCom = nullptr; //타겟팅 컴퓨터
+Computer* Canvas::connectCom = nullptr; // 접속한 컴퓨터
+File* Canvas::currentFile = nullptr; // 현재 파일
+
 int main() {
+	ifstream file("Description.txt");
+	string line;
+	while (getline(file, line)) {
+		size_t sep = line.find('=');
+		if (sep == string::npos) continue;
+
+		string key = line.substr(0, sep);
+		string value = line.substr(sep + 1);
+
+		//if (key == "name") name = value;
+		//else if (key == "level") level = stoi(value);
+		//else if (key == "health") health = stod(value);
+	}
+
+	file.close();
+
 	canvas.input("전체화면으로 진행해주세요.");
 	canvas.input("/help 입력시 명령어 리스트를 호출합니다.");
 
 	com[0].setPlayer();
 	// 플레이어 컴퓨터 파일
 	addFol(0, nullptr, "public", "도움말", false);
+<<<<<<< HEAD
 	addFol(0, nullptr, "public", "dlfrl", false);
 	addtxt(0, com[0].getFile(1), "public", "dlfrl1", "해킹의 기본은 무엇일까\n오늘 해킹을 하기 위해서는 scan을 하면 내가 해킹할수있는 iq를 찾을수있다\ntarget 특정 iq를 지정할수있음\ncarck 지정iq의 포트를 열수있음\nnuke 포트를 전부 열면 iq를 해킹할수있음\nconnet 접속\ndisconnet 내 iq로 재접속", false);
+=======
+	addFol(0, nullptr, "public", "일기", false);
+	addtxt(0, com[0].getFile(1), "public", "일기_0", "가나다라마바사가나다라마바사 가나다라마바사가나다라마 바사가나다라마바사가나다라마바\n사가나다라마바사가나다라마바사가나다라마 바사가나다라마바사가나다라마바사가나다라\n마바사가나다라마바사가나다라마바사가나다라마바사가나다라마바사가나다라마바사", false);
+>>>>>>> fdf4ca19b7453d85f1bb9586d102420ef8e15a16
 	addtxt(0, com[0].getFile(1), "public", "일기_1", "일기내용 1", false);
 	addtxt(0, com[0].getFile(1), "public", "일기_2", "일기내용 2", false);
 	addexe(0, nullptr, "private", "help", true); setPass("1234");
