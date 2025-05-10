@@ -52,7 +52,7 @@ public:
 
 		else if (tokens[0] == "/scan") cmd_scan();
 		else if (tokens[0] == "/portscan") cmd_portscan();
-		else if (tokens[0] == "/target" and tokens.size() > 1) cmd_target(tokens[1]);
+		else if (tokens[0] == "/target" and tokens.size() > 1) cmd_target(tokens[1]); //        /target 123.123.4
 		else if (tokens[0] == "/crack" and tokens.size() > 1) cmd_crack(tokens[1]);
 		else if (tokens[0] == "/nuke" and tokens.size() > 1) cmd_nuke(tokens[1]); // IP 적었을때
 		else if (tokens[0] == "/nuke") cmd_nuke(); // IP 안적었을때
@@ -115,6 +115,7 @@ public:
 		canvas->input("/connect [IP]			해당 컴퓨터 접속");
 		canvas->input("/disconnect			접속 종료");
 		canvas->input("removelog				로그 삭제");
+		canvas->input("target				대상 컴퓨터 지정");
 	}
 	void cmd_clear() { canvas->cmdClear(); }
 	void cmd_addtxt(string name, string desc) {
