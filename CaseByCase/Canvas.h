@@ -6,7 +6,6 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
-#include <windows.h>
 using namespace std;
 
 #define CMDSIZE 31 // cmd 최대 출력 줄 수
@@ -22,8 +21,7 @@ public:
 	bool in_proxy;
 	int proxyAnswer;
 	int proxyChance;
-
-	static int alertLevel; // 발각도
+	vector<int> proxyInput;
 
 	static Computer* targetCom; //타겟팅 컴퓨터
 	static Computer* connectCom; // 접속한 컴퓨터
@@ -39,7 +37,13 @@ public:
 		index = 0;
 		in_proxy = false;
 		proxyChance = 0;
+
+		targetCom = nullptr;
+		connectCom = nullptr;
+		currentFile = nullptr;
 	}
+	void save() {}
+	void load() {}
 	string input() //cmd창에 입력, 입력된 텍스트를 반환함
 	{
 		getline(cin, lastText);
@@ -47,7 +51,7 @@ public:
 		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd 출력 제한유지
 		return lastText;
 	}
-	void input(string s) // 게임 내에서 input 호출할때
+	void input(string s) //cmd창에 입력, 입력된 텍스트를 반환함
 	{
 		cmd.push_back(s);
 		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd 출력 제한유지
@@ -82,8 +86,6 @@ public:
 	{
 		system("cls");
 		print("> 접속 IP : " + connectCom->getIP());
-		print("발각도 : " + to_string(alertLevel) , "Red");
-
 		print("/바탕화면");
 		print("================================================================================");
 		for (int i = 0; i < com->getFileCount(); i++) 
@@ -155,8 +157,8 @@ public:
 		print("                       +-----------------------------+");
 		print("                       |     PROXY SECURITY TEST     |");
 		print("                       +-----------------------------+");
-		print("                       | 1~5 숫자 중 정답을 맞추세요 |");
-		print("                       |     기회는 총 2번입니다.    |");
+		print("                       | 0~9 숫자 중 정답을 맞추세요 |");
+		print("                       |     기회는 총 3번입니다.    |");
 		print("                       +-----------------------------+");
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
@@ -166,25 +168,6 @@ public:
 	void print(string s) {
 		cout << s;
 		if (index < CMDSIZE) printCMD(SCREENWIDTH - s.size(), index);
-		index++;
-		cout << "\n";
-	}
-	void print(string text, string col) {
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-		WORD saved_attributes;
-		GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
-		saved_attributes = consoleInfo.wAttributes;
-
-		if (col == "Red") SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
-		else if (col == "Green") SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-		else if (col == "Blue") SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-
-		cout << text; 
-
-		SetConsoleTextAttribute(hConsole, saved_attributes);
-
-		if (index < CMDSIZE) printCMD(SCREENWIDTH - text.size(), index);
 		index++;
 		cout << "\n";
 	}
@@ -199,7 +182,6 @@ public:
 		for (int i = 0; i < SCREENWIDTH; i++) cout << " ";
 		cout << " | > ";
 	}
-
 	int getCMDSize() { return cmd.size(); }
 	string getCMDText(int num) { return cmd[num]; }
 	string getLastText() { return lastText; }

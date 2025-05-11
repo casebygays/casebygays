@@ -64,6 +64,7 @@ public:
 };
 
 class exe : public File {
+	string code;
 public:
 	exe(int i, string s, string n, bool cR) : File(i, "[>]", s, n, cR) {}
 	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
