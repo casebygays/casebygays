@@ -14,7 +14,7 @@ using namespace std;
 #define COMMAX 80
 void setPass(string p);
 void addtxt(int cNum, File* parent, string security, string name, string desc, bool cR = true);
-void addexe(int cNum, File* parent, string security, string name, bool cR = true);
+void addexe(int cNum, File* parent, string security, string name, string code, bool cR = true);
 void addFol(int cNum, File* parent, string security, string name, bool cR = true);
 void remove(int cNum, int id);
 
@@ -53,10 +53,11 @@ int main() {
 
 	// 플레이어 컴퓨터 파일
 	addFol(0, nullptr, "public", "Diary", false);
-	addtxt(0, com[0].getFile(1), "public", "2018.04.03", "해킹의 기본.\n\n /scan : 무작위 컴퓨터의 IP를 스캔한다.\n /target [IP] : 해킹하고싶은 컴퓨터의 IP를 지정한다.\n /crack : 지정된 컴퓨터의 포트를 해킹한다.\n포트 종류 : ssh, ftp, smtp, http, proxy, firewall\n\n /nuke : 포트를 전부 열면 해킹가능\n /connet : 해킹을 완료한 컴퓨터에 접속, IP 안적으면 지정된 컴퓨터에 연결 시도\n /disconnet : 컴퓨터 접속 해제", false);
+	addtxt(0, com[0].getFile(0), "public", "2018.04.03", "해킹의 기본.\n\n /scan : 무작위 컴퓨터의 IP를 스캔한다.\n /target [IP] : 해킹하고싶은 컴퓨터의 IP를 지정한다.\n /crack : 지정된 컴퓨터의 포트를 해킹한다.\n포트 종류 : ssh, ftp, smtp, http, proxy, firewall\n\n /nuke : 포트를 전부 열면 해킹가능\n /connet : 해킹을 완료한 컴퓨터에 접속, IP 안적으면 지정된 컴퓨터에 연결 시도\n /disconnet : 컴퓨터 접속 해제", false);
 	addFol(0, nullptr, "public", "Memo", false);
-	addtxt(0, com[0].getFile(2), "public", "메모1", "메모 내용", false);
+	addtxt(0, com[0].getFile(1), "public", "메모1", "메모 내용", false);
 	addtxt(0, nullptr, "private", "/help", "살려줘...", true); setPass("엔딩보면 알려줌");
+	addexe(0, nullptr, "public", "saveload", "/scan | /debugconnect 1", true);
 
 	// 그외 컴퓨터 파일
 	addFol(1, nullptr, "public", "News_Collection", true); // 다른사람 컴퓨터 안에 왜 주인공 시점의 메모가있음?
@@ -74,9 +75,9 @@ int main() {
 	addtxt(1, com[1].getFile(0), "public", "딹뛀꼘뿔5", "5", true);
 
 
-	addFol(3, nullptr, "public", "형의 usb", true); setPass("나의 생일");
-	addtxt(3, com[3].getFile(0), "private", "형의 usb1", "USB 복호화 시도 -> Project Aegis Red Line 통신 프로토콜 3단계 백도어 설계 등 불길한 용어가 적혀있다.", true); setPass("나의 생일");
-	addtxt(3, com[3].getFile(0), "private", "형의 usb2", "형은 A사의 통신 보안 시스템 연구자였으며, 신형 통신 시스템에 의도된 보안 취약점이 존재한다고 말한 녹취파일이 존재한다고 쓰여있다.", false); setPass("나의 생일");
+	addFol(3, nullptr, "public", "형의_usb", true); setPass("나의 생일");
+	addtxt(3, com[3].getFile(0), "private", "형의_usb1", "USB 복호화 시도 -> Project Aegis Red Line 통신 프로토콜 3단계 백도어 설계 등 불길한 용어가 적혀있다.", true); setPass("나의 생일");
+	addtxt(3, com[3].getFile(0), "private", "형의_usb2", "형은 A사의 통신 보안 시스템 연구자였으며, 신형 통신 시스템에 의도된 보안 취약점이 존재한다고 말한 녹취파일이 존재한다고 쓰여있다.", false); setPass("나의 생일");
 
 
 	
@@ -103,8 +104,8 @@ void addtxt(int cNum, File* parent, string security, string name, string desc, b
 	File::files.push_back(f);
 	File::fileId++;
 }
-void addexe(int cNum, File* parent, string security, string name, bool cR) {
-	File* f = new exe(File::fileId, security, name, cR);
+void addexe(int cNum, File* parent, string security, string name, string code, bool cR) {
+	File* f = new exe(File::fileId, security, name, code, cR);
 	if (parent) { com[cNum].add(parent, f); }
 	else { com[cNum].add(f); }
 	File::files.push_back(f);

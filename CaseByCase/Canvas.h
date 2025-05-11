@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <windows.h>
 using namespace std;
 
 #define CMDSIZE 31 // cmd 최대 출력 줄 수
@@ -168,6 +169,25 @@ public:
 	void print(string s) {
 		cout << s;
 		if (index < CMDSIZE) printCMD(SCREENWIDTH - s.size(), index);
+		index++;
+		cout << "\n";
+	}
+	void print(string text, string col) {
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+		WORD saved_attributes;
+		GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+		saved_attributes = consoleInfo.wAttributes;
+
+		if (col == "Red") SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		else if (col == "Green") SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		else if (col == "Blue") SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+
+		cout << text;
+
+		SetConsoleTextAttribute(hConsole, saved_attributes);
+
+		if (index < CMDSIZE) printCMD(SCREENWIDTH - text.size(), index);
 		index++;
 		cout << "\n";
 	}

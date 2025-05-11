@@ -50,7 +50,7 @@ public:
 		else if (tokens[0] == "/help") cmd_help();
 		else if (tokens[0] == "/clear") cmd_clear();
 		else if (tokens[0] == "/addtxt" and tokens.size() > 2) cmd_addtxt(tokens[1], tokens[2]);
-		else if (tokens[0] == "/addexe") cmd_addexe(tokens[1]);
+		else if (tokens[0] == "/addexe" and tokens.size() > 3) cmd_addexe(tokens[1], tokens[2]);
 		else if (tokens[0] == "/addfolder") cmd_addfolder(tokens[1]);
 		else if (tokens[0] == "/remove") cmd_remove(tokens[1]);
 
@@ -230,9 +230,9 @@ public:
 			canvas->input("파일을 생성할 수 없는 경로임");
 		}
 	}
-	void cmd_addexe(string name) {
+	void cmd_addexe(string name, string code) {
 		if (Canvas::currentFile == nullptr or dynamic_cast<Folder*>(Canvas::currentFile)) {
-			File* f = new exe(File::fileId, "public", name, true);
+			File* f = new exe(File::fileId, "public", name, code, true);
 			if (Canvas::currentFile != nullptr) { Canvas::connectCom->add(Canvas::currentFile, f); }
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
@@ -440,13 +440,23 @@ public:
 	}
 	void cmd_in(string name) {
 		if (Canvas::currentFile == nullptr) { // 컴퓨터에서 in
-			for (int i = 0; i < Canvas::connectCom->getFileCount(); i++) {
+			for (int i = 0; i < Canvas::connectCom->getFileCount(); i++) {  //파일 찾기
 				File* f = Canvas::connectCom->getFile(i);
 				if (f->getName() == name and f->getSecurity() == "public") {
-					Canvas::currentFile = f;
-					if (dynamic_cast<Folder*>(f)) Canvas::getFileType(f, "Folder");
-					else if (dynamic_cast<txt*>(f)) Canvas::getFileType(f, "txt");
-					else if (dynamic_cast<exe*>(f)) Canvas::getFileType(f, "exe");
+					if (dynamic_cast<Folder*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "Folder");
+					}
+					else if (dynamic_cast<txt*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "txt");
+					}
+					else if (dynamic_cast<exe*>(f)) {
+						exe* e = dynamic_cast<exe*>(f);
+						vector<string> code = e->runCode();
+						for (int i = 0; i < code.size(); i++)
+							checkCommand(code[i]);
+					}
 				}
 				else if (f->getName() == name and f->getSecurity() == "private") {
 					canvas->input("파일이 잠겨있음");
@@ -457,11 +467,20 @@ public:
 			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) {
 				File* f = Canvas::currentFile->getFile(i);
 				if (f->getName() == name and f->getSecurity() == "public") {
-					canvas->input(name + " " + f->getName());
-					Canvas::currentFile = f;
-					if (dynamic_cast<Folder*>(f)) Canvas::getFileType(f, "Folder");
-					else if (dynamic_cast<txt*>(f)) Canvas::getFileType(f, "txt");
-					else if (dynamic_cast<exe*>(f)) Canvas::getFileType(f, "exe");
+					if (dynamic_cast<Folder*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "Folder");
+					}
+					else if (dynamic_cast<txt*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "txt");
+					}
+					else if (dynamic_cast<exe*>(f)) {
+						exe* e = dynamic_cast<exe*>(f);
+						vector<string> code = e->runCode();
+						for (int i = 0; i < code.size(); i++)
+							checkCommand(code[i]);
+					}
 				}
 				else if (f->getName() == name and f->getSecurity() == "private") {
 					canvas->input("파일이 잠겨있음");
