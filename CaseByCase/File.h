@@ -1,6 +1,7 @@
 #pragma once
 #include "StructPack.h"
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <string>
 using namespace std;
@@ -13,17 +14,19 @@ class File {
 	string securityType;
 	string pass;
 
+	bool visible;
 	bool canRemove;
 public:
 	static vector<File*> files;
 	static int fileId;
 
-	File(int id, string icon, string s, string n, bool cR) : id(id), icon(icon), securityType(s), name(n), pass(""), canRemove(cR) {}
+	File(int id, string icon, string s, string n, bool v, bool cR) : id(id), icon(icon), securityType(s), name(n), pass(""), visible(v), canRemove(cR) {}
 	void setSecurity(string security) { securityType = security; }
 	void setPass(string p) { pass = p; }
 	string getSecurity() { return securityType; }
 	string getPass() { return pass; }
 	string getIcon() { return icon; }
+	bool getVisible() { return visible; }
 	bool getCanRemove() { return canRemove; }
 
 	virtual void add(File* child) {}
@@ -54,8 +57,8 @@ public:
 class txt : public File {
 	string desc;
 public:
-	txt(int i, string s, string n, string d, bool cR) : File(i, "[T]", s, n, cR), desc(d) {}
-	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
+	txt(int i, string s, string n, string d, bool v, bool cR) : File(i, "[T]", s, n, v, cR), desc(d) {}
+	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove) {
 
 	}
 	string getDesc() {
@@ -64,18 +67,37 @@ public:
 };
 
 class exe : public File {
+	string code;
 public:
-	exe(int i, string s, string n, bool cR) : File(i, "[>]", s, n, cR) {}
-	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
+	exe(int i, string s, string n, string c, bool v, bool cR) : File(i, "[>]", s, n, v, cR), code(c) {}
+	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove) {
 
 	}
+	vector<string> runCode() { // 코드 실행시 '|' 기준으로 잘라서 리턴
+		vector<string> commands;
+		istringstream iss(code);
+		string segment;
+
+		while (getline(iss, segment, '|')) {
+			commands.push_back(trim(segment));
+		}
+
+		return commands;
+	}
+	string trim(const string& str) { // 문자열 양쪽 공백 제거 함수
+		size_t first = str.find_first_not_of(" \t\n\r");
+		if (first == string::npos) return "";
+		size_t last = str.find_last_not_of(" \t\n\r");
+		return str.substr(first, last - first + 1);
+	}
+	string getCode() { return code; }
 };
 
 class Folder : public File {
 	vector<File*> childFile;
 public:
-	Folder(int id, string security, string name, bool cR) : File(id, "[_]", security, name, cR) {}
-	Folder(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.canRemove) {
+	Folder(int id, string security, string name, bool v, bool cR) : File(id, "[_]", security, name, v, cR) {}
+	Folder(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove) {
 		if (file.parentID == -1) return;
 		for (int i = 0; i < File::getFileCount(); i++) {
 			if (File::files[i]->getId() == file.parentID) {

@@ -11,7 +11,11 @@ typedef struct {
 	string securityType;
 	string pass;
 	bool canRemove;
+	bool visible;
 	string desc; // txt
+	string code; // exe
+	// Folder는 로드에서 바로 가져옴
+
 } S_File;
 
 typedef struct {

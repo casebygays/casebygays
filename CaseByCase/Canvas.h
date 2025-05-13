@@ -39,7 +39,13 @@ public:
 		index = 0;
 		in_proxy = false;
 		proxyChance = 0;
+
+		targetCom = nullptr;
+		connectCom = nullptr;
+		currentFile = nullptr;
 	}
+	void save() {}
+	void load() {}
 	string input() //cmd창에 입력, 입력된 텍스트를 반환함
 	{
 		getline(cin, lastText);
@@ -47,7 +53,7 @@ public:
 		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd 출력 제한유지
 		return lastText;
 	}
-	void input(string s) // 게임 내에서 input 호출할때
+	void input(string s) //cmd창에 입력, 입력된 텍스트를 반환함
 	{
 		cmd.push_back(s);
 		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd 출력 제한유지
@@ -70,7 +76,7 @@ public:
 		print("> 접속 IP : ???.?.?.?");
 		print("[????]");
 		print("================================================================================");
-		print("이 화면은 의도적으로 띄운거아니면 뭔가 잘못된거다.");
+		print("?????????????????????????");
 		for (int i = 0; i < SCREENHEIGH - 1; i++) 
 			print("");
 		print("================================================================================");
@@ -82,12 +88,13 @@ public:
 	{
 		system("cls");
 		print("> 접속 IP : " + connectCom->getIP());
-		print("발각도 : " + to_string(alertLevel) , "Red");
-
+		if (alertLevel != 0) print("발각도 : " + to_string(alertLevel), "Red");
+		else print("");
 		print("/바탕화면");
 		print("================================================================================");
 		for (int i = 0; i < com->getFileCount(); i++) 
-			print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
+			if (com->getFile(i)->getVisible())
+				print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
 		for (int i = 0; i < SCREENHEIGH - com->getFileCount() - 1; i++) 
 			print("");
 		print("================================================================================");
@@ -103,7 +110,8 @@ public:
 		print("================================================================================");
 		if (folder->getFileCount() == 0) print("비어있음");
 		for (int i = 0; i < folder->getFileCount(); i++) {
-			print(folder->getFile(i)->getIcon()+ " " + folder->getFile(i)->getName());
+			if (folder->getFile(i)->getVisible())
+				print(folder->getFile(i)->getIcon()+ " " + folder->getFile(i)->getName());
 		}
 		for (int i = 0; i < SCREENHEIGH - folder->getFileCount() - 1; i++)
 			print("");
@@ -155,8 +163,8 @@ public:
 		print("                       +-----------------------------+");
 		print("                       |     PROXY SECURITY TEST     |");
 		print("                       +-----------------------------+");
-		print("                       | 1~5 숫자 중 정답을 맞추세요 |");
-		print("                       |     기회는 총 2번입니다.    |");
+		print("                       | 0~9 숫자 중 정답을 맞추세요 |");
+		print("                       |     기회는 총 3번입니다.    |");
 		print("                       +-----------------------------+");
 		print("================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
@@ -180,7 +188,7 @@ public:
 		else if (col == "Green") SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 		else if (col == "Blue") SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 
-		cout << text; 
+		cout << text;
 
 		SetConsoleTextAttribute(hConsole, saved_attributes);
 
@@ -199,7 +207,6 @@ public:
 		for (int i = 0; i < SCREENWIDTH; i++) cout << " ";
 		cout << " | > ";
 	}
-
 	int getCMDSize() { return cmd.size(); }
 	string getCMDText(int num) { return cmd[num]; }
 	string getLastText() { return lastText; }
