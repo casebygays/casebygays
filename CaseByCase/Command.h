@@ -79,8 +79,6 @@ public:
 			// 발각도가 100이 되면 접속중인 컴퓨터에서 튕김, +보안이 강화되는거 넣어도 좋을듯
 		}
 	}
-	
-	
 	void cmd_shutdown() { shutdown = true; }
 	void cmd_savegame() {
 		ofstream file("Save.txt");
@@ -97,6 +95,7 @@ public:
 				file << "pass=" << File::files[i]->getPass() << '\n';
 				file << "visible=" << File::files[i]->getVisible() << '\n';
 				file << "canRemove=" << File::files[i]->getCanRemove() << '\n';
+				file << "oneshot=" << File::files[i]->getOneshot() << '\n';
 				if (dynamic_cast<txt*>(File::files[i])) {
 					file << "desc=" << dynamic_cast<txt*>(File::files[i])->getDesc() << '\n';
 					file << "fileType=" << "txt" << '\n';
@@ -135,6 +134,7 @@ public:
 			if (Canvas::currentFile != nullptr) file << "currentFileID=" << Canvas::currentFile->getId() << '\n';
 			file.close();
 		}
+		
 		canvas->input(to_string(computer[0].getFileCount()));
 	}
 	void cmd_loadgame() {
@@ -162,6 +162,7 @@ public:
 			else if (key == "pass") { fileData.pass = value; }
 			else if (key == "visible") { fileData.visible = stoi(value); }
 			else if (key == "canRemove") { fileData.canRemove = stoi(value); }
+			else if (key == "oneshot") { fileData.canRemove = stoi(value); }
 			else if (key == "desc") { fileData.desc = value; }
 			else if (key == "code") { fileData.code = value; }
 			else if (key == "fileType") { 
@@ -197,41 +198,53 @@ public:
 				}
 				comIndex++;
 			}
-
-
-
-			else if (key == "fileType") {
-				if (value == "txt") File::files.push_back(new txt(fileData));
-				else if (value == "exe") File::files.push_back(new exe(fileData));
-				else if (value == "Folder") File::files.push_back(new Folder(fileData));
+			if (key == "connectComIP") { 
+				for (int i = 0; i < comMax; i++)
+					if (computer[i].getIP() == value)
+						Canvas::connectCom = &computer[i];
+			}
+			else if (key == "currentFileID") {
+				for (int i = 0; i < File::files.size(); i++) {
+					if (File::files[i]->getId() == stoi(value))
+						Canvas::currentFile = File::files[i];
+					canvas->input(to_string(Canvas::currentFile->getId()));
+				}
 			}
 		}
+		canvas->input(Canvas::connectCom->getIP());
+		canvas->input(Canvas::currentFile->getName());
 		file.close();
 		//canvas->input(to_string(computer[0].getFileCount()));
 	}
 	void cmd_help()
 	{
+		canvas->input("--------------------------------------------------------");
+		canvas->input("비고 : () = 선택,	[] = 필수");
 		canvas->input("/shutdown				게임 종료");
 		canvas->input("/in [파일]				파일 열기");
-		canvas->input("/out				이전으로 돌아감 (사이트 나가기, 상위폴더로 나가기 등)");
-		canvas->input("/scan				주변 IP 스캔");
+		canvas->input("/out				이전으로 돌아감 (상위폴더로 나가기)");
 		canvas->input("/clear				드르륵 탁 clear");
 		canvas->input("/unlock [파일] [비밀번호]		비밀번호 해제");
-		canvas->input("/decoding [파일]			대상 파일 복호화");
-		canvas->input("/portscan [IP]			포트 정보 확인");
+		canvas->input("/scan				주변 IP 스캔");
+		canvas->input("/target [IP]				주변 IP 스캔");
+		//canvas->input("/decoding [파일]			대상 파일 복호화");
+		canvas->input("/portscan				포트 정보 확인");
 		canvas->input("/crack ssh				22번 포트 열기");
 		canvas->input("/crack ftp				21번 포트 열기");
 		canvas->input("/crack smtp			25번 포트 열기");
 		canvas->input("/crack http			80번 포트 열기");
-		canvas->input("/nuke [IP]				PC 해킹");
-		canvas->input("/connect [IP]			해당 컴퓨터 접속");
+		canvas->input("/crack proxy			proxy 비활성화");
+		canvas->input("/crack firewall			friewall 비활성화");
+		canvas->input("/nuke (IP)					PC 해킹");
+		canvas->input("/connect	(IP)			해당 컴퓨터 접속");
 		canvas->input("/disconnect			접속 종료");
-		canvas->input("removelog				로그 삭제");
+		canvas->input("--------------------------------------------------------");
+		//canvas->input("/removelog				로그 삭제");
 	}
 	void cmd_clear() { canvas->cmdClear(); }
 	void cmd_addtxt(string name, string desc) {
 		if (Canvas::currentFile == nullptr or dynamic_cast<Folder*>(Canvas::currentFile)) {
-			File* f = new txt(File::fileId, "public", name, desc, true, true);
+			File* f = new txt(File::fileId, "public", name, desc, true, true, false);
 			if (Canvas::currentFile != nullptr) { Canvas::connectCom->add(Canvas::currentFile, f); }
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
@@ -244,7 +257,7 @@ public:
 	}
 	void cmd_addexe(string name, string code) {
 		if (Canvas::currentFile == nullptr or dynamic_cast<Folder*>(Canvas::currentFile)) {
-			File* f = new exe(File::fileId, "public", name, code, true, true);
+			File* f = new exe(File::fileId, "public", name, code, true, true, false);
 			if (Canvas::currentFile != nullptr) { Canvas::connectCom->add(Canvas::currentFile, f); }
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
@@ -257,7 +270,7 @@ public:
 	}
 	void cmd_addfolder(string name) {
 		if (Canvas::currentFile == nullptr or dynamic_cast<Folder*>(Canvas::currentFile)) {
-			File* f = new Folder(File::fileId, "public", name, true, true);
+			File* f = new Folder(File::fileId, "public", name, true, true, false);
 			if (Canvas::currentFile != nullptr) { Canvas::connectCom->add(Canvas::currentFile, f); }
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
@@ -321,19 +334,18 @@ public:
 	void cmd_portscan() {
 		if (Canvas::targetCom) {
 			string s = "포트 정보|";
-			if (Canvas::targetCom->getPort("ssh")) s += "ssh : O|";
-			else s += "ssh : X|";
-			if (Canvas::targetCom->getPort("ftp")) s += "ftp : O|";
-			else s += "ftp : X|";
-			if (Canvas::targetCom->getPort("smtp")) s += "smt : O|";
-			else s += "smt : X|";
-			if (Canvas::targetCom->getPort("http")) s += "http : O|";
-			else s += "http : X|";
-			if (Canvas::targetCom->getPort("proxy")) s += "proxy : O|";
-			else s += "proxy : X|";
-			if (Canvas::targetCom->getPort("firewall")) s += "firewall : O|";
-			else s += "firewall : X|";
-			
+			if (Canvas::targetCom->getPort("ssh")) s += "ssh : 잠김|";
+			else s += "ssh : 열림|";
+			if (Canvas::targetCom->getPort("ftp")) s += "ftp : 잠김|";
+			else s += "ftp : 열림|";
+			if (Canvas::targetCom->getPort("smtp")) s += "smtp : 잠김|";
+			else s += "smtp : 열림|";
+			if (Canvas::targetCom->getPort("http")) s += "http : 잠김|";
+			else s += "http : 열림|";
+			if (Canvas::targetCom->getPort("proxy")) s += "proxy : 잠김|";
+			else s += "proxy : 열림|";
+			if (Canvas::targetCom->getPort("firewall")) s += "firewall : 잠김|";
+			else s += "firewall : 열림|";
 			canvas->input(s);
 		}
 		else {
@@ -471,6 +483,7 @@ public:
 						vector<string> code = e->runCode();
 						for (int i = 0; i < code.size(); i++)
 							checkCommand(code[i]);
+						if (e->getOneshot()) { checkCommand("/remove " + e->getName()); }
 					}
 				}
 				else if (f->getName() == name and f->getSecurity() == "private") {
@@ -495,6 +508,7 @@ public:
 						vector<string> code = e->runCode();
 						for (int i = 0; i < code.size(); i++)
 							checkCommand(code[i]);
+						if (e->getOneshot()) { checkCommand("/remove " + e->getName()); }
 					}
 				}
 				else if (f->getName() == name and f->getSecurity() == "private") {
@@ -506,13 +520,19 @@ public:
 	}
 	void cmd_out() {
 		if (Canvas::currentFile != nullptr and Canvas::currentFile->getParent() != nullptr) {
+			string fileName = "@#$&*()#";
+			if (Canvas::currentFile->getOneshot()) fileName = Canvas::currentFile->getName();
 			Canvas::currentFile = Canvas::currentFile->getParent();
 			if (dynamic_cast<Folder*>(Canvas::currentFile)) Canvas::getFileType(Canvas::currentFile, "Folder");
 			else if (dynamic_cast<txt*>(Canvas::currentFile)) Canvas::getFileType(Canvas::currentFile, "txt");
 			else if (dynamic_cast<exe*>(Canvas::currentFile)) Canvas::getFileType(Canvas::currentFile, "exe");
+			checkCommand("/remove " + fileName);
 		}
 		else {
+			string fileName = "@#&$(*@#&()";
+			if (Canvas::currentFile->getOneshot()) fileName = Canvas::currentFile->getName();
 			Canvas::currentFile = nullptr;
+			checkCommand("/remove " + fileName);
 		}
 	}
 };

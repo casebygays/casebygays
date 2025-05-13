@@ -21,12 +21,24 @@ public:
 		firewall = rand() % 2 - 1 + level;
 		is_nuke = false;
 	}
+	
 	~Computer() {
 	}
 	// ¼¼ÆÃ
 	void setPlayer() {
 		IP = "127.0.0.1";
 		is_nuke = true;
+	}
+	void setComputer(int lvl, string ip, int ssh, int ftp, int smtp, int http, int proxy, int firewall) {
+		level = lvl;
+		IP = ip;
+		this->ssh = ssh;
+		this->ftp = ftp;
+		this->smtp = smtp;
+		this->http = http;
+		this->proxy = proxy;
+		this->firewall = firewall;
+		is_nuke = false;
 	}
 	string addRandomIP(int lvl) {
 		int min[4];

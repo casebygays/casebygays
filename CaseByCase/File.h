@@ -16,11 +16,12 @@ class File {
 
 	bool visible;
 	bool canRemove;
+	bool oneshot;
 public:
 	static vector<File*> files;
 	static int fileId;
 
-	File(int id, string icon, string s, string n, bool v, bool cR) : id(id), icon(icon), securityType(s), name(n), pass(""), visible(v), canRemove(cR) {}
+	File(int id, string icon, string s, string n, bool v, bool cR, bool oneshot) : id(id), icon(icon), securityType(s), name(n), pass(""), visible(v), canRemove(cR), oneshot(oneshot) {}
 	void setSecurity(string security) { securityType = security; }
 	void setPass(string p) { pass = p; }
 	string getSecurity() { return securityType; }
@@ -28,12 +29,11 @@ public:
 	string getIcon() { return icon; }
 	bool getVisible() { return visible; }
 	bool getCanRemove() { return canRemove; }
+	bool getOneshot() { return oneshot; }
 
 	virtual void add(File* child) {}
 	virtual void erase(int id) {}
-	virtual void setParent(File* f) { 
-		parentFile = f;
-	}
+	virtual void setParent(File* f) { parentFile = f; }
 	virtual File* getParent() { return parentFile; }
 	virtual int getId() { return id; }
 	virtual string getName() { return name; }
@@ -57,8 +57,8 @@ public:
 class txt : public File {
 	string desc;
 public:
-	txt(int i, string s, string n, string d, bool v, bool cR) : File(i, "[T]", s, n, v, cR), desc(d) {}
-	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove) {
+	txt(int i, string s, string n, string d, bool v, bool cR, bool oneshot) : File(i, "[T]", s, n, v, cR, oneshot), desc(d) {}
+	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {
 
 	}
 	string getDesc() {
@@ -69,9 +69,9 @@ public:
 class exe : public File {
 	string code;
 public:
-	exe(int i, string s, string n, string c, bool v, bool cR) : File(i, "[>]", s, n, v, cR), code(c) {}
-	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove) {
-
+	exe(int i, string s, string n, string c, bool v, bool cR, bool oneshot) : File(i, "[>]", s, n, v, cR, oneshot), code(c) {}
+	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {
+		code = file.code;
 	}
 	vector<string> runCode() { // 코드 실행시 '|' 기준으로 잘라서 리턴
 		vector<string> commands;
@@ -96,8 +96,8 @@ public:
 class Folder : public File {
 	vector<File*> childFile;
 public:
-	Folder(int id, string security, string name, bool v, bool cR) : File(id, "[_]", security, name, v, cR) {}
-	Folder(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove) {
+	Folder(int id, string security, string name, bool v, bool cR, bool oneshot) : File(id, "[_]", security, name, v, cR, oneshot) {}
+	Folder(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {
 		if (file.parentID == -1) return;
 		for (int i = 0; i < File::getFileCount(); i++) {
 			if (File::files[i]->getId() == file.parentID) {
