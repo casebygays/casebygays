@@ -22,7 +22,8 @@ public:
 	bool in_proxy;
 	int proxyAnswer;
 	int proxyChance;
-	vector<int> proxyInput;
+
+	static int alertLevel; // 발각도
 
 	static Computer* targetCom; //타겟팅 컴퓨터
 	static Computer* connectCom; // 접속한 컴퓨터
@@ -75,7 +76,7 @@ public:
 		print("> 접속 IP : ???.?.?.?");
 		print("[????]");
 		print("================================================================================");
-		print("이 화면은 의도적으로 띄운거아니면 뭔가 잘못된거다.");
+		print("?????????????????????????");
 		for (int i = 0; i < SCREENHEIGH - 1; i++) 
 			print("");
 		print("================================================================================");
@@ -87,10 +88,13 @@ public:
 	{
 		system("cls");
 		print("> 접속 IP : " + connectCom->getIP());
+		if (alertLevel != 0) print("발각도 : " + to_string(alertLevel), "Red");
+		else print("");
 		print("/바탕화면");
 		print("================================================================================");
 		for (int i = 0; i < com->getFileCount(); i++) 
-			print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
+			if (com->getFile(i)->getVisible())
+				print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
 		for (int i = 0; i < SCREENHEIGH - com->getFileCount() - 1; i++) 
 			print("");
 		print("================================================================================");
@@ -106,7 +110,8 @@ public:
 		print("================================================================================");
 		if (folder->getFileCount() == 0) print("비어있음");
 		for (int i = 0; i < folder->getFileCount(); i++) {
-			print(folder->getFile(i)->getIcon()+ " " + folder->getFile(i)->getName());
+			if (folder->getFile(i)->getVisible())
+				print(folder->getFile(i)->getIcon()+ " " + folder->getFile(i)->getName());
 		}
 		for (int i = 0; i < SCREENHEIGH - folder->getFileCount() - 1; i++)
 			print("");

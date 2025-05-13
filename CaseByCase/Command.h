@@ -31,17 +31,18 @@ public:
 		while (iss >> token) { tokens.push_back(token); }
 
 		if (tokens.empty()) { return; }
-		else if (canvas->in_proxy) {
+		else if (canvas->in_proxy) { // 프록시 미니게임
 			canvas->proxyChance -= 1;
-			canvas->proxyInput.push_back(stoi(tokens[0]));
-
-			if (canvas->proxyChance == 0) {
+			if (tokens[0] == to_string(canvas->proxyAnswer)) {
 				canvas->in_proxy = false;
-				canvas->proxyInput.clear();
+				Canvas::targetCom->portCrack("proxy", false);
+				canvas->input("프록시 해킹 성공");
+			}
+			else if (canvas->proxyChance == 0) {
+				canvas->in_proxy = false;
 				string s = "프록시 해킹 실패 / 정답 : ";
 				s = s + to_string(canvas->proxyAnswer);
 				canvas->input(s);
-				return;
 			}
 		}
 		else if (tokens[0] == "/shutdown") cmd_shutdown();
@@ -71,6 +72,13 @@ public:
 	}
 	File* getCurrentFile() { return Canvas::currentFile; }
 	bool getShutdown() { return shutdown; }
+	void addAlertLevel(int value) {
+		if (Canvas::connectCom->getIP() != "127.0.0.1" or Canvas::targetCom != nullptr)
+			Canvas::alertLevel += value;
+		if (Canvas::alertLevel >= 100) {
+			// 발각도가 100이 되면 접속중인 컴퓨터에서 튕김, +보안이 강화되는거 넣어도 좋을듯
+		}
+	}
 	
 	
 	void cmd_shutdown() { shutdown = true; }
@@ -87,12 +95,14 @@ public:
 				file << "name=" << File::files[i]->getName() << '\n';
 				file << "securityType=" << File::files[i]->getSecurity() << '\n';
 				file << "pass=" << File::files[i]->getPass() << '\n';
+				file << "visible=" << File::files[i]->getVisible() << '\n';
 				file << "canRemove=" << File::files[i]->getCanRemove() << '\n';
 				if (dynamic_cast<txt*>(File::files[i])) {
 					file << "desc=" << dynamic_cast<txt*>(File::files[i])->getDesc() << '\n';
 					file << "fileType=" << "txt" << '\n';
 				}
 				else if (dynamic_cast<exe*>(File::files[i])) {
+					file << "code=" << dynamic_cast<exe*>(File::files[i])->getCode() << '\n';
 					file << "fileType=" << "exe" << '\n';
 				}
 				else if (dynamic_cast<Folder*>(File::files[i])) {
@@ -150,8 +160,10 @@ public:
 			else if (key == "name") { fileData.name = value; }
 			else if (key == "securityType") { fileData.securityType = value; }
 			else if (key == "pass") { fileData.pass = value; }
+			else if (key == "visible") { fileData.visible = stoi(value); }
 			else if (key == "canRemove") { fileData.canRemove = stoi(value); }
 			else if (key == "desc") { fileData.desc = value; }
+			else if (key == "code") { fileData.code = value; }
 			else if (key == "fileType") { 
 				if (value == "txt") File::files.push_back(new txt(fileData));
 				else if (value == "exe") File::files.push_back(new exe(fileData));
@@ -219,7 +231,7 @@ public:
 	void cmd_clear() { canvas->cmdClear(); }
 	void cmd_addtxt(string name, string desc) {
 		if (Canvas::currentFile == nullptr or dynamic_cast<Folder*>(Canvas::currentFile)) {
-			File* f = new txt(File::fileId, "public", name, desc, true);
+			File* f = new txt(File::fileId, "public", name, desc, true, true);
 			if (Canvas::currentFile != nullptr) { Canvas::connectCom->add(Canvas::currentFile, f); }
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
@@ -232,7 +244,7 @@ public:
 	}
 	void cmd_addexe(string name, string code) {
 		if (Canvas::currentFile == nullptr or dynamic_cast<Folder*>(Canvas::currentFile)) {
-			File* f = new exe(File::fileId, "public", name, code, true);
+			File* f = new exe(File::fileId, "public", name, code, true, true);
 			if (Canvas::currentFile != nullptr) { Canvas::connectCom->add(Canvas::currentFile, f); }
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
@@ -245,7 +257,7 @@ public:
 	}
 	void cmd_addfolder(string name) {
 		if (Canvas::currentFile == nullptr or dynamic_cast<Folder*>(Canvas::currentFile)) {
-			File* f = new Folder(File::fileId, "public", name, true);
+			File* f = new Folder(File::fileId, "public", name, true, true);
 			if (Canvas::currentFile != nullptr) { Canvas::connectCom->add(Canvas::currentFile, f); }
 			else if (Canvas::connectCom != nullptr) { Canvas::connectCom->add(f); }
 			File::files.push_back(f);
@@ -338,20 +350,23 @@ public:
 		}
 	}
 	void cmd_crack(string target) { 
-		if (Canvas::targetCom == nullptr) { canvas->input("해킹 대상이 없습니다."); }
-		else {
-			if (target == "proxy") {
-				canvas->in_proxy = true;
-				canvas->proxyAnswer = rand() % 10;
-				canvas->proxyChance = 3;
-			}
-			else if (Canvas::targetCom->portCrack(target, false)) 
-				canvas->input(target + " : 성공적으로 포트를 엶");
-			else 
-				canvas->input(target + " : 포트가 열려있거나, 대상을 찾지못함");
+		if (target == "proxy" and Canvas::targetCom->getPort("proxy")) {
+			canvas->in_proxy = true;
+			canvas->proxyAnswer = rand() % 5 + 1;
+			canvas->proxyChance = 2;
+			addAlertLevel(3);
 		}
-
-		
+		else if (Canvas::targetCom->portCrack(target, false)) {
+			canvas->input(target + " : 성공적으로 포트를 엶");
+			addAlertLevel(4);
+		}
+		else if (Canvas::targetCom == nullptr) {
+			canvas->input("해킹 대상이 없습니다.");
+		}
+		else {
+			canvas->input(target + " : 포트가 열려있거나, 대상을 찾지 못함");
+			addAlertLevel(2);
+		}
 	}
 	void cmd_nuke(string ip = "") {
 		if (ip == "" and Canvas::targetCom != nullptr) {
