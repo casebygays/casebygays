@@ -61,12 +61,12 @@ public:
 		else if (tokens[0] == "/crack" and tokens.size() > 1) cmd_crack(tokens[1]);
 		else if (tokens[0] == "/nuke" and tokens.size() > 1) cmd_nuke(tokens[1]); // IP 적었을때
 		else if (tokens[0] == "/nuke") cmd_nuke(); // IP 안적었을때
-		else if (tokens[0] == "/unlock" and tokens.size() > 2) cmd_unlock(tokens[1], tokens[2]);
 
 		else if (tokens[0] == "/debugconnect" and tokens.size() > 1) cmd_debugconnect(tokens[1]);
 		else if (tokens[0] == "/connect" and tokens.size() > 1) cmd_connect(tokens[1]); // IP 적었을때
 		else if (tokens[0] == "/connect") cmd_connect(); // IP 안적었을때
 		else if (tokens[0] == "/disconnect") cmd_disconnect();
+		else if (tokens[0] == "/in" and tokens.size() > 2) cmd_in(tokens[1], tokens[2]);
 		else if (tokens[0] == "/in" and tokens.size() > 1) cmd_in(tokens[1]);
 		else if (tokens[0] == "/out") cmd_out();
 	}
@@ -212,7 +212,7 @@ public:
 			}
 		}
 		canvas->input(Canvas::connectCom->getIP());
-		canvas->input(Canvas::currentFile->getName());
+		if (Canvas::currentFile != nullptr) canvas->input(Canvas::currentFile->getName());
 		file.close();
 		//canvas->input(to_string(computer[0].getFileCount()));
 	}
@@ -221,10 +221,9 @@ public:
 		canvas->input("--------------------------------------------------------");
 		canvas->input("비고 : () = 선택,	[] = 필수");
 		canvas->input("/shutdown				게임 종료");
-		canvas->input("/in [파일]				파일 열기");
+		canvas->input("/in [파일] (비밀번호)			파일 열기");
 		canvas->input("/out				이전으로 돌아감 (상위폴더로 나가기)");
 		canvas->input("/clear				드르륵 탁 clear");
-		canvas->input("/unlock [파일] [비밀번호]		비밀번호 해제");
 		canvas->input("/scan				주변 IP 스캔");
 		canvas->input("/target [IP]				주변 IP 스캔");
 		//canvas->input("/decoding [파일]			대상 파일 복호화");
@@ -360,6 +359,7 @@ public:
 				break;
 			}
 		}
+		addAlertLevel(1);
 	}
 	void cmd_crack(string target) { 
 		if (target == "proxy" and Canvas::targetCom->getPort("proxy")) {
@@ -399,32 +399,6 @@ public:
 					}
 					else canvas->input(ip + " : 해킹 실패");
 					break;
-				}
-			}
-		}
-	}
-	void cmd_unlock(string name, string pass = "") {
-		if (Canvas::currentFile == nullptr) { // 컴퓨터에서 in
-			for (int i = 0; i < Canvas::connectCom->getFileCount(); i++) {
-				File* f = Canvas::connectCom->getFile(i);
-				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
-					f->setSecurity("public");
-					canvas->input("잠금해제 완료");
-				}
-				else {
-					canvas->input("비밀번호 틀림");
-				}
-			}
-		}
-		else { // 폴더에서 in
-			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) {
-				File* f = Canvas::currentFile->getFile(i);
-				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
-					f->setSecurity("public");
-					canvas->input("잠금해제 완료");
-				}
-				else {
-					canvas->input("비밀번호 틀림");
 				}
 			}
 		}
@@ -485,9 +459,11 @@ public:
 							checkCommand(code[i]);
 						if (e->getOneshot()) { checkCommand("/remove " + e->getName()); }
 					}
+					addAlertLevel(2);
 				}
 				else if (f->getName() == name and f->getSecurity() == "private") {
 					canvas->input("파일이 잠겨있음");
+					addAlertLevel(4);
 				}
 			}
 		}
@@ -510,29 +486,93 @@ public:
 							checkCommand(code[i]);
 						if (e->getOneshot()) { checkCommand("/remove " + e->getName()); }
 					}
+					addAlertLevel(2);
 				}
 				else if (f->getName() == name and f->getSecurity() == "private") {
 					canvas->input("파일이 잠겨있음");
+					addAlertLevel(4);
 				}
 			}
 		} 
 		
 	}
+	void cmd_in(string name, string pass) {
+		if (Canvas::currentFile == nullptr) { // 컴퓨터에서 in
+			for (int i = 0; i < Canvas::connectCom->getFileCount(); i++) {
+				File* f = Canvas::connectCom->getFile(i);
+				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
+					f->setSecurity("public");
+					if (dynamic_cast<Folder*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "Folder");
+					}
+					else if (dynamic_cast<txt*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "txt");
+					}
+					else if (dynamic_cast<exe*>(f)) {
+						exe* e = dynamic_cast<exe*>(f);
+						vector<string> code = e->runCode();
+						for (int i = 0; i < code.size(); i++)
+							checkCommand(code[i]);
+						if (e->getOneshot()) { checkCommand("/remove " + e->getName()); }
+					}
+					addAlertLevel(2);
+				}
+				else {
+					canvas->input("비밀번호 틀림");
+					addAlertLevel(6);
+				}
+			}
+		}
+		else { // 폴더에서 in
+			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) {
+				File* f = Canvas::currentFile->getFile(i);
+				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
+					f->setSecurity("public");
+					canvas->input("잠금해제 완료");
+					if (dynamic_cast<Folder*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "Folder");
+					}
+					else if (dynamic_cast<txt*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "txt");
+					}
+					else if (dynamic_cast<exe*>(f)) {
+						exe* e = dynamic_cast<exe*>(f);
+						vector<string> code = e->runCode();
+						for (int i = 0; i < code.size(); i++)
+							checkCommand(code[i]);
+						if (e->getOneshot()) { checkCommand("/remove " + e->getName()); }
+					}
+					addAlertLevel(2);
+				}
+				else {
+					canvas->input("비밀번호 틀림");
+					addAlertLevel(6);
+				}
+			}
+		}
+	}
 	void cmd_out() {
+		File* cf = Canvas::currentFile;
 		if (Canvas::currentFile != nullptr and Canvas::currentFile->getParent() != nullptr) {
-			string fileName = "@#$&*()#";
-			if (Canvas::currentFile->getOneshot()) fileName = Canvas::currentFile->getName();
+			//string fileName = "@#$&*()#";
+			//if (Canvas::currentFile->getOneshot()) fileName = Canvas::currentFile->getName();
 			Canvas::currentFile = Canvas::currentFile->getParent();
 			if (dynamic_cast<Folder*>(Canvas::currentFile)) Canvas::getFileType(Canvas::currentFile, "Folder");
 			else if (dynamic_cast<txt*>(Canvas::currentFile)) Canvas::getFileType(Canvas::currentFile, "txt");
 			else if (dynamic_cast<exe*>(Canvas::currentFile)) Canvas::getFileType(Canvas::currentFile, "exe");
-			checkCommand("/remove " + fileName);
+			//checkCommand("/remove " + fileName);
+			addAlertLevel(1);
 		}
 		else {
-			string fileName = "@#&$(*@#&()";
-			if (Canvas::currentFile->getOneshot()) fileName = Canvas::currentFile->getName();
+			//string fileName = "@#&$(*@#&()";
+			//if (Canvas::currentFile->getOneshot()) fileName = Canvas::currentFile->getName();
 			Canvas::currentFile = nullptr;
-			checkCommand("/remove " + fileName);
+			//checkCommand("/remove " + fileName);
+			addAlertLevel(1);
 		}
 	}
 };

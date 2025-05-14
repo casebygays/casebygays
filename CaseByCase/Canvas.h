@@ -9,7 +9,7 @@
 #include <windows.h>
 using namespace std;
 
-#define CMDSIZE 31 // cmd 최대 출력 줄 수
+#define CMDSIZE 41 // cmd 최대 출력 줄 수
 #define SCREENWIDTH 80 // 스크린 가로길이
 #define SCREENHEIGH 15 // 스크린 세로길이
 
@@ -94,7 +94,9 @@ public:
 		print("================================================================================");
 		for (int i = 0; i < com->getFileCount(); i++) 
 			if (com->getFile(i)->getVisible())
-				print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
+				if (com->getFile(i)->getSecurity() == "private")
+					print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName() + " (잠김)");
+				else print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
 		for (int i = 0; i < SCREENHEIGH - com->getFileCount() - 1; i++) 
 			print("");
 		print("================================================================================");

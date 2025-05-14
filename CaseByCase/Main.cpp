@@ -42,7 +42,7 @@ int main() {
 	addtxt(0, autoParent, "public", "2018.04.03", "해킹의 기본.\n\n /scan : 무작위 컴퓨터의 IP를 스캔한다.\n /target [IP] : 해킹하고싶은 컴퓨터의 IP를 지정한다.\n /crack : 지정된 컴퓨터의 포트를 해킹한다.\n포트 종류 : ssh, ftp, smtp, http, proxy, firewall\n\n /nuke : 포트를 전부 열면 해킹가능\n /connet : 해킹을 완료한 컴퓨터에 접속, IP 안적으면 지정된 컴퓨터에 연결 시도\n /disconnet : 컴퓨터 접속 해제", true, false);
 	addFol(0, nullptr, "public", "Memo", true, false);
 	addtxt(0, autoParent, "public", "메모1", "메모 내용", true, false);
-	addtxt(0, nullptr, "private", "/help", "살려줘...", true, true); setPass("엔딩보면 알려줌");
+	addtxt(0, nullptr, "private", "/help", "살려줘...", true, true); setPass("1234");
 	addexe(0, nullptr, "public", "파일생성", "/addtxt 생성된_텍스트 자동생성됨 | /addfolder 생성된_폴더 | /in 생성된_폴더 | /addtxt 텍스트1 ㅎㅇ | /addtxt 텍스트2 ㅂㅇ | /out", true, true);
 	//USB
 	addFol(0, nullptr, "public", "USB", true);	// 나중에 숨김파일 처리하고 소식4번을 확인하면 나타나게 할 예정
@@ -78,7 +78,7 @@ int main() {
 
 	// 그외 컴퓨터 파일
 	// 튜토리얼 컴퓨터
-	com[1].setComputer(1, "00.123.456.789", 0,0,0,0,0,0); // 컴퓨터 정보 사용자 지정
+	com[1].setComputer(1, "00.000.000.000", 0,0,1,0,1,0); // 컴퓨터 정보 사용자 지정
 	addFol(1, nullptr, "public", "News_Collection", true);
 	addtxt(1, autoParent, "public", "[속보]여객기_추락", "[속보] 하늘항공 여객기 추락... 탑승자 전원 사망\n\n2025년 5월 7일 새벽, 하늘항공 소속 여객기가 추락해 탑승자 전원이 사망하는 참사가 발생했습니다.\n사고기는 지면과 충돌한 직후 폭발했으며, 기체는 완전히 소실된 것으로 알려졌습니다.\n현재 정확한 사고 원인은 조사 중에 있으며, 관계 당국은 사고 현장을 통제하고 수습 작업에 착수했습니다.", true);
 	addtxt(1, autoParent, "private", "news_3", "", true); setPass("비밀번호 정해야함");

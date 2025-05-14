@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "StructPack.h"
 #include <iostream>
 #include <sstream>
@@ -73,7 +73,7 @@ public:
 	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {
 		code = file.code;
 	}
-	vector<string> runCode() { // ÄÚµå ½ÇÇà½Ã '|' ±âÁØÀ¸·Î Àß¶ó¼­ ¸®ÅÏ
+	vector<string> runCode() { // ì½”ë“œ ì‹¤í–‰ì‹œ '|' ê¸°ì¤€ìœ¼ë¡œ ì˜ë¼ì„œ ë¦¬í„´
 		vector<string> commands;
 		istringstream iss(code);
 		string segment;
@@ -84,7 +84,7 @@ public:
 
 		return commands;
 	}
-	string trim(const string& str) { // ¹®ÀÚ¿­ ¾çÂÊ °ø¹é Á¦°Å ÇÔ¼ö
+	string trim(const string& str) { // ë¬¸ìì—´ ì–‘ìª½ ê³µë°± ì œê±° í•¨ìˆ˜
 		size_t first = str.find_first_not_of(" \t\n\r");
 		if (first == string::npos) return "";
 		size_t last = str.find_last_not_of(" \t\n\r");
@@ -104,7 +104,7 @@ public:
 				setParent(File::files[i]);
 				File::files[i]->add(this);
 			}
-		} // ºÎ¸ğ ¼³Á¤
+		} // ë¶€ëª¨ ì„¤ì •
 	}
 
 	~Folder() {
