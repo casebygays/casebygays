@@ -33,9 +33,13 @@ int Canvas::alertLevel = 0;
 File* autoParent; // main에서 가장 마지막에 생성된 폴더를 가르킴
 
 int main() {
-	canvas.input("전체화면으로 진행해주세요.");
+	/* cmd창 조절, 전체화면 변경, 빌드할때 활성화해야됨
+	system("mode con: cols=300 lines=100"); 
+	system("title Case By Case");
+	HWND consoleWindow = GetConsoleWindow();
+	ShowWindow(consoleWindow, SW_MAXIMIZE);
+	*/
 	canvas.input("/help 입력시 명령어 리스트를 호출합니다.");
-
 	// 플레이어 컴퓨터 파일
 	com[0].setPlayer();
 	addFol(0, nullptr, "public", "Diary", true, false);
@@ -98,10 +102,12 @@ int main() {
 	addtxt(3, autoParent, "private", "형의_usb2", "형은 A사의 통신 보안 시스템 연구자였으며, 신형 통신 시스템에 의도된 보안 취약점이 존재한다고 말한 녹취파일이 존재한다고 쓰여있다.", false); setPass("나의 생일");
 
 	command.cmd_connect("127.0.0.1");
+	
 	while (!command.getShutdown()) {
 		canvas.draw();
 		command.checkCommand(canvas.input());
 	}
+	
 	for (File* f : File::files) { cout << f->getId(); delete f; }
 	delete[] com;
 	return 0;
