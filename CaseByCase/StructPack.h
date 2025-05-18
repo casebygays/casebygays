@@ -14,6 +14,7 @@ typedef struct {
 	bool visible;
 	string desc; // txt
 	string code; // exe
+	bool oneshot; // exe
 	// Folder는 로드에서 바로 가져옴
 
 } S_File;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Canvas.h"
 #include "Computer.h"
 #include "File.h"
@@ -13,9 +13,9 @@ using namespace std;
 
 #define COMMAX 80
 void setPass(string p);
-void addtxt(int cNum, File* parent, string security, string name, string desc, bool v = true, bool cR = true);
-void addexe(int cNum, File* parent, string security, string name, string code, bool v = true, bool cR = true);
-void addFol(int cNum, File* parent, string security, string name, bool v = true, bool cR = true);
+void addtxt(int cNum, File* parent, string security, string name, string desc, bool v = true, bool cR = true, bool oneshot = false);
+void addexe(int cNum, File* parent, string security, string name, string code, bool v = true, bool cR = true, bool oneshot = false);
+void addFol(int cNum, File* parent, string security, string name, bool v = true, bool cR = true, bool oneshot = false);
 void remove(int cNum, int id);
 
 Canvas canvas;
@@ -25,124 +25,113 @@ Command command(&canvas, com, COMMAX);
 vector<File*> File::files;
 int File::fileId = 0;
 
-Computer* Canvas::targetCom = nullptr; //Å¸°ÙÆÃ ÄÄÇ»ÅÍ
-Computer* Canvas::connectCom = nullptr; // Á¢¼ÓÇÑ ÄÄÇ»ÅÍ
-File* Canvas::currentFile = nullptr; // ÇöÀç ÆÄÀÏ
+Computer* Canvas::targetCom = nullptr; //íƒ€ê²ŸíŒ… ì»´í“¨í„°
+Computer* Canvas::connectCom = nullptr; // ì ‘ì†í•œ ì»´í“¨í„°
+File* Canvas::currentFile = nullptr; // í˜„ì¬ íŒŒì¼
 int Canvas::alertLevel = 0;
 
+File* autoParent; // mainì—ì„œ ê°€ì¥ ë§ˆì§€ë§‰ì— ìƒì„±ëœ í´ë”ë¥¼ ê°€ë¥´í‚´
+
 int main() {
-	canvas.input("ÀüÃ¼È­¸éÀ¸·Î ÁøÇàÇØÁÖ¼¼¿ä.");
-	canvas.input("/help ÀÔ·Â½Ã ¸í·É¾î ¸®½ºÆ®¸¦ È£ÃâÇÕ´Ï´Ù.");
-
+	/* cmdì°½ ì¡°ì ˆ, ì „ì²´í™”ë©´ ë³€ê²½, ë¹Œë“œí• ë•Œ í™œì„±í™”í•´ì•¼ë¨
+	system("mode con: cols=300 lines=100"); 
+	system("title Case By Case");
+	HWND consoleWindow = GetConsoleWindow();
+	ShowWindow(consoleWindow, SW_MAXIMIZE);
+	*/
+	canvas.input("/help ì…ë ¥ì‹œ ëª…ë ¹ì–´ ë¦¬ìŠ¤íŠ¸ë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.");
+	// í”Œë ˆì´ì–´ ì»´í“¨í„° íŒŒì¼
 	com[0].setPlayer();
-	
-
-	// ÇÃ·¹ÀÌ¾î ÄÄÇ»ÅÍ ÆÄÀÏ
 	addFol(0, nullptr, "public", "Diary", true, false);
-	addtxt(0, com[0].getFile(0), "public", "2018.04.03", "ÇØÅ·ÀÇ ±âº».\n\n /scan : ¹«ÀÛÀ§ ÄÄÇ»ÅÍÀÇ IP¸¦ ½ºÄµÇÑ´Ù.\n /target [IP] : ÇØÅ·ÇÏ°í½ÍÀº ÄÄÇ»ÅÍÀÇ IP¸¦ ÁöÁ¤ÇÑ´Ù.\n /crack : ÁöÁ¤µÈ ÄÄÇ»ÅÍÀÇ Æ÷Æ®¸¦ ÇØÅ·ÇÑ´Ù.\nÆ÷Æ® Á¾·ù : ssh, ftp, smtp, http, proxy, firewall\n\n /nuke : Æ÷Æ®¸¦ ÀüºÎ ¿­¸é ÇØÅ·°¡´É\n /connet : ÇØÅ·À» ¿Ï·áÇÑ ÄÄÇ»ÅÍ¿¡ Á¢¼Ó, IP ¾ÈÀûÀ¸¸é ÁöÁ¤µÈ ÄÄÇ»ÅÍ¿¡ ¿¬°á ½Ãµµ\n /disconnet : ÄÄÇ»ÅÍ Á¢¼Ó ÇØÁ¦", true, false);
+	addtxt(0, autoParent, "public", "2018.04.03", "í•´í‚¹ì˜ ê¸°ë³¸.\n\n /scan : ë¬´ì‘ìœ„ ì»´í“¨í„°ì˜ IPë¥¼ ìŠ¤ìº”í•œë‹¤.\n /target [IP] : í•´í‚¹í•˜ê³ ì‹¶ì€ ì»´í“¨í„°ì˜ IPë¥¼ ì§€ì •í•œë‹¤.\n /crack : ì§€ì •ëœ ì»´í“¨í„°ì˜ í¬íŠ¸ë¥¼ í•´í‚¹í•œë‹¤.\ní¬íŠ¸ ì¢…ë¥˜ : ssh, ftp, smtp, http, proxy, firewall\n\n /nuke : í¬íŠ¸ë¥¼ ì „ë¶€ ì—´ë©´ í•´í‚¹ê°€ëŠ¥\n /connet : í•´í‚¹ì„ ì™„ë£Œí•œ ì»´í“¨í„°ì— ì ‘ì†, IP ì•ˆì ìœ¼ë©´ ì§€ì •ëœ ì»´í“¨í„°ì— ì—°ê²° ì‹œë„\n /disconnet : ì»´í“¨í„° ì ‘ì† í•´ì œ", true, false);
 	addFol(0, nullptr, "public", "Memo", true, false);
-	addtxt(0, com[0].getFile(1), "public", "¸Ş¸ğ1", "¸Ş¸ğ ³»¿ë", true, false);
-	addtxt(0, nullptr, "private", "/help", "»ì·ÁÁà...", true, true); setPass("¿£µùº¸¸é ¾Ë·ÁÁÜ");
-	addexe(0, nullptr, "public", "saveload", "/addtxt a a | /addfolder b", true, true);
-	addtxt(0, nullptr, "public", "AAAAA", "¼û°ÜÁø ÆÄÀÏÀÓ", false, true);
-	addexe(0, nullptr, "private", "scan.exe", "/scan", true); setPass("1234");
-	addFol(0, nullptr, "public", "USB", true);	// ³ªÁß¿¡ ¼û±èÆÄÀÏ Ã³¸®ÇÏ°í ¼Ò½Ä4¹øÀ» È®ÀÎÇÏ¸é ³ªÅ¸³ª°Ô ÇÒ ¿¹Á¤
+	addtxt(0, autoParent, "public", "ë©”ëª¨1", "ë©”ëª¨ ë‚´ìš©", true, false);
+	addtxt(0, nullptr, "private", "/help", "ì‚´ë ¤ì¤˜...", true, true); setPass("1234");
+	addexe(0, nullptr, "public", "íŒŒì¼ìƒì„±", "/addtxt ìƒì„±ëœ_í…ìŠ¤íŠ¸ ìë™ìƒì„±ë¨ | /addfolder ìƒì„±ëœ_í´ë” | /in ìƒì„±ëœ_í´ë” | /addtxt í…ìŠ¤íŠ¸1 ã…ã…‡ | /addtxt í…ìŠ¤íŠ¸2 ã…‚ã…‡ | /out", true, true);
 	//USB
-	addtxt(0, com[0].getFile(6), "public", "Detail_1", "[º¸¾È Á¡°Ë ±â·Ï - 2025.04.20 | ÀÛ¼ºÀÚ: ±è¼®Çö (º¸¾È °ü¸®ÀÚ)]\n \nºñÇà±â ÀÚµ¿ ¿îÇ× ½Ã½ºÅÛ ³»ºÎ¿¡¼­ ¾Ë ¼ö ¾ø´Â ¿ìÈ¸ ·çÆ¾ ¹ß°ß.\nÁ¤»ó ÀÎÁõ °úÁ¤À» ¿ìÈ¸ÇÏ¿© ¿ÜºÎ ¸í·ÉÀÌ »ğÀÔ °¡´ÉÇÑ ±¸Á¶.\n·Î±× ºĞ¼® °á°ú, ¾Æ·¡ ¸í·ÉÀÌ ºñÁ¤»óÀûÀ¸·Î ½ÇÇàµÊ:\nCMD: override_autopilot(true)\nCMD: set_altitude(0)\n \n°ø½Ä ¸Å´º¾ó ¹× ÄÚµåº£ÀÌ½º¿¡´Â Á¸ÀçÇÏÁö ¾Ê´Â ¹æ½Ä.\nº» ·çÆ¾ÀÌ ¾Ç¿ëµÉ °æ¿ì ºñÇà±â ÅëÁ¦°¡ ºÒ°¡´ÉÇØÁú ¼ö ÀÖÀ½.\n \nÀÌ¹Ì ½Ã½ºÅÛÀÌ Ä§ÇØ´çÇßÀ» °¡´É¼º¶ÇÇÑ Á¸Àç.\nÇØ´ç ·çÆ¾Àº ÀÇµµÀûÀ¸·Î »ğÀÔµÈ °ÍÀ¸·Î º¸ÀÓ. ºü¸¥ Á¶Ä¡°¡ ÇÊ¿äÇÔ.", true);
-	addtxt(0, com[0].getFile(6), "public", "Àü¼ÛµÇÁö¾ÊÀº¸ŞÀÏÃÊ¾È", "[Àü¼ÛµÇÁö ¾ÊÀº ¸ŞÀÏ ÃÊ¾È]\n \nTo: º»»ç º¸¾ÈÃÑ°ıºÎ\nSubject: ½Ã½ºÅÛ Ä§ÇØ ÀÇ½É°Ç\nÀÌ ·çÆ¾Àº ´Ü¼øÇÑ ¹ö±×°¡ ¾Æ´Ï¶ó, ´©±º°¡°¡ ¸¸µç ¿ìÈ¸ °æ·Î·Î º¸ÀÔ´Ï´Ù.\nÄ§ÀÔ ÈçÀûÀÌ ÀÖÀ¸¸ç, Á¢±ÙÀº ÃÖ¼Ò µÎ Â÷·Ê ÀÌ»ó °¨ÁöµÇ¾ú½À´Ï´Ù.\n¾î¶² ¸ñÀûÀÌ¾ú´ÂÁö´Â ¸ğ¸£°ÚÁö¸¸, ÀÌ°É ¹«½ÃÇÏ¸é »ç°í·Î ÀÌ¾îÁú ¼ö ÀÖ½À´Ï´Ù.\nÇÏÁö¸¸ ³»ºÎ °æ·Î¸¦ µû¶ó¿Â ÈçÀûµµ ÀÖ¾î, ³»ºÎ ÀÎ¹°ÀÌ ¿¬·çµÇ¾úÀ» °¡´É¼ºµµ ¹èÁ¦ÇÒ ¼ö ¾ø½À´Ï´Ù.\n³»°¡ ÀÌ »ç½ÇÀ» ¾Ë¾Ò´Ù´Â °Í ÀÚÃ¼°¡ À§ÇèÇÒ ¼öµµ ÀÖ½À´Ï´Ù.\nÁ¤º¸´Â ¹é¾÷ÇØ µÎ¾ú½À´Ï´Ù. ³»°¡ ³¡±îÁö º¸°íÇÏÁö ¸øÇÏ´õ¶óµµ\n´©±º°¡´Â ÀÌ°É ºÁ¾ßÇÕ´Ï´Ù. ³»°¡ º¸°í¸¦ ¸øÇÒ °æ¿ì Ä£±¸A¿¡°Ô ¿¬¶ô ¹Ù¶ø´Ï´Ù. \nÀü¼Û º¸·ù Áß...", true);
-	addtxt(0, com[0].getFile(6), "public", "Record.wav","\n\n[³ìÀ½ ÆÄÀÏ ÀÚµ¿ º¹±¸ ±â·Ï | ÀÏºÎ ¼Õ»óµÊ]\n \nÇü: ¿©±â Á¢±Ù ÁÂÇ¥ È®ÀÎÇØºÃ¾î. Æ÷Æ®6077¿¡¼­ ¿ÜºÎ ¿äÃ»ÀÌ °¨ÁöµÆ¾î.\nÇü: ·Î±×¿£ 'ÀÎÁõ ¿ìÈ¸' ¸í·ÉÀÌ µÎ ¹ø... ´©±º°¡ ½Ã½ºÅÛ ¾ÈÀ¸·Î µé¾î¿Ô´Ù´Â °Å¾ß.\nÇü: ...±â·ÏÀ» ³²°Ü¾ß°Ú¾î. ´õ ÀÌ»ó ÀÌ°É È¥ÀÚ °¨´çÇÒ ¼ø ¾ø¾î...\n \n* (ÅëÈ­ ²÷±è / Á¤Àû ¹ß»ı) *",true);
-	
-	
-	//½º¸¶Æ®Æù
-	addFol(0, nullptr, "public", "½º¸¶Æ®Æù", true); setPass("±è¼®Çö");	// ¸¶Âù°¡Áö·Î ³ªÁß¿¡ ¼û±èÆÄÀÏ Ã³¸®ÇÏ°í USB¸¦ È®ÀÎÇÏ¸é ³ªÅ¸³ª°Ô ÇÒ ¿¹Á¤ ÆĞµå¿öµå´Â ´Ù¸¥°÷¿¡¼­ Ã£À»¼ö ÀÖ°Ô ¼³Á¤
+	addFol(0, nullptr, "public", "USB", true);	// ë‚˜ì¤‘ì— ìˆ¨ê¹€íŒŒì¼ ì²˜ë¦¬í•˜ê³  ì†Œì‹4ë²ˆì„ í™•ì¸í•˜ë©´ ë‚˜íƒ€ë‚˜ê²Œ í•  ì˜ˆì •
+	addtxt(0, autoParent, "public", "Detail_1", "[ë³´ì•ˆ ì ê²€ ê¸°ë¡ - 2025.04.20 | ì‘ì„±ì: ê¹€ì„í˜„ (ë³´ì•ˆ ê´€ë¦¬ì)]\n \në¹„í–‰ê¸° ìë™ ìš´í•­ ì‹œìŠ¤í…œ ë‚´ë¶€ì—ì„œ ì•Œ ìˆ˜ ì—†ëŠ” ìš°íšŒ ë£¨í‹´ ë°œê²¬.\nì •ìƒ ì¸ì¦ ê³¼ì •ì„ ìš°íšŒí•˜ì—¬ ì™¸ë¶€ ëª…ë ¹ì´ ì‚½ì… ê°€ëŠ¥í•œ êµ¬ì¡°.\në¡œê·¸ ë¶„ì„ ê²°ê³¼, ì•„ë˜ ëª…ë ¹ì´ ë¹„ì •ìƒì ìœ¼ë¡œ ì‹¤í–‰ë¨:\nCMD: override_autopilot(true)\nCMD: set_altitude(0)\n \nê³µì‹ ë§¤ë‰´ì–¼ ë° ì½”ë“œë² ì´ìŠ¤ì—ëŠ” ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ë°©ì‹.\në³¸ ë£¨í‹´ì´ ì•…ìš©ë  ê²½ìš° ë¹„í–‰ê¸° í†µì œê°€ ë¶ˆê°€ëŠ¥í•´ì§ˆ ìˆ˜ ìˆìŒ.\n \nì´ë¯¸ ì‹œìŠ¤í…œì´ ì¹¨í•´ë‹¹í–ˆì„ ê°€ëŠ¥ì„±ë˜í•œ ì¡´ì¬.\ní•´ë‹¹ ë£¨í‹´ì€ ì˜ë„ì ìœ¼ë¡œ ì‚½ì…ëœ ê²ƒìœ¼ë¡œ ë³´ì„. ë¹ ë¥¸ ì¡°ì¹˜ê°€ í•„ìš”í•¨.", true);
+	addtxt(0, autoParent, "public", "ì „ì†¡ë˜ì§€ì•Šì€ë©”ì¼ì´ˆì•ˆ", "[ì „ì†¡ë˜ì§€ ì•Šì€ ë©”ì¼ ì´ˆì•ˆ]\n \nTo: ë³¸ì‚¬ ë³´ì•ˆì´ê´„ë¶€\nSubject: ì‹œìŠ¤í…œ ì¹¨í•´ ì˜ì‹¬ê±´\nì´ ë£¨í‹´ì€ ë‹¨ìˆœí•œ ë²„ê·¸ê°€ ì•„ë‹ˆë¼, ëˆ„êµ°ê°€ê°€ ë§Œë“  ìš°íšŒ ê²½ë¡œë¡œ ë³´ì…ë‹ˆë‹¤.\nì¹¨ì… í”ì ì´ ìˆìœ¼ë©°, ì ‘ê·¼ì€ ìµœì†Œ ë‘ ì°¨ë¡€ ì´ìƒ ê°ì§€ë˜ì—ˆìŠµë‹ˆë‹¤.\nì–´ë–¤ ëª©ì ì´ì—ˆëŠ”ì§€ëŠ” ëª¨ë¥´ê² ì§€ë§Œ, ì´ê±¸ ë¬´ì‹œí•˜ë©´ ì‚¬ê³ ë¡œ ì´ì–´ì§ˆ ìˆ˜ ìˆìŠµë‹ˆë‹¤.\ní•˜ì§€ë§Œ ë‚´ë¶€ ê²½ë¡œë¥¼ ë”°ë¼ì˜¨ í”ì ë„ ìˆì–´, ë‚´ë¶€ ì¸ë¬¼ì´ ì—°ë£¨ë˜ì—ˆì„ ê°€ëŠ¥ì„±ë„ ë°°ì œí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\në‚´ê°€ ì´ ì‚¬ì‹¤ì„ ì•Œì•˜ë‹¤ëŠ” ê²ƒ ìì²´ê°€ ìœ„í—˜í•  ìˆ˜ë„ ìˆìŠµë‹ˆë‹¤.\nì •ë³´ëŠ” ë°±ì—…í•´ ë‘ì—ˆìŠµë‹ˆë‹¤. ë‚´ê°€ ëê¹Œì§€ ë³´ê³ í•˜ì§€ ëª»í•˜ë”ë¼ë„\nëˆ„êµ°ê°€ëŠ” ì´ê±¸ ë´ì•¼í•©ë‹ˆë‹¤. ë‚´ê°€ ë³´ê³ ë¥¼ ëª»í•  ê²½ìš° ì¹œêµ¬Aì—ê²Œ ì—°ë½ ë°”ëë‹ˆë‹¤. \nì „ì†¡ ë³´ë¥˜ ì¤‘...", true);
+	addtxt(0, autoParent, "public", "Record.wav", "\n\n[ë…¹ìŒ íŒŒì¼ ìë™ ë³µêµ¬ ê¸°ë¡ | ì¼ë¶€ ì†ìƒë¨]\n \ní˜•: ì—¬ê¸° ì ‘ê·¼ ì¢Œí‘œ í™•ì¸í•´ë´¤ì–´. í¬íŠ¸6077ì—ì„œ ì™¸ë¶€ ìš”ì²­ì´ ê°ì§€ëì–´.\ní˜•: ë¡œê·¸ì—” 'ì¸ì¦ ìš°íšŒ' ëª…ë ¹ì´ ë‘ ë²ˆ... ëˆ„êµ°ê°€ ì‹œìŠ¤í…œ ì•ˆìœ¼ë¡œ ë“¤ì–´ì™”ë‹¤ëŠ” ê±°ì•¼.\ní˜•: ...ê¸°ë¡ì„ ë‚¨ê²¨ì•¼ê² ì–´. ë” ì´ìƒ ì´ê±¸ í˜¼ì ê°ë‹¹í•  ìˆœ ì—†ì–´...\n \n* (í†µí™” ëŠê¹€ / ì •ì  ë°œìƒ) *", true);
 
-	addFol(0, com[0].getFile(7), "public", "Message", true);
-	addFol(0, com[0].getFile(7), "public", "Call_Log", true);
 
-	addtxt(0, com[0].getFile(7)->getFile(0), "public", "[º¸¾ÈÆÀÀå]", "[4/21 09:44]\n \n¼®Çö ¾¾, ±×°Ç ±×³É Å×½ºÆ® ·çÆ¾ÀÌ¾ß. ÀÛ³â¿¡µµ ³ª¿Ô´ø °ÅÀİ¾Æ. ¿À¹öÁ» ÇÏÁö¸¶.\n¿ì¸® Áö±İ ¿¬Â÷µµ ¾ø°í, ¹Î°¨ÇÑ ½Ã±âÀÎ °Å ¾ËÀİ¾Æ.\nÁ¶¿ëÈ÷ ¹¯°í Áö³ª°¡ÀÚ. ½Ã½ºÅÛ ¹Ù²Ù´Â °Ç º»»ç Çã¶ô ¾øÀÎ ¾È µÅ ¾ËÀİ¾Æ\n¿ì¸® ±ÍÂú°Ô ÇÏÁö¸»ÀÚ", true);
-	addtxt(0, com[0].getFile(7)->getFile(0), "public", "[¾Ë¼ö¾ø´Â¹øÈ£]", "[4/19 20:32]\n \n±× ·çÆ¾ ³Ê¸¸ º» °Å ¾Æ´Ï¾ß. ´Ù¸¥ »ç¶÷µéµµ ´Ù ºÃ¾î. ÇÏÁö¸¸ ÀÔ ´Ù¹°¾úÁö.\n¿Ö ¾ÆÁ÷µµ ±×°É ÆÄ³Ä°í ÇÏ´õ¶ó. Á¶½ÉÇØ.\n¸ğµç °Ô ±â·ÏµÇ°í ÀÖ¾î. ³× À§Ä¡µµ ¸¶Âù°¡Áö¾ß.", true);
-	addtxt(0, com[0].getFile(7)->getFile(0), "public", "[¾ö¸¶]", "[4/19 20:32]\n \n¼®Çö¾Æ ÀÌ¹ø ÁÖ¸»¿¡ Áı¿¡ ¿Ã ¼ö ÀÖ´Ï?", true);
+	//ìŠ¤ë§ˆíŠ¸í°
+	addFol(0, nullptr, "public", "ìŠ¤ë§ˆíŠ¸í°", true); setPass("ê¹€ì„í˜„");	// ë§ˆì°¬ê°€ì§€ë¡œ ë‚˜ì¤‘ì— ìˆ¨ê¹€íŒŒì¼ ì²˜ë¦¬í•˜ê³  USBë¥¼ í™•ì¸í•˜ë©´ ë‚˜íƒ€ë‚˜ê²Œ í•  ì˜ˆì • íŒ¨ë“œì›Œë“œëŠ” ë‹¤ë¥¸ê³³ì—ì„œ ì°¾ì„ìˆ˜ ìˆê²Œ ì„¤ì •
 
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[Á¶ÇöÃ¶±³¼ö´Ô]", "[5/7 01:55]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[Â÷Àç½Â]", "[5/3 16:08]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[¹ö¶ô¿À¹Ù¸¶]", "[5/2 04:32]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[ÀÌ»óÇõ]", "[13/12 25:32]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[µµ³¯µåÆ®·³ÇÁ]", "[2/22 22:22]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[Æ®¶ö¶ö·¹·ÎÆ®¶ö¶ö¶ó¶ó]", "[2/17 12:32]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[³ëµåÇö]", "[1/26 17:08]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[³ëµåÇö]", "[1/26 17:08]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[³ëµåÇö]", "[1/26 17:08]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[³ëµåÇö]", "[1/26 17:08]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[³ëµåÇö]", "[1/26 17:08]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[³ëµåÇö]", "[1/26 17:08]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[³ëµåÇö]", "[1/26 17:08]", true);
-	addtxt(0, com[0].getFile(7)->getFile(1), "public", "[³ëµåÇö]", "[1/26 17:08]", true);
+	addFol(0, com[0].getFile(5), "public", "Message", true);
+	addFol(0, com[0].getFile(5), "public", "Call_Log", true);
 
-	// ±×¿Ü ÄÄÇ»ÅÍ ÆÄÀÏ
-	addFol(1, nullptr, "public", "1¹ø_ÄÄÇ»ÅÍ", true);
-	addtxt(1, com[1].getFile(0), "public", "news_1", "¿À´Ã ¾ÆÄ§ ´º½º¸¦ º¸¾Ò´Ù. ´º½º¿¡¼­´Â ¿©°´±â »ç°í¸¦ º¸¿©ÁÖ°íÀÖ¾ù´Ù. ¾îÁ¦ ÇüÀÌ ¿Ü±¹À¸·Î °£´Ù´Â ¾ê±â¸¦ µé¾ú´Ù.", true);
-	addtxt(1, com[1].getFile(0), "private", "news_2", "¿À´Ã °æÂû¿¡°Ô¼­ ÀüÈ­°¡ ¿Ô´Ù. ÇüÀÌ Á×¾ú´Ù°í ÇÑ´Ù. ¾îÁ¦ ´º½º·Î º¸¾Ò´ø ¿©°´±â¿¡ ÇüÀÌ Å¸°í ÀÖ¾ú´Ù°í ÇÑ´Ù. ¿©·¯°¡Áö »ı°¢ÀÌ µé¾ú´Ù. ÇüÀº ÂøÇÑ »ç¶÷ÀÌ¾ú´Ù.", true); setPass("1125");
-	addtxt(1, com[1].getFile(0), "private", "news_3", "", true); setPass("ºñ¹Ğ¹øÈ£ Á¤ÇØ¾ßÇÔ");
-	addtxt(1, com[1].getFile(0), "private", "news_4", "ÇüÀÇ À¯Ç°¿¡¼­ ¼ö»óÇÑ USB°¡ ¹ß°ß µÇ¾ú´Ù.±×³¯ ÀÌÈÄ·Î ³ª´Â ¾Æ¹«°Íµµ ÇÒ ¼ö ¾ø´Ù. Æ¼ºñ¸¦ º¸¾Æµµ ±× »ç°Ç¸¸ ³ª¿À°í ÀÖ´Ù. ¾ğÁ¦Âë ±¦Âú¾Æ Áú±î\n\"³»°¡ »ç°ÇÀ» ÇØ°áÇØº¼±î?\"", true); setPass("1125");
+	addtxt(0, autoParent, "public", "[ë³´ì•ˆíŒ€ì¥]", "[4/21 09:44]\n \nì„í˜„ ì”¨, ê·¸ê±´ ê·¸ëƒ¥ í…ŒìŠ¤íŠ¸ ë£¨í‹´ì´ì•¼. ì‘ë…„ì—ë„ ë‚˜ì™”ë˜ ê±°ì–ì•„. ì˜¤ë²„ì¢€ í•˜ì§€ë§ˆ.\nìš°ë¦¬ ì§€ê¸ˆ ì—°ì°¨ë„ ì—†ê³ , ë¯¼ê°í•œ ì‹œê¸°ì¸ ê±° ì•Œì–ì•„.\nì¡°ìš©íˆ ë¬»ê³  ì§€ë‚˜ê°€ì. ì‹œìŠ¤í…œ ë°”ê¾¸ëŠ” ê±´ ë³¸ì‚¬ í—ˆë½ ì—†ì¸ ì•ˆ ë¼ ì•Œì–ì•„\nìš°ë¦¬ ê·€ì°®ê²Œ í•˜ì§€ë§ì", true);
+	addtxt(0, autoParent, "public", "[ì•Œìˆ˜ì—†ëŠ”ë²ˆí˜¸]", "[4/19 20:32]\n \nê·¸ ë£¨í‹´ ë„ˆë§Œ ë³¸ ê±° ì•„ë‹ˆì•¼. ë‹¤ë¥¸ ì‚¬ëŒë“¤ë„ ë‹¤ ë´¤ì–´. í•˜ì§€ë§Œ ì… ë‹¤ë¬¼ì—ˆì§€.\nì™œ ì•„ì§ë„ ê·¸ê±¸ íŒŒëƒê³  í•˜ë”ë¼. ì¡°ì‹¬í•´.\nëª¨ë“  ê²Œ ê¸°ë¡ë˜ê³  ìˆì–´. ë„¤ ìœ„ì¹˜ë„ ë§ˆì°¬ê°€ì§€ì•¼.", true);
+	addtxt(0, autoParent, "public", "[ì—„ë§ˆ]", "[4/19 20:32]\n \nì„í˜„ì•„ ì´ë²ˆ ì£¼ë§ì— ì§‘ì— ì˜¬ ìˆ˜ ìˆë‹ˆ?", true);
 
-	
+	addtxt(0, autoParent, "public", "[ì¡°í˜„ì² êµìˆ˜ë‹˜]", "[5/7 01:55]", true);
+	addtxt(0, autoParent, "public", "[ì°¨ì¬ìŠ¹]", "[5/3 16:08]\n \në”°í!!!!!!!!", true);
+	addtxt(0, autoParent, "public", "[ë²„ë½ì˜¤ë°”ë§ˆ]", "[5/2 04:32]", true);
+	addtxt(0, autoParent, "public", "[ì´ìƒí˜]", "[13/12 25:32]", true);
+	addtxt(0, autoParent, "public", "[ë„ë‚ ë“œíŠ¸ëŸ¼í”„]", "[2/22 22:22]", true);
+	addtxt(0, autoParent, "public", "[íŠ¸ë„ë„ë ˆë¡œíŠ¸ë„ë„ë¼ë¼]", "[2/17 12:32]", true);
+	addtxt(0, autoParent, "public", "[ë…¸ë“œí˜„]", "[1/26 17:08]", true);
+	addtxt(0, autoParent, "public", "[ë…¸ë“œí˜„]", "[1/26 17:08]", true);
+	addtxt(0, autoParent, "public", "[ë…¸ë“œí˜„]", "[1/26 17:08]", true);
+	addtxt(0, autoParent, "public", "[ë…¸ë“œí˜„]", "[1/26 17:08]", true);
+	addtxt(0, autoParent, "public", "[ë…¸ë“œí˜„]", "[1/26 17:08]", true);
+	addtxt(0, autoParent, "public", "[ë…¸ë“œí˜„]", "[1/26 17:08]", true);
+	addtxt(0, autoParent, "public", "[ë…¸ë“œí˜„]", "[1/26 17:08]", true);
+	addtxt(0, autoParent, "public", "[ë…¸ë“œí˜„]", "[1/26 17:08]", true);
+
+	// ê·¸ì™¸ ì»´í“¨í„° íŒŒì¼
+	// íŠœí† ë¦¬ì–¼ ì»´í“¨í„°
+	com[1].setComputer(1, "00.000.000.000", 0,0,1,0,1,1); // ì»´í“¨í„° ì •ë³´ ì‚¬ìš©ì ì§€ì •
 	addFol(1, nullptr, "public", "News_Collection", true);
-	addtxt(1, com[1].getFile(0), "public", "¼Ò½Ä1", "2025³â 5¿ù 7ÀÏ ¿À´Ã ÇüÀÌ »ç°í·Î Á×¾ú´Ù..\n»ç°íÀÇ ¿øÀÎÀº ºñÇà±âÅë½Å»ç°í ¶ó°íÇÑ´Ù\nÇüÀÇ Á×À½ÀÌ ³Ê¹« ¾ÈÅ¸±õ´Ù.", true);
-	addtxt(1, com[1].getFile(0), "private", "¼Ò½Ä2", "ÇüÀÌ °ñ¶ú´ø ¿©°´±â´Â ´ë±â¾÷ A»ç ¶ó°í ÇÑ´Ù. ´ë±â¾÷¿¡ ¾î¶°ÇÑ »ç°í°¡ ÀÏ¾î³­°ÍÀÏ±î?", true); setPass("1125");
-	addtxt(1, com[1].getFile(0), "private", "¼Ò½Ä3", "ÇüÀº »ıÀü ³ª¿¡°Ô ÀÌ»óÇÑ Á¡ÀÌ ¸¹´Ù °í ¸»ÇÑÀûÀÌ ÀÖ¾ú´Ù\n ÇüÀÇ À¯Ç°¿¡¼­ ¾ÏÈ£È­µÈ USB°¡ ¹ß°ßµÇ¾ú´Ù. ÀÌ°ÍÀ» ÇØÅ·ÇØº¸ÀÚ", true); setPass("ºñ¹Ğ¹øÈ£ Á¤ÇØ¾ßÇÔ");
-	addtxt(1, com[1].getFile(0), "private", "¼Ò½Ä4", "", true); setPass("1125");
+	addtxt(1, autoParent, "public", "[ì†ë³´]ì—¬ê°ê¸°_ì¶”ë½", "[ì†ë³´] í•˜ëŠ˜í•­ê³µ ì—¬ê°ê¸° ì¶”ë½... íƒ‘ìŠ¹ì ì „ì› ì‚¬ë§\n\n2025ë…„ 5ì›” 7ì¼ ìƒˆë²½, í•˜ëŠ˜í•­ê³µ ì†Œì† ì—¬ê°ê¸°ê°€ ì¶”ë½í•´ íƒ‘ìŠ¹ì ì „ì›ì´ ì‚¬ë§í•˜ëŠ” ì°¸ì‚¬ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.\nì‚¬ê³ ê¸°ëŠ” ì§€ë©´ê³¼ ì¶©ëŒí•œ ì§í›„ í­ë°œí–ˆìœ¼ë©°, ê¸°ì²´ëŠ” ì™„ì „íˆ ì†Œì‹¤ëœ ê²ƒìœ¼ë¡œ ì•Œë ¤ì¡ŒìŠµë‹ˆë‹¤.\ní˜„ì¬ ì •í™•í•œ ì‚¬ê³  ì›ì¸ì€ ì¡°ì‚¬ ì¤‘ì— ìˆìœ¼ë©°, ê´€ê³„ ë‹¹êµ­ì€ ì‚¬ê³  í˜„ì¥ì„ í†µì œí•˜ê³  ìˆ˜ìŠµ ì‘ì—…ì— ì°©ìˆ˜í–ˆìŠµë‹ˆë‹¤.", true);
+	addtxt(1, autoParent, "private", "news_3", "", true); setPass("ë¹„ë°€ë²ˆí˜¸ ì •í•´ì•¼í•¨");
+	addtxt(1, autoParent, "private", "news_4", "í˜•ì˜ ìœ í’ˆì—ì„œ ìˆ˜ìƒí•œ USBê°€ ë°œê²¬ ë˜ì—ˆë‹¤. ê·¸ë‚  ì´í›„ë¡œ ë‚˜ëŠ” ì•„ë¬´ê²ƒë„ í•  ìˆ˜ ì—†ë‹¤. í‹°ë¹„ë¥¼ ë³´ì•„ë„ ê·¸ ì‚¬ê±´ë§Œ ë‚˜ì˜¤ê³  ìˆë‹¤. ì–¸ì œì¯¤ ê´œì°®ì•„ ì§ˆê¹Œ\n\"ë‚´ê°€ ì‚¬ê±´ì„ í•´ê²°í•´ë³¼ê¹Œ?\"", true); setPass("1125");
+	addtxt(1, nullptr, "public", "2025.05.07", "ì˜¤ëŠ˜ ìƒˆë²½, ë„ˆë¥¼ í•˜ëŠ˜ë¡œ ë³´ëƒˆë‹¤.\ní…”ë ˆë¹„ì „ì—ì„œ ì „ì› ì‚¬ë§ì´ë¼ëŠ” ìë§‰ì´ ë–´ì„ ë•Œ,\në‚˜ëŠ” ê·¸ ë§ì„ ë¯¿ì„ ìˆ˜ ì—†ì—ˆë‹¤.ë¯¿ê³  ì‹¶ì§€ ì•Šì•˜ë‹¤.\ní•˜ì§€ë§Œ ê²°êµ­, ê·¸ ì•ˆì— ë„¤ ì´ë¦„ì´ ìˆë‹¤ëŠ” ê±¸ ë°›ì•„ë“¤ì—¬ì•¼ í–ˆë‹¤.\n\nì•„ì§ë„ ë„¤ ë°©ì€ ê·¸ëŒ€ë¡œë‹¤.\në„ˆëŠ” ì•„ë¬´ ë§ ì—†ì´ ë– ë‚¬ê³ , ë‚˜ëŠ” ì•„ë¬´ ë§ë„ í•´ì¤„ ìˆ˜ ì—†ì—ˆë‹¤.\n\në”¸ì•„, ì•„ë¹ ê°€ ë¯¸ì•ˆí•´.\nê·¸ë‚  ì•„ì¹¨, ë„ˆë¥¼ ê»´ì•ˆì•„ì£¼ì§€ ëª»í•œ ê²Œ ë„ˆë¬´ í›„íšŒë¼.\në‹¤ìŒ ìƒì—”... ê¼­ ë” ë§ì´ ì›ƒê²Œ í•´ì¤„ê²Œ.", true); setPass("1125");
 
-	addFol(2, nullptr, "public", "ÇüÀÇ_ÄÄÇ»ÅÍ", true);
-	
-	addtxt(2, com[1].getFile(1), "public", "‹RŒü„o»Ô2", "1", true);
-	addtxt(2, com[1].getFile(1), "public", "‹RŒü„o»Ô3", "1", true);     // 2¹ø ÄÄÇ»ÅÍ¿¡ ‹RŒü„o»Ô ÀÌ¶ó´Â Æú´õÀ» »ı¼º \ ±×´ÙÀ½¿¡ ÆÄÀÏ¾È¿¡¼­ ºñ¹Ğ¹øÈ£
-	addtxt(2, com[1].getFile(1), "public", "‹RŒü„o»Ô4", "2", true);
-	addtxt(2, com[1].getFile(1), "public", "‹RŒü„o»Ô5", "5", true);
+	// í˜•ì˜ ì»´í“¨í„° 1
+	addFol(2, nullptr, "public", "C:Drive", true);
+	addtxt(2, autoParent, "public", "ë”¹ë›€ê¼˜ë¿”2", "1", true);
+	addtxt(2, autoParent, "public", "ë”¹ë›€ê¼˜ë¿”3", "1", true);     // 2ë²ˆ ì»´í“¨í„°ì— ë”¹ë›€ê¼˜ë¿” ì´ë¼ëŠ” í´ë”ì„ ìƒì„± \ ê·¸ë‹¤ìŒì— íŒŒì¼ì•ˆì—ì„œ ë¹„ë°€ë²ˆí˜¸
+	addtxt(2, autoParent, "public", "ë”¹ë›€ê¼˜ë¿”4", "2", true);
+	addtxt(2, autoParent, "public", "ë”¹ë›€ê¼˜ë¿”5", "5", true);
 
-	
-	addFol(3, nullptr, "public", "ÇüÀÇ_usb", true); setPass("³ªÀÇ »ıÀÏ");
-	addtxt(3, com[3].getFile(0), "private", "ÇüÀÇ_usb1", "USB º¹È£È­ ½Ãµµ -> Project Aegis Red Line Åë½Å ÇÁ·ÎÅäÄİ 3´Ü°è ¹éµµ¾î ¼³°è µî ºÒ±æÇÑ ¿ë¾î°¡ ÀûÇôÀÖ´Ù.", true); setPass("³ªÀÇ »ıÀÏ");
-	addtxt(3, com[3].getFile(0), "private", "ÇüÀÇ_usb2", "ÇüÀº A»çÀÇ Åë½Å º¸¾È ½Ã½ºÅÛ ¿¬±¸ÀÚ¿´À¸¸ç, ½ÅÇü Åë½Å ½Ã½ºÅÛ¿¡ ÀÇµµµÈ º¸¾È Ãë¾àÁ¡ÀÌ Á¸ÀçÇÑ´Ù°í ¸»ÇÑ ³ìÃëÆÄÀÏÀÌ Á¸ÀçÇÑ´Ù°í ¾²¿©ÀÖ´Ù.", false); setPass("³ªÀÇ »ıÀÏ");
-	
-	
-
-
-
-	//addtxt(0, com[0].getFile(5)->getFile(1), "public", "[¾ö¸¶]", "[4/19 20:32]\n \n¼®Çö¾Æ ÀÌ¹ø ÁÖ¸»¿¡ Áı¿¡ ¿Ã ¼ö ÀÖ´Ï?", true); // ¿©±â¼­ºÎÅÍ ÁøÇàÇØ¾ßÇÔ
-
-	//command.cmd_connect("127.0.0.1");
-
-	
-	//remove(0, 1);
+	// í˜•ì˜ ì»´í“¨í„° 2
+	addFol(3, nullptr, "public", "í˜•ì˜_usb", true); setPass("ë‚˜ì˜ ìƒì¼");
+	addtxt(3, autoParent, "private", "í˜•ì˜_usb1", "USB ë³µí˜¸í™” ì‹œë„ -> Project Aegis Red Line í†µì‹  í”„ë¡œí† ì½œ 3ë‹¨ê³„ ë°±ë„ì–´ ì„¤ê³„ ë“± ë¶ˆê¸¸í•œ ìš©ì–´ê°€ ì í˜€ìˆë‹¤.", true); setPass("ë‚˜ì˜ ìƒì¼");
+	addtxt(3, autoParent, "private", "í˜•ì˜_usb2", "í˜•ì€ Aì‚¬ì˜ í†µì‹  ë³´ì•ˆ ì‹œìŠ¤í…œ ì—°êµ¬ìì˜€ìœ¼ë©°, ì‹ í˜• í†µì‹  ì‹œìŠ¤í…œì— ì˜ë„ëœ ë³´ì•ˆ ì·¨ì•½ì ì´ ì¡´ì¬í•œë‹¤ê³  ë§í•œ ë…¹ì·¨íŒŒì¼ì´ ì¡´ì¬í•œë‹¤ê³  ì“°ì—¬ìˆë‹¤.", false); setPass("ë‚˜ì˜ ìƒì¼");
 
 	command.cmd_connect("127.0.0.1");
+	
 	while (!command.getShutdown()) {
 		canvas.draw();
 		command.checkCommand(canvas.input());
 	}
+	
 	for (File* f : File::files) { cout << f->getId(); delete f; }
 	delete[] com;
 	return 0;
 }
 void setPass(string p) { File::files[File::files.size()-1]->setPass(p); }
-void addtxt(int cNum, File* parent, string security, string name, string desc, bool v, bool cR) {
-	File* f = new txt(File::fileId, security, name, desc, v, cR);
+void addtxt(int cNum, File* parent, string security, string name, string desc, bool v, bool cR, bool oneshot) {
+	File* f = new txt(File::fileId, security, name, desc, v, cR, oneshot);
 	if (parent) { com[cNum].add(parent, f); }
 	else { com[cNum].add(f); }
 	File::files.push_back(f);
 	File::fileId++;
 }
-void addexe(int cNum, File* parent, string security, string name, string code, bool v, bool cR) {
-	File* f = new exe(File::fileId, security, name, code, v, cR);
+void addexe(int cNum, File* parent, string security, string name, string code, bool v, bool cR, bool oneshot) {
+	File* f = new exe(File::fileId, security, name, code, v, cR, oneshot);
 	if (parent) { com[cNum].add(parent, f); }
 	else { com[cNum].add(f); }
 	File::files.push_back(f);
 	File::fileId++;
 }
-void addFol(int cNum, File* parent, string security, string name, bool v, bool cR) {
-	File* f = new Folder(File::fileId, security, name, v, cR);
+void addFol(int cNum, File* parent, string security, string name, bool v, bool cR, bool oneshot) {
+	File* f = new Folder(File::fileId, security, name, v, cR, oneshot);
 	if (parent) { com[cNum].add(parent, f); }
 	else { com[cNum].add(f); }
+	autoParent = f;
 	File::files.push_back(f);
 	File::fileId++;
 }

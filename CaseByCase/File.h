@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "StructPack.h"
 #include <iostream>
 #include <sstream>
@@ -16,11 +16,12 @@ class File {
 
 	bool visible;
 	bool canRemove;
+	bool oneshot;
 public:
 	static vector<File*> files;
 	static int fileId;
 
-	File(int id, string icon, string s, string n, bool v, bool cR) : id(id), icon(icon), securityType(s), name(n), pass(""), visible(v), canRemove(cR) {}
+	File(int id, string icon, string s, string n, bool v, bool cR, bool oneshot) : id(id), icon(icon), securityType(s), name(n), pass(""), visible(v), canRemove(cR), oneshot(oneshot) {}
 	void setSecurity(string security) { securityType = security; }
 	void setPass(string p) { pass = p; }
 	string getSecurity() { return securityType; }
@@ -28,12 +29,11 @@ public:
 	string getIcon() { return icon; }
 	bool getVisible() { return visible; }
 	bool getCanRemove() { return canRemove; }
+	bool getOneshot() { return oneshot; }
 
 	virtual void add(File* child) {}
 	virtual void erase(int id) {}
-	virtual void setParent(File* f) { 
-		parentFile = f;
-	}
+	virtual void setParent(File* f) { parentFile = f; }
 	virtual File* getParent() { return parentFile; }
 	virtual int getId() { return id; }
 	virtual string getName() { return name; }
@@ -57,8 +57,8 @@ public:
 class txt : public File {
 	string desc;
 public:
-	txt(int i, string s, string n, string d, bool v, bool cR) : File(i, "[T]", s, n, v, cR), desc(d) {}
-	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove) {
+	txt(int i, string s, string n, string d, bool v, bool cR, bool oneshot) : File(i, "[T]", s, n, v, cR, oneshot), desc(d) {}
+	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {
 
 	}
 	string getDesc() {
@@ -69,11 +69,11 @@ public:
 class exe : public File {
 	string code;
 public:
-	exe(int i, string s, string n, string c, bool v, bool cR) : File(i, "[>]", s, n, v, cR), code(c) {}
-	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove) {
-
+	exe(int i, string s, string n, string c, bool v, bool cR, bool oneshot) : File(i, "[>]", s, n, v, cR, oneshot), code(c) {}
+	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {
+		code = file.code;
 	}
-	vector<string> runCode() { // ÄÚµå ½ÇÇà½Ã '|' ±âÁØÀ¸·Î Àß¶ó¼­ ¸®ÅÏ
+	vector<string> runCode() { // ì½”ë“œ ì‹¤í–‰ì‹œ '|' ê¸°ì¤€ìœ¼ë¡œ ì˜ë¼ì„œ ë¦¬í„´
 		vector<string> commands;
 		istringstream iss(code);
 		string segment;
@@ -84,7 +84,7 @@ public:
 
 		return commands;
 	}
-	string trim(const string& str) { // ¹®ÀÚ¿­ ¾çÂÊ °ø¹é Á¦°Å ÇÔ¼ö
+	string trim(const string& str) { // ë¬¸ìì—´ ì–‘ìª½ ê³µë°± ì œê±° í•¨ìˆ˜
 		size_t first = str.find_first_not_of(" \t\n\r");
 		if (first == string::npos) return "";
 		size_t last = str.find_last_not_of(" \t\n\r");
@@ -96,15 +96,15 @@ public:
 class Folder : public File {
 	vector<File*> childFile;
 public:
-	Folder(int id, string security, string name, bool v, bool cR) : File(id, "[_]", security, name, v, cR) {}
-	Folder(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove) {
+	Folder(int id, string security, string name, bool v, bool cR, bool oneshot) : File(id, "[_]", security, name, v, cR, oneshot) {}
+	Folder(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {
 		if (file.parentID == -1) return;
 		for (int i = 0; i < File::getFileCount(); i++) {
 			if (File::files[i]->getId() == file.parentID) {
 				setParent(File::files[i]);
 				File::files[i]->add(this);
 			}
-		} // ºÎ¸ğ ¼³Á¤
+		} // ë¶€ëª¨ ì„¤ì •
 	}
 
 	~Folder() {
