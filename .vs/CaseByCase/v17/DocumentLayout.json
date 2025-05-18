@@ -1,44 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Project\\casebygays\\",
+  "WorkspaceRootPath": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\",
   "Documents": [
     {
-<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Command.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\Command.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Canvas.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\Canvas.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Computer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\Computer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\File.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\File.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-=======
-      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Project\\casebygays\\CaseByCase\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Project\\casebygays\\CaseByCase\\File.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\File.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
->>>>>>> e2b6bfa59003ede9bef4095c753fa2194d93fd97
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Project\\casebygays\\CaseByCase\\Canvas.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Canvas.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\Canvas.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Project\\casebygays\\CaseByCase\\Computer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\Computer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-<<<<<<< HEAD
-      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\File.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\File.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-=======
-      "AbsoluteMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|C:\\Project\\casebygays\\CaseByCase\\Command.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{5D8E4469-5CCE-4227-8CD5-0AF78F0966C8}|CaseByCase\\CaseByCase.vcxproj|solutionrelative:CaseByCase\\Command.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
->>>>>>> e2b6bfa59003ede9bef4095c753fa2194d93fd97
     }
   ],
   "DocumentGroupContainers": [
@@ -48,34 +30,31 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-<<<<<<< HEAD
           "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "File.h",
               "DocumentMoniker": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\File.h",
               "RelativeDocumentMoniker": "CaseByCase\\File.h",
               "ToolTip": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\File.h",
               "RelativeToolTip": "CaseByCase\\File.h",
-              "ViewState": "AgIAACcAAAAAAAAAAAAAABYAAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAG8AAAAAAAAAAAAAAEgAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-05-04T10:40:59.65Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-04T10:40:59.65Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Computer.h",
               "DocumentMoniker": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Computer.h",
               "RelativeDocumentMoniker": "CaseByCase\\Computer.h",
               "ToolTip": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Computer.h",
               "RelativeToolTip": "CaseByCase\\Computer.h",
-              "ViewState": "AgIAAFUAAAAAAAAAAAAAAGYAAAACAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAGYAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-05-04T10:28:29.718Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-04T10:28:29.718Z"
             },
             {
               "$type": "Document",
@@ -85,88 +64,34 @@
               "RelativeDocumentMoniker": "CaseByCase\\Command.h",
               "ToolTip": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Command.h",
               "RelativeToolTip": "CaseByCase\\Command.h",
-              "ViewState": "AgIAAB8BAAAAAAAAAAAYwDABAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-=======
-          "SelectedChildIndex": 5,
-          "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "File.h",
-              "DocumentMoniker": "C:\\Project\\casebygays\\CaseByCase\\File.h",
-              "RelativeDocumentMoniker": "CaseByCase\\File.h",
-              "ToolTip": "C:\\Project\\casebygays\\CaseByCase\\File.h",
-              "RelativeToolTip": "CaseByCase\\File.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-05-04T10:40:59.65Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Computer.h",
-              "DocumentMoniker": "C:\\Project\\casebygays\\CaseByCase\\Computer.h",
-              "RelativeDocumentMoniker": "CaseByCase\\Computer.h",
-              "ToolTip": "C:\\Project\\casebygays\\CaseByCase\\Computer.h",
-              "RelativeToolTip": "CaseByCase\\Computer.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-05-04T10:28:29.718Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Command.h",
-              "DocumentMoniker": "C:\\Project\\casebygays\\CaseByCase\\Command.h",
-              "RelativeDocumentMoniker": "CaseByCase\\Command.h",
-              "ToolTip": "C:\\Project\\casebygays\\CaseByCase\\Command.h",
-              "RelativeToolTip": "CaseByCase\\Command.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAM4AAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
->>>>>>> e2b6bfa59003ede9bef4095c753fa2194d93fd97
               "WhenOpened": "2025-05-04T10:27:08.962Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "Canvas.h",
-              "DocumentMoniker": "C:\\Project\\casebygays\\CaseByCase\\Canvas.h",
+              "DocumentMoniker": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Canvas.h",
               "RelativeDocumentMoniker": "CaseByCase\\Canvas.h",
-              "ToolTip": "C:\\Project\\casebygays\\CaseByCase\\Canvas.h",
+              "ToolTip": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Canvas.h",
               "RelativeToolTip": "CaseByCase\\Canvas.h",
-<<<<<<< HEAD
               "ViewState": "AgIAACkAAAAAAAAAAAAYwDsAAAAZAAAAAAAAAA==",
-=======
-              "ViewState": "AgIAAE0AAAAAAAAAAAAowHEAAAACAAAAAAAAAA==",
->>>>>>> e2b6bfa59003ede9bef4095c753fa2194d93fd97
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-05-04T10:27:09.191Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-04T10:27:09.191Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Main.cpp",
-              "DocumentMoniker": "C:\\Project\\casebygays\\CaseByCase\\Main.cpp",
+              "DocumentMoniker": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Main.cpp",
               "RelativeDocumentMoniker": "CaseByCase\\Main.cpp",
-              "ToolTip": "C:\\Project\\casebygays\\CaseByCase\\Main.cpp",
+              "ToolTip": "C:\\Users\\Chaseungjae\\Desktop\\casebygays\\CaseByCase\\Main.cpp",
               "RelativeToolTip": "CaseByCase\\Main.cpp",
-<<<<<<< HEAD
-              "ViewState": "AgIAABsAAAAAAAAAAAAAACcAAAAjAAAAAAAAAA==",
-=======
-              "ViewState": "AgIAABkAAAAAAAAAAAAAACcAAAAKAAAAAAAAAA==",
->>>>>>> e2b6bfa59003ede9bef4095c753fa2194d93fd97
+              "ViewState": "AgIAAFoAAAAAAAAAAAAAAGUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-05-04T10:22:52.214Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-04T10:22:52.214Z"
             }
           ]
         }
