@@ -7,6 +7,7 @@
 #include <sstream>
 #include <vector>
 #include <windows.h>
+#include <string>
 using namespace std;
 
 #define CMDSIZE 41 // cmd 최대 출력 줄 수
@@ -224,6 +225,8 @@ public:
 		index++;
 		cout << "\n";
 	}
+
+
 	void printCMD(int space, int index) {
 		for (int i = 0; i < space; i++) cout << " ";
 		if (index < cmd.size())

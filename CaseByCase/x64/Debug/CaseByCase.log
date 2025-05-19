@@ -2,17 +2,16 @@
 C:\Users\Chaseungjae\Desktop\casebygays\CaseByCase\File.h(134,44): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 'Main.cpp'을(를) 컴파일하는 중)
   
-C:\Users\Chaseungjae\Desktop\casebygays\CaseByCase\Computer.h(91,44): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Chaseungjae\Desktop\casebygays\CaseByCase\Computer.h(103,44): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 'Main.cpp'을(를) 컴파일하는 중)
   
-C:\Users\Chaseungjae\Desktop\casebygays\CaseByCase\Canvas.h(176,45): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Chaseungjae\Desktop\casebygays\CaseByCase\Canvas.h(205,45): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 'Main.cpp'을(를) 컴파일하는 중)
   
-C:\Users\Chaseungjae\Desktop\casebygays\CaseByCase\Canvas.h(195,45): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Chaseungjae\Desktop\casebygays\CaseByCase\Canvas.h(224,45): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 'Main.cpp'을(를) 컴파일하는 중)
   
-C:\Users\Chaseungjae\Desktop\casebygays\CaseByCase\Canvas.h(210,36): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Chaseungjae\Desktop\casebygays\CaseByCase\Canvas.h(241,36): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 'Main.cpp'을(를) 컴파일하는 중)
   
-  LINK : C:\Users\Chaseungjae\Desktop\casebygays\x64\Debug\CaseByCase.exe을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
   CaseByCase.vcxproj -> C:\Users\Chaseungjae\Desktop\casebygays\x64\Debug\CaseByCase.exe
