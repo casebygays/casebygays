@@ -6,13 +6,15 @@ using namespace std;
 class Computer {
 	string IP;
 	int level;
+	int log;
 	bool ssh, ftp, smtp, http, proxy, firewall; // 포트
 	bool is_nuke; // 해킹됨
 	vector<File*> childFile;
 public:
 	Computer() {
+		IP = setRandomIP(level);
 		level = rand() % 3;
-		IP = addRandomIP(level);
+		log = 0;
 		ssh = rand() % 2;
 		ftp = rand() % 2;
 		smtp = rand() % 2;
@@ -21,10 +23,7 @@ public:
 		firewall = rand() % 2 - 1 + level;
 		is_nuke = false;
 	}
-	
-	~Computer() {
-	}
-	// 세팅
+	// 컴퓨터 정보 수정
 	void setPlayer() {
 		IP = "127.0.0.1";
 		is_nuke = true;
@@ -40,7 +39,7 @@ public:
 		this->firewall = firewall;
 		is_nuke = false;
 	}
-	string addRandomIP(int lvl) {
+	string setRandomIP(int lvl) {
 		int min[4];
 		int max[4];
 		int octet[4];
@@ -61,6 +60,7 @@ public:
 			octet[i] = min[i] + rand() % max[i];
 		return to_string(octet[0]) + "." + to_string(octet[1]) + "." + to_string(octet[2]) + "." + to_string(octet[3]);
 	}
+	// 파일 관리
 	void add(File* child) {
 		childFile.push_back(child);
 	}
@@ -86,7 +86,7 @@ public:
 	}
 
 	// 진행
-	bool portCrack(string p, bool b) {
+	bool portCrack(string p, bool b) { // 지정한 포트를 열거나 닫음
 		if (p == "ssh" and ssh != b) ssh = b;
 		else if (p == "ftp" and ftp != b) ftp = b;
 		else if (p == "smtp" and smtp != b) smtp = b;
@@ -97,7 +97,10 @@ public:
 		return true; // 성공적으로 열면 true
 	}
 	void nuke() { is_nuke = true; }
+	void addLog() { log++; }
+	void removeLog() { log = 0; }
 	int getLevel() { return level; }
+	int getLog() { return log; }
 	string getIP() { return IP; }
 	File* getFile(int num) { return childFile[num]; }
 	int getFileCount() { return childFile.size(); }

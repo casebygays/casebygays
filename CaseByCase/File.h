@@ -24,20 +24,21 @@ public:
 	File(int id, string icon, string s, string n, bool v, bool cR, bool oneshot) : id(id), icon(icon), securityType(s), name(n), pass(""), visible(v), canRemove(cR), oneshot(oneshot) {}
 	void setSecurity(string security) { securityType = security; }
 	void setPass(string p) { pass = p; }
-	string getSecurity() { return securityType; }
-	string getPass() { return pass; }
-	string getIcon() { return icon; }
-	bool getVisible() { return visible; }
-	bool getCanRemove() { return canRemove; }
-	bool getOneshot() { return oneshot; }
 
 	virtual void add(File* child) {}
 	virtual void erase(int id) {}
 	virtual void setParent(File* f) { parentFile = f; }
-	virtual File* getParent() { return parentFile; }
+
+	bool getVisible() { return visible; }
+	bool getCanRemove() { return canRemove; }
+	bool getOneshot() { return oneshot; }
+	string getSecurity() { return securityType; }
+	string getPass() { return pass; }
+	string getIcon() { return icon; }
 	virtual int getId() { return id; }
-	virtual string getName() { return name; }
 	virtual int getFileCount() { return NULL; }
+	virtual string getName() { return name; }
+	virtual File* getParent() { return parentFile; }
 	virtual File* getFile(int num) { return nullptr; }
 
 	static string getRoot(File* file) {
@@ -58,9 +59,7 @@ class txt : public File {
 	string desc;
 public:
 	txt(int i, string s, string n, string d, bool v, bool cR, bool oneshot) : File(i, "[T]", s, n, v, cR, oneshot), desc(d) {}
-	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {
-
-	}
+	txt(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {}
 	string getDesc() {
 		return desc;
 	}
@@ -70,9 +69,7 @@ class exe : public File {
 	string code;
 public:
 	exe(int i, string s, string n, string c, bool v, bool cR, bool oneshot) : File(i, "[>]", s, n, v, cR, oneshot), code(c) {}
-	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot) {
-		code = file.code;
-	}
+	exe(S_File file) : File(file.id, file.icon, file.securityType, file.name, file.visible, file.canRemove, file.oneshot), code(file.code) {}
 	vector<string> runCode() { // 코드 실행시 '|' 기준으로 잘라서 리턴
 		vector<string> commands;
 		istringstream iss(code);
@@ -106,18 +103,10 @@ public:
 			}
 		} // 부모 설정
 	}
-
 	~Folder() {
 		for (File* f : childFile) {
 			f->setParent(nullptr);
 		}
-	}
-	int* getChildId() {
-		int* r = new int[childFile.size()];
-		for (int i = 0; i < childFile.size(); i++) {
-			r[i] = childFile[i]->getId();
-		}
-		return r;
 	}
 	void add(File* parent, File* child) {
 		childFile.push_back(child);
@@ -132,5 +121,12 @@ public:
 		}
 	}
 	int getFileCount() { return childFile.size(); }
+	int* getChildId() {
+		int* r = new int[childFile.size()];
+		for (int i = 0; i < childFile.size(); i++) {
+			r[i] = childFile[i]->getId();
+		}
+		return r;
+	}
 	File* getFile(int num) { return childFile[num]; }
 };

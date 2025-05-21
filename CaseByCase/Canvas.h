@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "File.h"
 #include "Computer.h"
 #include "StructPack.h"
@@ -7,27 +7,29 @@
 #include <sstream>
 #include <vector>
 #include <windows.h>
+#include <string>
 using namespace std;
 
-#define CMDSIZE 41 // cmd ÃÖ´ë Ãâ·Â ÁÙ ¼ö
-#define SCREENWIDTH 80 // ½ºÅ©¸° °¡·Î±æÀÌ
-#define SCREENHEIGH 15 // ½ºÅ©¸° ¼¼·Î±æÀÌ
+#define CMDSIZE 41 // cmd ìµœëŒ€ ì¶œë ¥ ì¤„ ìˆ˜
+#define SCREENWIDTH 120 // ìŠ¤í¬ë¦° ê°€ë¡œê¸¸ì´
+#define SCREENHEIGH 25 // ìŠ¤í¬ë¦° ì„¸ë¡œê¸¸ì´
 
 class Canvas {
 private:
 	vector<string> cmd;
 	string lastText;
-	int index; // ÇöÀç ÁÙ ¹øÈ£
+	int index; // í˜„ì¬ ì¤„ ë²ˆí˜¸
 public:
+	bool in_firewall;
 	bool in_proxy;
 	int proxyAnswer;
 	int proxyChance;
+	
+	static int alertLevel; // ë°œê°ë„
 
-	static int alertLevel; // ¹ß°¢µµ
-
-	static Computer* targetCom; //Å¸°ÙÆÃ ÄÄÇ»ÅÍ
-	static Computer* connectCom; // Á¢¼ÓÇÑ ÄÄÇ»ÅÍ
-	static File* currentFile; // ÇöÀç ÆÄÀÏ
+	static Computer* targetCom; //íƒ€ê²ŸíŒ… ì»´í“¨í„°
+	static Computer* connectCom; // ì ‘ì†í•œ ì»´í“¨í„°
+	static File* currentFile; // í˜„ì¬ íŒŒì¼
 	static bool getFileType(File* f, string type) {
 		if (dynamic_cast<exe*>(f) and type == "exe") return true;
 		else if (dynamic_cast<txt*>(f) and type == "txt") return true;
@@ -46,17 +48,17 @@ public:
 	}
 	void save() {}
 	void load() {}
-	string input() //cmdÃ¢¿¡ ÀÔ·Â, ÀÔ·ÂµÈ ÅØ½ºÆ®¸¦ ¹İÈ¯ÇÔ
+	string input() //cmdì°½ì— ì…ë ¥, ì…ë ¥ëœ í…ìŠ¤íŠ¸ë¥¼ ë°˜í™˜í•¨
 	{
 		getline(cin, lastText);
 		cmd.push_back(lastText);
-		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd Ãâ·Â Á¦ÇÑÀ¯Áö
+		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd ì¶œë ¥ ì œí•œìœ ì§€
 		return lastText;
 	}
-	void input(string s) //cmdÃ¢¿¡ ÀÔ·Â, ÀÔ·ÂµÈ ÅØ½ºÆ®¸¦ ¹İÈ¯ÇÔ
+	void input(string s) //cmdì°½ì— ì…ë ¥, ì…ë ¥ëœ í…ìŠ¤íŠ¸ë¥¼ ë°˜í™˜í•¨
 	{
 		cmd.push_back(s);
-		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd Ãâ·Â Á¦ÇÑÀ¯Áö
+		if (cmd.size() > CMDSIZE) cmd.erase(cmd.begin()); // cmd ì¶œë ¥ ì œí•œìœ ì§€
 	}
 	void cmdClear() 
 	{
@@ -64,22 +66,23 @@ public:
 	}
 	void draw() {
 		if (in_proxy) drawProxyGame();
+		else if (in_firewall) drawFirewallGame();
 		else if (currentFile != nullptr and getFileType(currentFile, "Folder")) drawFolder(dynamic_cast<Folder*>(currentFile));
 		else if (currentFile != nullptr and getFileType(currentFile, "txt")) drawtxt(dynamic_cast<txt*>(currentFile));
 		else if (currentFile != nullptr and getFileType(currentFile, "exe")) drawexe(dynamic_cast<exe*>(currentFile));
 		else if (connectCom != nullptr) drawComputer(connectCom);
-		else drawMain();
+		else drawDebug();
 	}
-	void drawMain() //  ¸ŞÀÎÈ­¸é(µğ¹ö±×È­¸é)
+	void drawDebug() //  ë””ë²„ê·¸í™”ë©´
 	{
 		system("cls");
-		print("> Á¢¼Ó IP : ???.?.?.?");
-		print("[????]");
-		print("================================================================================");
+		print("> ì ‘ì† IP : ???.?.?.?");
+		print("[Debug]");
+		print("========================================================================================================================");
 		print("?????????????????????????");
 		for (int i = 0; i < SCREENHEIGH - 1; i++) 
 			print("");
-		print("================================================================================");
+		print("========================================================================================================================");
 		for (int i = index; i < CMDSIZE; i++) 
 			print("");
 		index = 0;
@@ -87,19 +90,19 @@ public:
 	void drawComputer(Computer* com)
 	{
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		if (alertLevel != 0) print("¹ß°¢µµ : " + to_string(alertLevel), "Red");
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+		if (alertLevel != 0) print("ë°œê°ë„ : " + to_string(alertLevel), "Red");
 		else print("");
-		print("/¹ÙÅÁÈ­¸é");
-		print("================================================================================");
+		print("/ë°”íƒ•í™”ë©´");
+		print("========================================================================================================================");
 		for (int i = 0; i < com->getFileCount(); i++) 
 			if (com->getFile(i)->getVisible())
 				if (com->getFile(i)->getSecurity() == "private")
-					print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName() + " (Àá±è)");
+					print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName() + " (ì ê¹€)");
 				else print(com->getFile(i)->getIcon() + " " + com->getFile(i)->getName());
 		for (int i = 0; i < SCREENHEIGH - com->getFileCount() - 1; i++) 
 			print("");
-		print("================================================================================");
+		print("========================================================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
@@ -107,17 +110,17 @@ public:
 	void drawFolder(Folder* folder)
 	{
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
-		print("================================================================================");
-		if (folder->getFileCount() == 0) print("ºñ¾îÀÖÀ½");
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+		print("/ë°”íƒ•í™”ë©´" + File::getRoot(currentFile));
+		print("========================================================================================================================");
+		if (folder->getFileCount() == 0) print("ë¹„ì–´ìˆìŒ");
 		for (int i = 0; i < folder->getFileCount(); i++) {
 			if (folder->getFile(i)->getVisible())
 				print(folder->getFile(i)->getIcon()+ " " + folder->getFile(i)->getName());
 		}
 		for (int i = 0; i < SCREENHEIGH - folder->getFileCount() - 1; i++)
 			print("");
-		print("================================================================================");
+		print("========================================================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
@@ -125,9 +128,9 @@ public:
 	void drawtxt(txt* text)
 	{
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
-		print("================================================================================");
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+		print("/ë°”íƒ•í™”ë©´" + File::getRoot(currentFile));
+		print("========================================================================================================================");
 		string s = text->getDesc();
 		istringstream iss(s);
 		string line;
@@ -143,7 +146,7 @@ public:
 		for (int i = 0; i < SCREENHEIGH - count; i++) {
 			print("");
 		}
-		print("================================================================================");
+		print("========================================================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
@@ -151,28 +154,52 @@ public:
 	void drawexe(exe* exe)
 	{
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		print("/¹ÙÅÁÈ­¸é" + File::getRoot(currentFile));
-		print("================================================================================");
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+		print("/ë°”íƒ•í™”ë©´" + File::getRoot(currentFile));
+		print("========================================================================================================================");
 		printInput();
 		index = 0;
 	}
 	void drawProxyGame() {
 		system("cls");
-		print("> Á¢¼Ó IP : " + connectCom->getIP());
-		print("[ÇÁ·Ï½Ã ÇØÅ· - ·£´ı ¼ıÀÚ]");
-		print("================================================================================");
-		print("                       +-----------------------------+");
-		print("                       |     PROXY SECURITY TEST     |");
-		print("                       +-----------------------------+");
-		print("                       | 1~5 ¼ıÀÚ Áß Á¤´äÀ» ¸ÂÃß¼¼¿ä |");
-		print("                       |     ±âÈ¸´Â ÃÑ 2¹øÀÔ´Ï´Ù.    |");
-		print("                       +-----------------------------+");
-		print("================================================================================");
+		print("> ì ‘ì† IP : " + connectCom->getIP());
+		if (alertLevel != 0) print("ë°œê°ë„ : " + to_string(alertLevel), "Red");
+		else print("");
+		print("[í”„ë¡ì‹œ í•´í‚¹ - ëœë¤ ìˆ«ì]");
+		print("========================================================================================================================");
+		print("										+-----------------------------+");
+		print("										|     PROXY SECURITY TEST     |");
+		print("										+----------------------- ------+");
+		print("										| 1~5 ìˆ«ì ì¤‘ ì •ë‹µì„ ë§ì¶”ì„¸ìš” |");
+		print("										|     ê¸°íšŒëŠ” ì´ 2ë²ˆì…ë‹ˆë‹¤.    |");
+		print("										+-----------------------------+");
+		print("========================================================================================================================");
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;
 	}
+	void drawFirewallGame() {
+		system("cls");
+		print(">ì ‘ì† IP : " + connectCom->getIP());
+		if (alertLevel != 0) print("ë°œê°ë„ : " + to_string(alertLevel), "Red");
+		else print("");
+		print("[Firewall Crack - ëœë¤ ìˆ«ì]");
+		print("========================================================================================================================");
+		print("	                                                       +-----------------------------+");
+		print("	                                                       |     FIREWALL SECURITY TEST |");
+		print("	                                                       +-----------------------------+");
+		print("	                                                       |     1~9ë¥¼ ì¨ì„œ ìˆ«ìë¥¼ ë§ì¶”ì„¸ìš”|");
+		print("	                                                       |     ê¸°íšŒëŠ” ì´ 10ë²ˆì…ë‹ˆë‹¤.|");
+		print("	                                                       +-----------------------------+");
+		print("ìˆ«ìëŠ”" + to_string(connectCom->getLevel()) + " ìë¦¬ ì…ë‹ˆë‹¤.");
+		print("ì…ë ¥ë°©ì‹ ex) 1 2 3 ");
+		print("========================================================================================================================");
+		
+		for (int i = index; i < CMDSIZE; i++) print("");
+		printInput();
+		index = 0;
+	}
+
 	void print(string s) {
 		cout << s;
 		if (index < CMDSIZE) printCMD(SCREENWIDTH - s.size(), index);
@@ -206,8 +233,9 @@ public:
 			cout << " |" << setw(2) << setfill('0') << index;
 	}
 	void printInput() {
+		cout << "\n";
 		for (int i = 0; i < SCREENWIDTH; i++) cout << " ";
-		cout << " | > ";
+		cout << " |" << setw(4) << setfill('0') << to_string(connectCom->getLog()) << "> ";
 	}
 	int getCMDSize() { return cmd.size(); }
 	string getCMDText(int num) { return cmd[num]; }
