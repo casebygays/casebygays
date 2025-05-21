@@ -84,8 +84,8 @@ public:
 		else if (tokens[0] == "/load") cmd_loadgame();
 		else if (tokens[0] == "/help") cmd_help();
 		else if (tokens[0] == "/clear") cmd_clear();
-		else if (tokens[0] == "/addtxt" and tokens.size() > 2) cmd_addtxt(tokens[1], tokens[2]);
-		else if (tokens[0] == "/addexe" and tokens.size() > 3) cmd_addexe(tokens[1], tokens[2]);
+		else if (tokens[0] == "/addtxt" and tokens.size() > 2) cmd_addtxt(tokens[1], tokens);
+		else if (tokens[0] == "/addexe" and tokens.size() > 3) cmd_addexe(tokens[1], tokens);
 		else if (tokens[0] == "/addfolder") cmd_addfolder(tokens[1]);
 		else if (tokens[0] == "/remove") cmd_remove(tokens[1]);
 
@@ -275,7 +275,12 @@ public:
 		//canvas->input("/removelog				로그 삭제");
 	}
 	void cmd_clear() { canvas->cmdClear(); }
-	void cmd_addtxt(string name, string desc) {
+	void cmd_addtxt(string name, vector<string> tokens) {
+		string desc = "";
+		for (int i = 2; i < tokens.size(); i++) {
+			desc += tokens[i] + " ";
+		}
+
 		if (Canvas::currentFile == nullptr or dynamic_cast<Folder*>(Canvas::currentFile)) {
 			File* f = new txt(File::fileId, "public", name, desc, true, true, false);
 			if (Canvas::currentFile != nullptr) { Canvas::connectCom->add(Canvas::currentFile, f); }
@@ -288,7 +293,12 @@ public:
 			canvas->input("파일을 생성할 수 없는 경로임");
 		}
 	}
-	void cmd_addexe(string name, string code) {
+	void cmd_addexe(string name, vector<string> tokens) {
+		string code = "";
+		for (int i = 1; i < tokens.size(); i++) {
+			code += " " + tokens[i];
+		}
+
 		if (Canvas::currentFile == nullptr or dynamic_cast<Folder*>(Canvas::currentFile)) {
 			File* f = new exe(File::fileId, "public", name, code, true, true, false);
 			if (Canvas::currentFile != nullptr) { Canvas::connectCom->add(Canvas::currentFile, f); }
