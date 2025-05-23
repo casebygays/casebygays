@@ -134,6 +134,8 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="Computer.h" />
     <ClInclude Include="File.h" />
+    <ClInclude Include="Firewall.h" />
+    <ClInclude Include="StructPack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
