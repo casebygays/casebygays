@@ -22,8 +22,12 @@ private:
 public:
 	bool in_firewall;
 	bool in_proxy;
+	bool in_login = false;
 	int proxyAnswer;
 	int proxyChance;
+	int ID;
+	int password;
+
 	
 	static int alertLevel; // 발각도
 
@@ -65,7 +69,9 @@ public:
 		cmd.clear();
 	}
 	void draw() {
+
 		if (in_proxy) drawProxyGame();
+		else if (in_login) drawlogin();
 		else if (in_firewall) drawFirewallGame();
 		else if (currentFile != nullptr and getFileType(currentFile, "Folder")) drawFolder(dynamic_cast<Folder*>(currentFile));
 		else if (currentFile != nullptr and getFileType(currentFile, "txt")) drawtxt(dynamic_cast<txt*>(currentFile));
@@ -196,6 +202,25 @@ public:
 		print("입력방식 ex) 1 2 3 ");
 		print("========================================================================================================================");
 		
+		for (int i = index; i < CMDSIZE; i++) print("");
+		printInput();
+		index = 0;
+	}
+
+	void drawlogin() {
+		system("cls");
+		print(">접속 IP : " + connectCom->getIP());
+		if (alertLevel != 0) print("발각도 : " + to_string(alertLevel), "Red");
+		else print("");
+		print("========================================================================================================================");
+		print("	                                                       +----------------------------+");
+		print("	                                                       |      게정 ID를 입력해주세요   |");
+		print("	                                                       +----------------------------+");
+		print("	                                                       |      비밀번호를 입력해주세요.  |");
+		print("	                                                       +----------------------------+");
+		print("입력방식 ex) 아이디 비밀번호 ");
+		print("========================================================================================================================");
+
 		for (int i = index; i < CMDSIZE; i++) print("");
 		printInput();
 		index = 0;

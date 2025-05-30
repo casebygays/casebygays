@@ -79,6 +79,16 @@ public:
 			firewallGame.ball = 0;
 			firewallGame.out = 0;
 		}
+		else if (canvas->in_login){
+
+			if(tokens[0] == "설정한 아이디" and tokens[1] == "설정한 비밀번호") { // 로그인 성공
+				canvas->in_login = false;
+			}
+			else {
+				canvas->input("로그인 실패");
+				addAlertLevel(6);
+			}
+		}
 		else if (tokens[0] == "/shutdown") cmd_shutdown();
 		else if (tokens[0] == "/save") cmd_savegame();
 		else if (tokens[0] == "/load") cmd_loadgame();
@@ -386,6 +396,9 @@ public:
 		}
 	}
 	void cmd_target(string ip) {
+		if (ip == "atc-nexus.aircorp:8022") {
+			canvas->in_login = true;
+		}
 		for (int i = 0; i < comMax; i++) {
 			if (computer[i].getIP() == ip) {
 				canvas->input(ip + " : 목표로 지정함");

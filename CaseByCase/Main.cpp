@@ -102,7 +102,6 @@ int main() {
 	addtxt(2, autoParent, "public", "[노드현]", "[1/26 17:08]", true);
 
 
-<<<<<<< HEAD
 	// 가정집
 
 	// 중호는 아들이고 종호는 아빠임
@@ -170,24 +169,36 @@ int main() {
 			
 
 
+	com[5].setComputer(5, "seia.corp:4200", 1, 1, 1, 1, 1, 1);
+	addFol(5, nullptr, "public", "logs", true);
+		addFol(5, com[5].getFile(0), "public", "access", true);
+			addtxt(5, com[5].getFile(0)->getFile(0), "public", "2025-04-17.log", "[23:19:42] 사용자 접속: iqlogin_0921 from 192.168.88.94\n[23:19:47] relay88_route.cfg 접근\n[23:19:50] a0417.gz.enc 파일 다운로드 요청\n[23:19:52] 로그 백업 전환 시작 : archive_A0417.lgz 로 이관", true);
+		addFol(5, com[5].getFile(0), "public", "netstat_report.md", true);
+		addFol(5, com[5].getFile(0), "public", "backup", true);
+			addtxt(5, com[5].getFile(0)->getFile(2), "public", "archive_A0417.lgz", "[12:01:10] 테스트 시작: relay88 latency test \n[12:01:13] 결과: 평균 응답 속도 22ms\n[12:05:22] 디버그 로그 : guest88 권한 오류\n[12:11:12] config.ini 포맷 충돌 감지 → 기본값으로 복원됨", true);
+	addFol(5, nullptr, "public", "devtools", true);
+		addFol(5, com[5].getFile(1), "public", "decoder", true);
+			addtxt(5, com[5].getFile(1)->getFile(0), "public", "decompress.keyhint", "압축 해제 키는 '경고 메일'의 base값에 있음.\n첫 문장의 글자 수를 2진수로 바꿔라(8자리).", true);
+		addFol(5, com[5].getFile(1), "public", "keygen", true);
+			addtxt(5, com[5].getFile(1)->getFile(1), "public", "authmap.png", "User Map:\n- seia_root\n- relay_test\n- iqlogin_0921\n- atcproxy", true);
+		addFol(5, com[5].getFile(1), "public", "relay_debug", true);
+			addtxt(5, com[5].getFile(1)->getFile(2), "public", "autyo_transfer.c", "", true);
+			addtxt(5, com[5].getFile(1)->getFile(2), "public", "precompile.json", "", true);
 
+	addFol(5, nullptr, "public", "mail", true);
+		addFol(5, autoParent, "public", "admin", true);
+			addtxt(5, autoParent, "public", "warn.txt", "[관리자 경고]\n \nCheck relay routing immediately.", true);
+			addtxt(5, autoParent, "public", "enc_req.dat", "", true);
 
-=======
-	// 형의 컴퓨터 2
-	com[3].setComputer(1, "22.222.222.222", 1, 0, 1, 0, 0, 0); // 컴퓨터 정보 사용자 지정
-	addFol(3, autoParent, "public", "바탕화면", true);
-	addFol(3, autoParent, "public", "새폴더", true);
-	addtxt(3, autoParent, "public", "형의_메모장", "형의 메모장 내용", true);
-	//addtxt(3, autoParent, "private", "형의_usb1", "USB 복호화 시도 -> Project Aegis Red Line 통신 프로토콜 3단계 백도어 설계 등 불길한 용어가 적혀있다.", true); setPass("나의 생일");
-	//addtxt(3, autoParent, "private", "형의_usb2", "형은 A사의 통신 보안 시스템 연구자였으며, 신형 통신 시스템에 의도된 보안 취약점이 존재한다고 말한 녹취파일이 존재한다고 쓰여있다.", false); setPass("나의 생일");
+	addFol(5, nullptr, "public", "testdata", true);
+		addFol(5, autoParent, "public", "fightctrl", true);
+			addtxt(5, autoParent, "public", "relay88_route.cfg", "[RELAY88_CONFIGURATION]\nsecure_id = TX217\nrelay_chain = proxy - khan42 → atcproxy\nauth_required = true",true);
+	addFol(5, nullptr, "public", "tmp", true);
+		addtxt(5, autoParent, "public", "a0417.gz.enc", "[EXFIL TRACE LOG - INTERNAL USE ONLY]\n \n파일: relay88_route.cfg\n조작 시도 : iqlogin_0921\n원격 포트 : 8022\n전송 위치 : atc - nexus.aircorp : 8022\n→ 타깃 시스템 : 관제탑 연계 서버(NEXUS GATEWAY)\n로그 제거 시도 감지됨.추적 ID : YJ1029(삭제 성공 여부 : Unknown)", true);
 	
-
-	com[4].setComputer(1, "33.333.333.333", 0, 0, 0, 0, 0, 0);
-	addFol(4, nullptr, "public", "기사모음", true);
-	addtxt(4, autoParent, "public", "NBC", "[NEWS] KST 통신사에서 고객 정보 유출...\n \n|[NEWS] 통신사 KST 대처가 시급하지 않아\n \n최근 KST 통신사에서 대규모 고객 정보 유출 사건이 발생해 고객들의 불안이 커지고 있다.\n이번 사건은 해킹 공격으로 인해 수십만 명의 개인 정보가 외부로 유출된 것으로 확인됐다.\n유출된 데이터에는 고객의 이름, 전화번호, 주소, 이메일뿐만 아닌 일부 고객의 신용카드 정보와 결제 이력도 포함 되있는\n것으로 알려졌다.\nKST 통신사는 오늘 오전 긴급 기자회견을 열고 사건의 경위를 설명했다.\n회사 측은 유출을 막기위한 대응을 하기 위해 노력하고 있다고 고객을 안심시키고 있음.\n 하지만 이미 잃어버린 민심을 잠재울 수 있을지 계속 지켜봐야 할 것으로 판단되어...", true);
-	addtxt(4, autoParent, "public", "김허중의 뉴스공장","야호");
-	addFol(4, nullptr, "public", "메모장");
->>>>>>> 5b0268dbfb16e95ddf6aea47eaced2843e5c43e4
+		
+		
+		//[NEWS] KST 통신사에서 고객 정보 유출...\n \n|[NEWS] 통신사 KST 대처가 시급하지 않아\n \n최근 KST 통신사에서 대규모 고객 정보 유출 사건이 발생해 고객들의 불안이 커지고 있다.\n이번 사건은 해킹 공격으로 인해 수십만 명의 개인 정보가 외부로 유출된 것으로 확인됐다.\n유출된 데이터에는 고객의 이름, 전화번호, 주소, 이메일뿐만 아닌 일부 고객의 신용카드 정보와 결제 이력도 포함 되있는\n것으로 알려졌다.\nKST 통신사는 오늘 오전 긴급 기자회견을 열고 사건의 경위를 설명했다.\n회사 측은 유출을 막기위한 대응을 하기 위해 노력하고 있다고 고객을 안심시키고 있음.\n 하지만 이미 잃어버린 민심을 잠재울 수 있을지 계속 지켜봐야 할 것으로 판단되어...
 
 	command.cmd_connect("127.0.0.1");
 	
