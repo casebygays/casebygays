@@ -80,13 +80,23 @@ public:
 			firewallGame.out = 0;
 		}
 		else if (canvas->in_login){
-
-			if(tokens[0] == "설정한 아이디" and tokens[1] == "설정한 비밀번호") { // 로그인 성공
-				canvas->in_login = false;
+			if (tokens.size() >= 2) {
+				if (tokens[0] == "설정한아이디" and tokens[1] == "설정한비밀번호") { // 로그인 성공
+					canvas->in_login = false;
+					canvas->input("로그인 성공");
+				}
+				else if (tokens[0] == "iqlogin_0921" and tokens[1] == "coffeeflight35") { // 로그인 성공
+					canvas->in_login = false;
+					canvas->input("로그인 성공");
+				}
+				else {
+					canvas->input("로그인 실패");
+					canvas->in_login = false;
+				}
 			}
 			else {
-				canvas->input("로그인 실패");
-				addAlertLevel(6);
+				canvas->input("알맞은 값을 입력해주세요");
+				canvas->in_login = false;
 			}
 		}
 		else if (tokens[0] == "/shutdown") cmd_shutdown();
@@ -398,7 +408,27 @@ public:
 	void cmd_target(string ip) {
 		if (ip == "atc-nexus.aircorp:8022") {
 			canvas->in_login = true;
+			for (int i = 0; i < comMax; i++) {
+				if (computer[i].getIP() == ip) {
+					canvas->input(ip + " : 목표로 지정함");
+					Canvas::targetCom = &computer[i];
+					break;
+				}
+			}
+			addAlertLevel(1);
 		}
+		else if (ip == "seia.corp:4200") {
+			canvas->in_login = true;
+			for (int i = 0; i < comMax; i++) {
+				if (computer[i].getIP() == ip) {
+					canvas->input(ip + " : 목표로 지정함");
+					Canvas::targetCom = &computer[i];
+					break;
+				}
+			}
+			addAlertLevel(1);
+		}
+
 		for (int i = 0; i < comMax; i++) {
 			if (computer[i].getIP() == ip) {
 				canvas->input(ip + " : 목표로 지정함");
@@ -434,6 +464,7 @@ public:
 	}
 	void cmd_nuke(string ip = "") {
 		if (ip == "" and Canvas::targetCom != nullptr) {
+
 			if (Canvas::targetCom->getCanNuke()) {
 				Canvas::targetCom->nuke();
 				canvas->input(Canvas::targetCom->getIP() + " : 해킹 성공");

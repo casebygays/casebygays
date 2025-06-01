@@ -52,13 +52,13 @@ int main() {
 	//USB
 
 
-	addFol(0, nullptr, "public", "USB", false, true);	// 나중에 숨김파일 처리하고 소식4번을 확인하면 나타나게 할 예정
+	/*addFol(0, nullptr, "public", "USB", false, true);	// 나중에 숨김파일 처리하고 소식4번을 확인하면 나타나게 할 예정
 	addtxt(0, autoParent, "public", "Detail_1", "[보안 점검 기록 - 2025.04.20 | 작성자: 김석현 (보안 관리자)]\n \n비행기 자동 운항 시스템 내부에서 알 수 없는 우회 루틴 발견.\n정상 인증 과정을 우회하여 외부 명령이 삽입 가능한 구조.\n로그 분석 결과, 아래 명령이 비정상적으로 실행됨:\nCMD: override_autopilot(true)\nCMD: set_altitude(0)\n \n공식 매뉴얼 및 코드베이스에는 존재하지 않는 방식.\n본 루틴이 악용될 경우 비행기 통제가 불가능해질 수 있음.\n \n이미 시스템이 침해당했을 가능성또한 존재.\n해당 루틴은 의도적으로 삽입된 것으로 보임. 빠른 조치가 필요함.", true);
-	addtxt(0, autoParent, "public", "전송되지않은메일초안", "[전송되지 않은 메일 초안]\n \nTo: 본사 보안총괄부\nSubject: 시스템 침해 의심건\n이 루틴은 단순한 버그가 아니라, 누군가가 만든 우회 경로로 보입니다.\n침입 흔적이 있으며, 접근은 최소 두 차례 이상 감지되었습니다.\n어떤 목적이었는지는 모르겠지만, 이걸 무시하면 사고로 이어질 수 있습니다.\n하지만 내부 경로를 따라온 흔적도 있어, 내부 인물이 연루되었을 가능성도 배제할 수 없습니다.\n내가 이 사실을 알았다는 것 자체가 위험할 수도 있습니다.\n정보는 백업해 두었습니다. 내가 끝까지 보고하지 못하더라도\n누군가는 이걸 봐야합니다. 내가 보고를 못할 경우 친구A에게 연락 바랍니다. \n전송 보류 중...", true);
+	addtxt(0, autoParent, "public", "전송되지않은메일초안", "[전송되지 않은 메일 초안]\n \nTo: 본사 보안총괄부\nSubject: 시스템 침해 의심건\n이 루틴은 단순한 버그가 아니라, 누군가가 만든 우회 경로로 보입니다.\n192.168.00.16 에서 침입 흔적이 있으며, 접근은 최소 두 차례 이상 감지되었습니다.\n어떤 목적이었는지는 모르겠지만, 이걸 무시하면 사고로 이어질 수 있습니다.\n하지만 내부 경로를 따라온 흔적도 있어, 내부 인물이 연루되었을 가능성도 배제할 수 없습니다.\n내가 이 사실을 알았다는 것 자체가 위험할 수도 있습니다.\n정보는 백업해 두었습니다. 내가 끝까지 보고하지 못하더라도\n누군가는 이걸 봐야합니다. 내가 보고를 못할 경우.. \n전송 보류 중...", true);
 	addtxt(0, autoParent, "public", "Record.wav", "\n\n[녹음 파일 자동 복구 기록 | 일부 손상됨]\n \n형: 여기 접근 좌표 확인해봤어. 포트6077에서 외부 요청이 감지됐어.\n형: 로그엔 '인증 우회' 명령이 두 번... 누군가 시스템 안으로 들어왔다는 거야.\n형: ...기록을 남겨야겠어. 더 이상 이걸 혼자 감당할 순 없어...\n \n* (통화 끊김 / 정적 발생) *", true);
 	addtxt(0, autoParent, "private", "동생을 위한 서프라이즈 계획","\n1.주문제작한 케이크 들고오기\n2.생일 선물 구매하기(미정)\n노트북? 핸드폰? 애매함", true, false); setPass("0510");
-
-	//스마트폰ㅜ
+	*/
+	//스마트폰 
 	
 	// 그외 컴퓨터 파일
 	// 
@@ -67,10 +67,12 @@ int main() {
 	com[1].setComputer(1, "00.000.000.000", 0,0,1,0,1,1); // 컴퓨터 정보 사용자 지정
 	addFol(1, nullptr, "public", "News_Collection", true);
 	addtxt(1, autoParent, "public", "[속보]여객기_추락", "[속보] 하늘항공 여객기 추락... 탑승자 전원 사망\n\n2025년 5월 7일 새벽, 하늘항공 소속 여객기가 추락해 탑승자 전원이 사망하는 참사가 발생했습니다.\n사고기는 지면과 충돌한 직후 폭발했으며, 기체는 완전히 소실된 것으로 알려졌습니다.\n현재 정확한 사고 원인은 조사 중에 있으며, 관계 당국은 사고 현장을 통제하고 수습 작업에 착수했습니다.", true);
-	addtxt(1, autoParent, "private", "news_3", "", true); setPass("비밀번호 정해야함");
+	//addtxt(1, autoParent, "private", "news_3", "", true); setPass("비밀번호 정해야함");
 	addtxt(1, autoParent, "private", "news_4", "형의 유품에서 수상한 USB가 발견 되었다. 그날 이후로 나는 아무것도 할 수 없다. 티비를 보아도 그 사건만 나오고 있다. 언제쯤 괜찮아 질까\n\"내가 사건을 끝내야겠다.\"", true); setPass("1125");
-	//임시
-	printf("형의 스마트폰을 찾아보자");
+	addexe(1, autoParent, "public", "USB연결하기", "/addfolder USB | /in USB | /addtxt Detail_1 [보안 점검 기록 - 2025.04.20 작성자: 김석현 (보안 관리자)]\n \n비행기 자동 운항 시스템 내부에서 알 수 없는 우회 루틴 발견.\n정상 인증 과정을 우회하여 외부 명령이 삽입 가능한 구조.\n로그 분석 결과, 아래 명령이 비정상적으로 실행됨:\nCMD: override_autopilot(true)\nCMD: set_altitude(0)\n \n공식 매뉴얼 및 코드베이스에는 존재하지 않는 방식.\n본 루틴이 악용될 경우 비행기 통제가 불가능해질 수 있음.\n \n이미 시스템이 침해당했을 가능성또한 존재.\n해당 루틴은 의도적으로 삽입된 것으로 보임. 빠른 조치가 필요함. | /addtxt 전송되지않은메일초안 [전송되지 않은 메일 초안]\n \nTo: 본사 보안총괄부\nSubject: 시스템 침해 의심건\n이 루틴은 단순한 버그가 아니라, 누군가가 만든 우회 경로로 보입니다.\n침입 흔적이 있으며, 접근은 최소 두 차례 이상 감지되었습니다.\n어떤 목적이었는지는 모르겠지만, 이걸 무시하면 사고로 이어질 수 있습니다.\n하지만 내부 경로를 따라온 흔적도 있어, 내부 인물이 연루되었을 가능성도 배제할 수 없습니다.\n내가 이 사실을 알았다는 것 자체가 위험할 수도 있습니다.\n정보는 백업해 두었습니다. 내가 끝까지 보고하지 못하더라도\n누군가는 이걸 봐야합니다. 내가 보고를 못할 경우.. \n전송 보류 중... | /addtxt Record.wav \n\n[녹음 파일 자동 복구 기록 일부 손상됨]\n \n형: 192.168.00.16 여기 접근 좌표 확인해봤어. 포트6077에서 외부 요청이 감지됐어.\n형: 로그엔 '인증 우회' 명령이 두 번... 누군가 시스템 안으로 들어왔다는 거야.\n형: ...기록을 남겨야겠어. 더 이상 이걸 혼자 감당할 순 없어...\n \n* (통화 끊김 / 정적 발생) * | /addtxt 동생을위한서프라이즈계획 \n1.주문제작한 케이크 들고오기\n2.생일 선물 구매하기(미정)\n노트북? 핸드폰? 애매함", true);
+	// | /in USB | /addtxt Detail_1 [보안 점검 기록 - 2025.04.20 작성자: 김석현 (보안 관리자)]\n \n비행기 자동 운항 시스템 내부에서 알 수 없는 우회 루틴 발견.\n정상 인증 과정을 우회하여 외부 명령이 삽입 가능한 구조.\n로그 분석 결과, 아래 명령이 비정상적으로 실행됨:\nCMD: override_autopilot(true)\nCMD: set_altitude(0)\n \n공식 매뉴얼 및 코드베이스에는 존재하지 않는 방식.\n본 루틴이 악용될 경우 비행기 통제가 불가능해질 수 있음.\n \n이미 시스템이 침해당했을 가능성또한 존재.\n해당 루틴은 의도적으로 삽입된 것으로 보임. 빠른 조치가 필요함.
+	// | /out | /addtxt 전송되지않은메일초안 [전송되지 않은 메일 초안]\n \nTo: 본사 보안총괄부\nSubject: 시스템 침해 의심건\n이 루틴은 단순한 버그가 아니라, 누군가가 만든 우회 경로로 보입니다.\n침입 흔적이 있으며, 접근은 최소 두 차례 이상 감지되었습니다.\n어떤 목적이었는지는 모르겠지만, 이걸 무시하면 사고로 이어질 수 있습니다.\n하지만 내부 경로를 따라온 흔적도 있어, 내부 인물이 연루되었을 가능성도 배제할 수 없습니다.\n내가 이 사실을 알았다는 것 자체가 위험할 수도 있습니다.\n정보는 백업해 두었습니다. 내가 끝까지 보고하지 못하더라도\n누군가는 이걸 봐야합니다. 내가 보고를 못할 경우.. \n전송 보류 중... | /out | /addtxt Record.wav \n\n[녹음 파일 자동 복구 기록 | 일부 손상됨]\n \n형: 192.168.00.16 여기 접근 좌표 확인해봤어. 포트6077에서 외부 요청이 감지됐어.\n형: 로그엔 '인증 우회' 명령이 두 번... 누군가 시스템 안으로 들어왔다는 거야.\n형: ...기록을 남겨야겠어. 더 이상 이걸 혼자 감당할 순 없어...\n \n* (통화 끊김 / 정적 발생) * | /out | /addtxt 동생을 위한 서프라이즈 계획 \n1.주문제작한 케이크 들고오기\n2.생일 선물 구매하기(미정)\n노트북? 핸드폰? 애매함 | /out | /out | /out | /out
+	//| /addtxt 동생을 위한 서프라이즈 계획 \n1.주문제작한 케이크 들고오기\n2.생일 선물 구매하기(미정)\n노트북? 핸드폰? 애매함 | /out | /out
 	//addtxt(1, autoParent, "public", "2025.05.07", "오늘 새벽, 너를 하늘로 보냈다.\n텔레비전에서 전원 사망이라는 자막이 떴을 때,\n나는 그 말을 믿을 수 없었다.믿고 싶지 않았다.\n하지만 결국, 그 안에 네 이름이 있다는 걸 받아들여야 했다.\n\n아직도 네 방은 그대로다.\n너는 아무 말 없이 떠났고, 나는 아무 말도 해줄 수 없었다.\n\n딸아, 아빠가 미안해.\n그날 아침, 너를 껴안아주지 못한 게 너무 후회돼.\n다음 생엔... 꼭 더 많이 웃게 해줄게.", true); setPass("1125");
 
 	// 형의 스마트폰
@@ -104,22 +106,22 @@ int main() {
 
 	// 가정집
 
-	// 중호는 아들이고 종호는 아빠임
-	com[3].setComputer(3, "22.222.222.222", 1, 0, 1, 0, 0, 0); // 컴퓨터 정보 사용자 지정
+	// 강현은 아들이고 강석은 아빠임
+	com[3].setComputer(3, "192.168.00.16", 1, 0, 1, 0, 0, 0); // 컴퓨터 정보 사용자 지정
 
 	addFol(3, nullptr, "public", "내PC", true);
 		addFol(3, autoParent, "public", "다운로드", true);
 
 	addFol(3, nullptr, "public", "카카오톡", true);
-		addFol(3, autoParent, "public", "중호", true);setPass("중호생일");
+		addFol(3, autoParent, "private", "강현", true, false);setPass("0126");
 			addtxt(3, autoParent, "public", "아빠", "                .\n                .\n                .\n          -2025.03.25-\n \n아들 잘 지내지? 밥 잘 챙겨먹고 잘지내\n \n                           응 잘지내고 있어\n \n          -2025.4.28-\n \n                           아빠 생일 축하해\n \n고마워 아들",true);
 
-		addFol(3, com[3].getFile(1), "public", "종호", true);setPass("종호생일");
+		addFol(3, com[3].getFile(1), "private", "강석", true);setPass("0428");
 			addtxt(3, autoParent, "public", "K", "                .\n                .\n                .\n          -2011.11.11-\n \n실제적용은 그쪽 항공이 먼저야\n \n                           알겠어.\n \n", true);
 	
 	addFol(3, nullptr, "public", "Chrome", true);
 		addFol(3, autoParent, "public", "naver.com", true);
-			addFol(3, autoParent, "public", "jung5004", true);setPass("중호생일");
+			addFol(3, autoParent, "private", "jung5004", true);setPass("0428");
 				addFol(3, autoParent, "public", "메일", true);
 					addexe(3, autoParent, "public", "카카오톡으로_인증", "/out | /out | /out | /out | /in 카카오톡 | /in 종호 | /addtxt 카카오톡인증 5687 | /out | /out | /out | /in Chrome | /in naver.com | /in jung5004 | /in 메일 | /addtxt jlee@kflsys.net 보낸 사람:jung5004\n받는 사람: jlee@kflsys.net\n제목: deployment memo\n \nTX217에서 확실히 반응이 있었다. 예외 입력은 무시되었고\n목표 궤도에 정확히 진입했다. 남은 건 본 운용뿐이다.\n | /addexe Download.browserhistory.json /out | /out / out /out /out /in 다운로드 /addtxt browserhistory.json {\n  tx_id: TX217,\n  route:[VXNlckFsdGF8MTcyLjIyLjkuNDE=, cmVsYXk4OA==]\n} | /out | /out | /in Chrome | /in naver.com | /in jung5004 | /in 메일 | /in jlee@kflsys.net", true);
 
@@ -140,7 +142,9 @@ int main() {
 		addFol(3, autoParent, "public", "거실", true);
 			addtxt(3, autoParent, "public", "가족사진", "중호의 탄생일 2003.01.26", true);
 		addFol(3, com[3].getFile(4), "public", "주방", true);
+			addtxt(3, autoParent, "public", "주방_사진", "주방 사진", true);
 		addFol(3, com[3].getFile(4), "public", "중호방", true);
+			addtxt(3, autoParent, "public", "중호의_방_사진", "중호의 방 사진", true);
 	
 
 	
@@ -150,10 +154,10 @@ int main() {
 		addFol(4, autoParent, "public", "logs", true);
 			addtxt(4, autoParent, "public", "observer", "[04:11:05] 외부 접속 탐지: 192.168.88.94\n[04:11 : 09] 사용자: jlee_localtest 권한 요청\n[04:11 : 10] 로그 접근 : test_results / TRG17 - LOCKED.enc\n[04:11 : 12] 경고 : 암호화된 테스트 결과 파일 접근 시도(잠금 상태)", true);
 			addFol(4, com[4].getFile(0)->getFile(0), "public", "test_results", true);
-				addtxt(4, autoParent, "public", "TRG17-LOCKED.enc", "[해제 완료]\n[TRG 실험 보고서 #17]\n기체 ID : TX217\nOverride 반응 : 수신 후 1.1초 내 조종 입력 무시됨\n접속 계정 : iqlogin_0921\n비고 : override 키, relay88 통해 전송됨", true, false, true); setPass("TRG17");
+				addtxt(4, autoParent, "private", "TRG17-LOCKED.enc", "[해제 완료]\n[TRG 실험 보고서 #17]\n기체 ID : TX217\nOverride 반응 : 수신 후 1.1초 내 조종 입력 무시됨\n접속 계정 : iqlogin_0921\n비고 : override 키, relay88 통해 전송됨", true, false, true); setPass("enotniopeno");
 
 			addFol(4, com[4].getFile(0)->getFile(0), "public", "TRG17-LOCKED.enc", true);
-				addtxt(4, autoParent, "public", "TRG17-LOCKED.enc", "sys_routemap.xml\n< routes >\n<nexthop>\n<name>SEIA 메인 서버< / name>\n<ip>c2VpYS5jb3JwOjQyMDA = < / ip> <!--base64-->\n< / nexthop>\n< / routes>", true);
+				addtxt(4, autoParent, "public", "sys_routemap.xml", "sys_routemap.xml\n< routes >\n<nexthop>\n<name>SEIA 메인 서버< / name>\n<ip>c2VpYS5jb3JwOjQyMDA = < / ip> <!--base64-->\n< / nexthop>\n< / routes> 복호화하면 -> 이거 보이게 seia.corp:4200", true);
 
 		addFol(4, com[4].getFile(0), "public", "notes", true);
 			addtxt(4, autoParent, "public", "key_hint.txt", "테스트 결과 파일은 실험 반응 시간 기반으로 암호화됨.\n기억하라, 그 수치는 1.1초였다.\n힌트: 뒤집어 생각해보면, 답이 보일지도 ? ", true);//정답 1.1초를 1.1one -> enotniopeno
@@ -167,7 +171,6 @@ int main() {
 		addFol(4, com[4].getFile(0), "public", "mail", true);
 
 			
-
 
 	com[5].setComputer(5, "seia.corp:4200", 1, 1, 1, 1, 1, 1);
 	addFol(5, nullptr, "public", "logs", true);
