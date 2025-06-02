@@ -99,6 +99,22 @@ public:
 				canvas->in_login = false;
 			}
 		}
+		else if (tokens[0] == "/show" && tokens.size() > 1) {
+			bool found = false;
+			for (int i = 0; i < Canvas::connectCom->getFileCount(); i++) {
+				File* f = Canvas::connectCom->getFile(i);
+				if (!f->getVisible() && f->getName() == tokens[1]) {
+					f->setVisible(true);
+					canvas->input("숨겨진 파일을 표시했습니다: " + f->getName());
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				canvas->input("해당 이름의 숨겨진 파일을 찾을 수 없습니다.");
+			}
+		}
+
 		else if (tokens[0] == "/shutdown") cmd_shutdown();
 		else if (tokens[0] == "/save") cmd_savegame();
 		else if (tokens[0] == "/load") cmd_loadgame();
