@@ -75,9 +75,6 @@ public:
 				addAlertLevel(6);
 				canvas->in_firewall = false;
 			}
-			firewallGame.strike = 0;
-			firewallGame.ball = 0;
-			firewallGame.out = 0;
 		}
 		else if (canvas->in_login){
 			if (tokens.size() >= 2) {
