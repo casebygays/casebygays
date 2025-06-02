@@ -43,7 +43,7 @@ int main() {
 	// 플레이어 컴퓨터 파일
 	com[0].setPlayer();
 	addFol(0, nullptr, "public", "Diary", true, false);
-	addtxt(0, autoParent, "public", "2018.04.03", "해킹의 기본.\n\n /scan : 무작위 컴퓨터의 IP를 스캔한다.\n /target [IP] : 해킹하고싶은 컴퓨터의 IP를 지정한다.\n /crack : 지정된 컴퓨터의 포트를 해킹한다.\n포트 종류 : ssh, ftp, smtp, http, proxy, firewall\n\n /nuke : 포트를 전부 열면 해킹가능\n /connet : 해킹을 완료한 컴퓨터에 접속, IP 안적으면 지정된 컴퓨터에 연결 시도\n /disconnet : 컴퓨터 접속 해제", true, false);
+	addtxt(0, autoParent, "public", "2018.04.03", "해킹의 기본.\n\n /scan : 무작위 컴퓨터의 IP를 스캔한다.\n /target [IP] : 해킹하고싶은 컴퓨터의 IP를 지정한다.\n /crack : 지정된 컴퓨터의 포트를 해킹한다.\n포트 종류 : ssh, ftp, smtp, http, proxy, firewall\n\n /nuke : 포트를 전부 열면 해킹가능\n /connet : 해킹을 완료한 컴퓨터에 접속, IP 안적으면 지정된 컴퓨터에 연결 시도\n /disconnet : 컴퓨터 접속 해제\n /show [파일명] : 숨긴 파일 확인", true, false);
 	addtxt(0, autoParent, "public", "2025.05.10", "오늘은 나의 생일이다. 매 년 저녁쯤에 형이 케이크를 사들고 왔었다. 하지만 오늘은 조용히 혼자서 생일을 보냈다. \n혼자 보내는게 익숙한 것도, 편한 것도 아니다.이제는 혼자가 익숙해져야 한다. 처음 느낀 조용함. 그 속에 있는 불편함...\n어쩌면, 난 생일을 축하받을 자격이 없을지도 모른다. 앞으로의 생일은 축하할 일이 없을 것 같다.", true,false);
 	addFol(0, nullptr, "public", "Memo", true, false);
 	addtxt(0, autoParent, "public", "메모1", "메모 내용", true, false);
