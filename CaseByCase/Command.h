@@ -596,38 +596,11 @@ public:
 		
 	}
 	void cmd_in(string name, string pass) {
-		if (Canvas::currentFile == nullptr) { // 컴퓨터에서 in
+		bool success = false;
+		if (Canvas::currentFile == nullptr) {
 			for (int i = 0; i < Canvas::connectCom->getFileCount(); i++) {
 				File* f = Canvas::connectCom->getFile(i);
-				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
-					f->setSecurity("public");
-					if (dynamic_cast<Folder*>(f)) {
-						Canvas::currentFile = f;
-						Canvas::getFileType(f, "Folder");
-					}
-					else if (dynamic_cast<txt*>(f)) {
-						Canvas::currentFile = f;
-						Canvas::getFileType(f, "txt");
-					}
-					else if (dynamic_cast<exe*>(f)) {
-						exe* e = dynamic_cast<exe*>(f);
-						vector<string> code = e->runCode();
-						for (int i = 0; i < code.size(); i++)
-							checkCommand(code[i]);
-						if (e->getOneshot()) { checkCommand("/remove " + e->getName()); }
-					}
-					addAlertLevel(2);
-				}
-				else {
-					canvas->input("비밀번호 틀림");
-					addAlertLevel(6);
-				}
-			}
-		}
-		else { // 폴더에서 in
-			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) {
-				File* f = Canvas::currentFile->getFile(i);
-				if (f->getName() == name and f->getSecurity() == "private" and f->getPass() == pass) {
+				if (f->getName() == name && f->getSecurity() == "private" && f->getPass() == pass) {
 					f->setSecurity("public");
 					canvas->input("잠금해제 완료");
 					if (dynamic_cast<Folder*>(f)) {
@@ -646,14 +619,49 @@ public:
 						if (e->getOneshot()) { checkCommand("/remove " + e->getName()); }
 					}
 					addAlertLevel(2);
+					success = true;
+					break;
 				}
-				else {
-					canvas->input("비밀번호 틀림");
-					addAlertLevel(6);
+			}
+			if (!success) {
+				canvas->input("비밀번호 틀림");
+				addAlertLevel(6);
+			}
+		}
+		else {
+			bool success = false;
+			for (int i = 0; i < Canvas::currentFile->getFileCount(); i++) {
+				File* f = Canvas::currentFile->getFile(i);
+				if (f->getName() == name && f->getSecurity() == "private" && f->getPass() == pass) {
+					f->setSecurity("public");
+					canvas->input("잠금해제 완료");
+					if (dynamic_cast<Folder*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "Folder");
+					}
+					else if (dynamic_cast<txt*>(f)) {
+						Canvas::currentFile = f;
+						Canvas::getFileType(f, "txt");
+					}
+					else if (dynamic_cast<exe*>(f)) {
+						exe* e = dynamic_cast<exe*>(f);
+						vector<string> code = e->runCode();
+						for (int i = 0; i < code.size(); i++)
+							checkCommand(code[i]);
+						if (e->getOneshot()) { checkCommand("/remove " + e->getName()); }
+					}
+					addAlertLevel(2);
+					success = true;
+					break;
 				}
+			}
+			if (!success) {
+				canvas->input("비밀번호 틀림");
+				addAlertLevel(6);
 			}
 		}
 	}
+
 	void cmd_out() {
 		File* cf = Canvas::currentFile;
 		if (Canvas::currentFile != nullptr and Canvas::currentFile->getParent() != nullptr) {
