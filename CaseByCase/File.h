@@ -24,6 +24,7 @@ public:
 	File(int id, string icon, string s, string n, bool v, bool cR, bool oneshot) : id(id), icon(icon), securityType(s), name(n), pass(""), visible(v), canRemove(cR), oneshot(oneshot) {}
 	void setSecurity(string security) { securityType = security; }
 	void setPass(string p) { pass = p; }
+	void setVisible(bool v) { visible = v; }
 	string getSecurity() { return securityType; }
 	string getPass() { return pass; }
 	string getIcon() { return icon; }
