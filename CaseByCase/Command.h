@@ -40,6 +40,11 @@ public:
 				Canvas::targetCom->portCrack("proxy", false);
 				canvas->input("프록시 해킹 성공");
 			}
+			else if (canvas->proxyChance > 0) {
+				string s = "프록시 해킹 실패 / 남은 기회 : " + to_string(canvas->proxyChance);
+				canvas->input(s);
+				addAlertLevel(1);
+			}
 			else if (canvas->proxyChance == 0) {
 				canvas->in_proxy = false;
 				string s = "프록시 해킹 실패 / 정답 : ";
