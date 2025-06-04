@@ -11,7 +11,7 @@
 #include <string>
 using namespace std;
 
-#define COMMAX 80
+#define COMMAX 30
 void setPass(string p);
 void addtxt(int cNum, File* parent, string security, string name, string desc, bool v = true, bool cR = true, bool oneshot = false);
 void addexe(int cNum, File* parent, string security, string name, string code, bool v = true, bool cR = true, bool oneshot = false);
@@ -76,7 +76,7 @@ int main() {
 	//addtxt(1, autoParent, "public", "2025.05.07", "오늘 새벽, 너를 하늘로 보냈다.\n텔레비전에서 전원 사망이라는 자막이 떴을 때,\n나는 그 말을 믿을 수 없었다.믿고 싶지 않았다.\n하지만 결국, 그 안에 네 이름이 있다는 걸 받아들여야 했다.\n\n아직도 네 방은 그대로다.\n너는 아무 말 없이 떠났고, 나는 아무 말도 해줄 수 없었다.\n\n딸아, 아빠가 미안해.\n그날 아침, 너를 껴안아주지 못한 게 너무 후회돼.\n다음 생엔... 꼭 더 많이 웃게 해줄게.", true); setPass("1125");
 
 	// 형의 스마트폰
-	com[2].setComputer(2, "스마트폰", 0, 0, 0, 0, 0, 0); // 컴퓨터 정보 사용자 지정
+	com[2].setComputer(0, "192.168.0.199", 0, 0, 0, 0, 0, 0); // 컴퓨터 정보 사용자 지정
 	//com[2].setComputer(2, "123.456.789", 0, 1, 0, 1, 0, 0);
 	//addFol(2, nullptr, "public", "스마트폰", true); setPass("김석현");	// 마찬가지로 나중에 숨김파일 처리하고 USB를 확인하면 나타나게 할 예정 패드워드는 다른곳에서 찾을수 있게 설정
 
@@ -108,7 +108,7 @@ int main() {
 	// 가정집
 
 	// 강현은 아들이고 강석은 아빠임
-	com[3].setComputer(3, "192.168.00.16", 1, 0, 1, 0, 0, 0); // 컴퓨터 정보 사용자 지정
+	com[3].setComputer(0, "192.168.00.16", 1, 0, 1, 0, 0, 0); // 컴퓨터 정보 사용자 지정
 
 	addFol(3, nullptr, "public", "내PC", true);
 		addFol(3, autoParent, "public", "다운로드", true);
@@ -153,7 +153,7 @@ int main() {
 
 	
 
-	com[4].setComputer(4, "172.22.9.41", 1, 1, 1, 1, 1, 1); // 중소기업
+	com[4].setComputer(1, "172.22.9.41", 1, 1, 1, 1, 1, 1); // 중소기업
 	addFol(4, nullptr, "public", "src", true);
 		addFol(4, autoParent, "public", "logs", true);
 			addtxt(4, autoParent, "public", "observer", "[04:11:05] 외부 접속 탐지: 192.168.88.94\n[04:11:09] 사용자: jlee_localtest 권한 요청\n[04:11:10] 로그 접근 : test_results / TRG17 - LOCKED.enc\n[04:11:12] 경고 : 암호화된 테스트 결과 파일 접근 시도(잠금 상태)", true);
@@ -175,7 +175,7 @@ int main() {
 		addFol(4, com[4].getFile(0), "public", "mail", true);
 			
 
-	com[5].setComputer(5, "seia.corp:4200", 1, 1, 1, 1, 1, 1); // 대기업
+	com[5].setComputer(2, "seia.corp:4200", 1, 1, 1, 1, 1, 1); // 대기업
 	addFol(5, nullptr, "public", "logs", true);
 		addFol(5, com[5].getFile(0), "public", "access", true);
 			addtxt(5, com[5].getFile(0)->getFile(0), "public", "2025-04-17.log", "[23:19:42] 사용자 접속: iqlogin_0921 from 192.168.88.94\n[23:19:47] relay88_route.cfg 접근\n[23:19:50] a0417.gz.enc 파일 다운로드 요청\n[23:19:52] 로그 백업 전환 시작 : archive_A0417.lgz 로 이관", true);
@@ -205,7 +205,7 @@ int main() {
 	
 
 
-	com[6].setComputer(1, "atc-nexus.aircorp:8022", 0, 0, 0, 0, 0, 0); // 항공
+	com[6].setComputer(2, "atc-nexus.aircorp:8022", 0, 0, 0, 0, 0, 0); // 항공
 
 	// 개인폴더도 넣을까 생각중
 
