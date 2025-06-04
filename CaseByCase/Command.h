@@ -56,8 +56,10 @@ public:
 		else if (canvas->in_firewall) {//파이어월 야구게이
 			if (tokens.size() != firewallGame.computerBall.size()) return;
 			for (int i = 0; i < tokens.size(); i++) {
+				cout << firewallGame.strike;
 				if (stoi(tokens[i]) == firewallGame.computerBall[i]) {
 					firewallGame.strike += 1;
+
 				}
 				else if (firewallGame.contains(firewallGame.computerBall, stoi(tokens[i]))) {
 					firewallGame.ball += 1;
@@ -83,7 +85,7 @@ public:
 		}
 		else if (canvas->in_login){
 			if (tokens.size() >= 2) {
-				if (tokens[0] == "설정한아이디" and tokens[1] == "설정한비밀번호") { // 로그인 성공
+				if (tokens[0] == "atcproxy" and tokens[1] == "00100000") { // 로그인 성공
 					canvas->in_login = false;
 					canvas->input("로그인 성공");
 				}
@@ -293,11 +295,11 @@ public:
 		canvas->input("--------------------------------------------------------");
 		canvas->input("비고 : () = 선택,	[] = 필수");
 		canvas->input("/shutdown				게임 종료");
-		canvas->input("/in [파일] (비밀번호)			파일 열기");
-		canvas->input("/out				이전으로 돌아감 (상위폴더로 나가기)");
+		canvas->input("/in [파일] (비밀번호)		파일 열기");
+		canvas->input("/out				상위폴더로 나가기");
 		canvas->input("/clear				드르륵 탁 clear");
 		canvas->input("/scan				주변 IP 스캔");
-		canvas->input("/target [IP]				주변 IP 스캔");
+		canvas->input("/target [IP]			주변 IP 스캔");
 		//canvas->input("/decoding [파일]			대상 파일 복호화");
 		canvas->input("/portscan				포트 정보 확인");
 		canvas->input("/crack ssh				22번 포트 열기");
@@ -306,7 +308,7 @@ public:
 		canvas->input("/crack http			80번 포트 열기");
 		canvas->input("/crack proxy			proxy 비활성화");
 		canvas->input("/crack firewall			friewall 비활성화");
-		canvas->input("/nuke (IP)					PC 해킹");
+		canvas->input("/nuke (IP)				PC 해킹");
 		canvas->input("/connect	(IP)			해당 컴퓨터 접속");
 		canvas->input("/disconnect			접속 종료");
 		canvas->input("--------------------------------------------------------");

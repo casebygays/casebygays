@@ -156,24 +156,23 @@ int main() {
 	com[4].setComputer(4, "172.22.9.41", 1, 1, 1, 1, 1, 1); // 중소기업
 	addFol(4, nullptr, "public", "src", true);
 		addFol(4, autoParent, "public", "logs", true);
-			addtxt(4, autoParent, "public", "observer", "[04:11:05] 외부 접속 탐지: 192.168.88.94\n[04:11 : 09] 사용자: jlee_localtest 권한 요청\n[04:11 : 10] 로그 접근 : test_results / TRG17 - LOCKED.enc\n[04:11 : 12] 경고 : 암호화된 테스트 결과 파일 접근 시도(잠금 상태)", true);
+			addtxt(4, autoParent, "public", "observer", "[04:11:05] 외부 접속 탐지: 192.168.88.94\n[04:11:09] 사용자: jlee_localtest 권한 요청\n[04:11:10] 로그 접근 : test_results / TRG17 - LOCKED.enc\n[04:11:12] 경고 : 암호화된 테스트 결과 파일 접근 시도(잠금 상태)", true);
 			addFol(4, com[4].getFile(0)->getFile(0), "public", "test_results", true);
 				addtxt(4, autoParent, "private", "TRG17-LOCKED.enc", "[해제 완료]\n[TRG 실험 보고서 #17]\n기체 ID : TX217\nOverride 반응 : 수신 후 1.1초 내 조종 입력 무시됨\n접속 계정 : iqlogin_0921\n비고 : override 키, relay88 통해 전송됨", true, false, true); setPass("enotniopeno");
 
 			addFol(4, com[4].getFile(0)->getFile(0), "public", "TRG17-LOCKED.enc", true);
-				addtxt(4, autoParent, "public", "sys_routemap.xml", "sys_routemap.xml\n< routes >\n<nexthop>\n<name>SEIA 메인 서버< / name>\n<ip>c2VpYS5jb3JwOjQyMDA = < / ip> <!--base64-->\n< / nexthop>\n< / routes> 복호화하면 -> 이거 보이게 seia.corp:4200", true);
+				addtxt(4, autoParent, "public", "sys_routemap.xml", "sys_routemap.xml\n< routes >\n<nexthop>\n<name>SEIA 메인 서버< / name>\n<ip>c2VpYS5jb3JwOjQyMDA = < / ip> <!--base64-->\n< / nexthop>\n< / routes> --> seia.corp:4200", true);
 
 		addFol(4, com[4].getFile(0), "public", "notes", true);
 			addtxt(4, autoParent, "public", "key_hint.txt", "테스트 결과 파일은 실험 반응 시간 기반으로 암호화됨.\n기억하라, 그 수치는 1.1초였다.\n힌트: 뒤집어 생각해보면, 답이 보일지도 ? ", true);//정답 1.1초를 1.1one -> enotniopeno
-			addtxt(4, autoParent, "public", "engineer_chat.log", "[03:44] han_lee: relay 노드에 비밀번호 또 안 바꿨냐?\n??? : 난 이 조합이 좋아.커피 + 비행기 + 내 번호.\n[03:47] han_lee: 또 그 얘기야? 테스트 #35 성공했다고 몇 년째 우려먹냐.\n[03:48] han_lee: 그리고 진짜 바꿔라. 누가 봐도 유추되겠다.", true);
+			addtxt(4, autoParent, "public", "engineer_chat.log", "han_lee : relay 노드에 비밀번호 또 안 바꿨냐?\n??? : 난 이 조합이 좋아.커피 + 비행기 + 내 번호.\nhan_lee : 또 그 얘기야? 테스트 #35 성공했다고 몇 년째 우려먹냐.\nhan_lee : 그리고 진짜 바꿔라. 누가 봐도 유추되겠다.", true);
 
 
-		addFol(4, com[4].getFile(0), "public", "src", true);
-			addFol(4, com[4].getFile(0)->getFile(0), "public", "TRG", true);
+		addFol(4, com[4].getFile(0), "public", "_src", true);
+			addFol(4, autoParent, "public", "TRG", true);
 			addtxt(4, autoParent, "pubilc", "codesheet.jpg","[TRG 시스템 접근 정보 - 사내 테스트용]\n \n인증 계정 : seia - corp / iqlogin_0921\n필요 키 : ******", true);
 
 		addFol(4, com[4].getFile(0), "public", "mail", true);
-
 			
 
 	com[5].setComputer(5, "seia.corp:4200", 1, 1, 1, 1, 1, 1); // 대기업
@@ -199,7 +198,7 @@ int main() {
 
 	addFol(5, nullptr, "public", "testdata", true);
 		addFol(5, autoParent, "public", "fightctrl", true);
-			addtxt(5, autoParent, "public", "relay88_route.cfg", "[RELAY88_CONFIGURATION]\nsecure_id = TX217\nrelay_chain = proxy - khan42 → atcproxy\nauth_required = true",true);
+			addtxt(5, autoParent, "public", "relay88_route.cfg", "[RELAY88_CONFIGURATION]\nsecure_id = TX217\nrelay_chain = proxy - khan42 → ID : atcproxy\nauth_required = true",true);
 	addFol(5, nullptr, "public", "tmp", true);
 		addtxt(5, autoParent, "public", "a0417.gz.enc", "[EXFIL TRACE LOG - INTERNAL USE ONLY]\n \n파일: relay88_route.cfg\n조작 시도 : iqlogin_0921\n원격 포트 : 8022\n전송 위치 : atc - nexus.aircorp : 8022\n→ 타깃 시스템 : 관제탑 연계 서버(NEXUS GATEWAY)\n로그 제거 시도 감지됨.추적 ID : YJ1029(삭제 성공 여부 : Unknown)", true);
 	
